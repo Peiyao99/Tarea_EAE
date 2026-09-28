@@ -1,0 +1,15 @@
+{
+  "a": { "bpm": 124 },
+  "b": { "bpm": 140 },
+  "bars": 22,
+  "sections": [
+    { "id": "hook", "bar": 0 },
+    { "id": "p1", "bar": 2 },
+    { "id": "p2", "bar": 6 },
+    { "id": "p3", "bar": 10 },
+    { "id": "make", "bar": 13 },
+    { "id": "creator", "bar": 16 },
+    { "id": "buyer", "bar": 19 },
+    { "id": "outro", "bar": 20 }
+  ]
+}

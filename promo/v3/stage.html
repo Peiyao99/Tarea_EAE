@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>纸样工作台 · 用户需求动画</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Noto+Serif+SC:wght@900&family=ZCOOL+KuaiLe&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#000;overflow:hidden}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:'Noto Sans SC',sans-serif;color:#fff}
+  #stage *{box-sizing:border-box}
+  .abs{position:absolute}
+  .layer{position:absolute;inset:0;pointer-events:none}
+  #phone{position:absolute;left:240px;top:600px;width:600px;height:1232px;border-radius:70px;transform-origin:50% 60%}
+  #phone .scr{position:absolute;inset:16px;border-radius:56px;overflow:hidden;background:#fff}
+  #phone .scr img{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0}
+  .co{position:absolute;overflow:hidden;background-repeat:no-repeat;transform-origin:50% 50%;opacity:0}
+  .tap{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;opacity:0}
+  .cap{position:absolute;left:70px;right:70px;top:250px;height:300px;display:flex;flex-direction:column;justify-content:center}
+  .cap .ln{display:flex;flex-wrap:wrap;align-items:baseline}
+  .cap .w{display:inline-block;transform-origin:50% 80%;white-space:pre}
+  .sticker{position:absolute;opacity:0;transform-origin:50% 50%;white-space:nowrap}
+
+  /* ================= A · bouncy black / orange ================= */
+  .ta{background:#121212}
+  .ta .blob{position:absolute;border-radius:50%;background:#FF7A00}
+  .ta .dots{position:absolute;inset:0;background-image:radial-gradient(#ffffff14 3px,transparent 3.5px);background-size:48px 48px}
+  .ta #phone{background:#fff;box-shadow:0 22px 0 #C24E00,0 40px 80px rgba(0,0,0,.55)}
+  .ta .co{border:8px solid #fff;border-radius:36px;box-shadow:0 14px 0 #C24E00,0 30px 60px rgba(0,0,0,.5)}
+  .ta .tap{border:10px solid #FF7A00;background:#FF7A0033}
+  .ta .cap .w{font-weight:900;font-size:92px;line-height:1.18;letter-spacing:-1px;color:#fff}
+  .ta .cap .w.hl{color:#121212;background:#FF7A00;border-radius:22px;padding:0 18px;margin:0 6px;box-shadow:0 8px 0 #C24E00}
+  .ta .cap.quote .w{font-size:78px;color:#fff}
+  .ta .qb{position:absolute;left:60px;right:60px;top:236px;height:330px;border-radius:44px;background:#fff;box-shadow:0 14px 0 #3a3a3a;opacity:0}
+  .ta .qb:after{content:'';position:absolute;left:120px;bottom:-40px;border:24px solid transparent;border-top:28px solid #fff;border-left:28px solid #fff}
+  .ta .cap.quote .w{color:#121212}
+  .ta .chip{position:absolute;left:70px;top:150px;height:66px;padding:0 30px 0 22px;border-radius:33px;background:#FF7A00;color:#121212;font-weight:900;font-size:36px;display:flex;align-items:center;gap:12px;box-shadow:0 7px 0 #C24E00;opacity:0}
+  .ta .chip i{width:34px;height:34px;border-radius:50%;background:#121212;color:#FF7A00;font-style:normal;font-size:22px;display:grid;place-items:center}
+  .ta .prog{position:absolute;left:70px;right:70px;top:68px;height:34px;border-radius:17px;background:#2a2a2a}
+  .ta .prog b{position:absolute;left:0;top:0;bottom:0;border-radius:17px;background:#FF7A00;box-shadow:inset 0 -8px 0 #0000001f}
+  .ta .prog b:after{content:'';position:absolute;left:14px;right:14px;top:7px;height:7px;border-radius:4px;background:#ffffff55}
+  .ta .prog .ck{position:absolute;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;background:#555}
+  .ta .sticker{font-weight:900;font-size:54px;color:#121212;background:#FFD23F;padding:10px 28px;border-radius:26px;box-shadow:0 8px 0 #B88A00}
+  .ta .sticker.o{background:#FF7A00;box-shadow:0 8px 0 #C24E00}
+  .ta .sticker.w{background:#fff;box-shadow:0 8px 0 #999}
+  .ta .conf{position:absolute;width:26px;height:40px;border-radius:8px}
+  .ta .wipe{position:absolute;left:540px;top:960px;width:10px;height:10px;margin:-5px;border-radius:50%;background:#FF7A00}
+
+  /* ================= B · manga light-music black / purple ================= */
+  .tb{background:#0D0916}
+  .tb .tone{position:absolute;inset:0;background-image:radial-gradient(#8B5CF6 2.6px,transparent 3px);background-size:22px 22px;-webkit-mask-image:linear-gradient(160deg,#000 0%,transparent 45%,transparent 60%,#000 100%);mask-image:linear-gradient(160deg,#000 0%,transparent 45%,transparent 60%,#000 100%);opacity:.5}
+  .tb .stripe{position:absolute;left:-200px;right:-200px;height:260px;background:repeating-linear-gradient(-45deg,#8B5CF622 0 18px,transparent 18px 40px)}
+  .tb .speed{position:absolute;left:540px;top:900px;width:3200px;height:3200px;margin:-1600px;border-radius:50%;background:repeating-conic-gradient(#fff 0 .6deg,transparent .6deg 5deg);-webkit-mask-image:radial-gradient(circle,transparent 24%,#000 46%);mask-image:radial-gradient(circle,transparent 24%,#000 46%);opacity:0}
+  .tb .note{position:absolute;font-size:74px;color:#B794FF;font-family:'Dela Gothic One',sans-serif}
+  .tb #phone{background:#0D0916;box-shadow:0 0 0 7px #fff,0 0 0 13px #0D0916,16px 18px 0 13px #8B5CF6}
+  .tb .co{border:7px solid #0D0916;outline:6px solid #fff;border-radius:10px;box-shadow:14px 14px 0 6px #8B5CF6}
+  .tb .tap{border:9px solid #fff;background:#8B5CF655;box-shadow:0 0 0 6px #8B5CF6}
+  .tb .cap .w{font-family:'ZCOOL KuaiLe','Noto Sans SC',sans-serif;font-size:100px;line-height:1.15;color:#fff;-webkit-text-stroke:0;text-shadow:5px 5px 0 #0D0916,-3px -3px 0 #0D0916,3px -3px 0 #0D0916,-3px 3px 0 #0D0916,9px 9px 0 #8B5CF6}
+  .tb .cap .w.hl{color:#D8C4FF;text-shadow:5px 5px 0 #0D0916,-3px -3px 0 #0D0916,3px -3px 0 #0D0916,-3px 3px 0 #0D0916,10px 10px 0 #FF5FA2}
+  .tb .cap.quote .w{font-size:80px;color:#0D0916;text-shadow:none}
+  .tb .qb{position:absolute;left:70px;right:70px;top:226px;height:350px;opacity:0}
+  .tb .qb svg{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);overflow:visible}
+  .tb .chip{position:absolute;left:70px;top:132px;height:76px;padding:0 30px;background:#fff;color:#0D0916;font-family:'ZCOOL KuaiLe',sans-serif;font-size:42px;display:flex;align-items:center;gap:16px;border:5px solid #0D0916;box-shadow:8px 8px 0 #8B5CF6;opacity:0;transform-origin:0 50%}
+  .tb .chip i{font-style:normal;font-family:'Dela Gothic One';font-size:26px;color:#fff;background:#0D0916;padding:4px 12px}
+  .tb .ep{position:absolute;right:56px;top:56px;width:120px;padding:14px 0;background:#8B5CF6;color:#fff;border:5px solid #fff;text-align:center;font-family:'ZCOOL KuaiLe',sans-serif;font-size:44px;line-height:1;letter-spacing:2px;padding:16px 0;width:auto;padding:14px 26px;box-shadow:8px 8px 0 #0D0916,8px 8px 0 11px #fff}
+  .tb .sticker{font-family:'Dela Gothic One','ZCOOL KuaiLe',sans-serif;font-size:96px;color:#fff;-webkit-text-stroke:5px #0D0916;paint-order:stroke fill;text-shadow:8px 8px 0 #8B5CF6}
+  .tb .sticker.o{color:#D8C4FF}
+  .tb .sticker.w{font-size:62px;color:#0D0916;-webkit-text-stroke:0;text-shadow:none;background:#fff;border:5px solid #0D0916;padding:6px 24px;box-shadow:8px 8px 0 #8B5CF6}
+  .tb .spark{position:absolute;width:60px;height:60px;background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+  .tb .flash{position:absolute;inset:0;background:#fff;opacity:0}
+  .tb .wipe{position:absolute;left:-400px;top:-400px;width:2000px;height:3000px;background:#8B5CF6;transform-origin:0 0}
+
+  .logo{position:absolute;left:0;right:0;top:620px;text-align:center;opacity:0}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+(async function () {
+const THEME = new URLSearchParams(location.search).get('theme') || 'a'
+const A = THEME === 'a'
+const TIMING = await (await fetch('timing.json')).json()
+const BPM = TIMING[THEME].bpm, BAR = 240 / BPM, BEAT = 60 / BPM
+const SEC = TIMING.sections.map(s => s.bar)
+const END_BAR = SEC[SEC.length - 1]
+const RECTS = await (await fetch(`shots/${THEME}/rects.json`)).json()
+
+// ---------- helpers ----------
+const $ = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; (parent || stage).appendChild(e); return e }
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x))
+const lerp = (a, b, t) => a + (b - a) * t
+const eoc = t => 1 - Math.pow(1 - clamp(t), 3)
+const eic = t => Math.pow(clamp(t), 3)
+const eob = (t, s = 1.9) => { t = clamp(t) - 1; return 1 + (s + 1) * t * t * t + s * t * t }
+const spring = t => { t = clamp(t); return 1 - Math.exp(-7 * t) * Math.cos(11 * t) }
+const prog = (t, a, d) => clamp((t - a) / d)
+// window: fade/pop in at `a`, out at `b` (seconds); returns 0..1 in and 0..1 out
+const win = (t, a, b, din = 0.28, dout = 0.2) => ({ i: prog(t, a, din), o: prog(t, b - dout, dout), on: t >= a && t < b })
+const bt = (bar, beat = 0) => (bar * 4 + beat) * BEAT
+const stage = document.getElementById('stage')
+stage.className = A ? 'ta' : 'tb'
+
+// ---------- content (bars) ----------
+const PERSONA = [
+  { s: 1, tag: '零基础新手', q: '我不会打版，\n也看不懂纸样。' },
+  { s: 2, tag: '只有一个想法', q: '我只有\n一句话的想法。' },
+  { s: 3, tag: '手上有 3D 模型', q: '我有 3D 模型，\n能直接缝吗？' },
+  { s: 4, tag: '缝好的那一刻', q: null },
+  { s: 5, tag: '想卖材料包的创作者', q: '我的纸样，\n能卖给更多人吗？' },
+  { s: 6, tag: '想直接买的人', q: null }
+]
+const CAPS = [
+  [3, '转一转 3D，\n纸样[跟着亮]'], [4, '官方教程模板，\n[跟着缝]就行'], [5, '用到功能时\n[才要注册]'],
+  [7, '一句话，\n[AI 起形]'], [8, '3D 形体\n[马上能看]'], [9, '关键决定\n[你来拍板]'],
+  [11, '[自动体检]\n问题一键修'], [12, '展开成\n[平面纸样]'],
+  [13, '对缝 QA\n[一处不漏]'], [14, '导出纸样\n[打印就能裁]'], [15, '缝好了，\n[投稿到案例库]'],
+  [17, '[平台打样]\n验证能缝'], [18, '发起材料包\n[拿分成]'],
+  [19, '拆开就能缝，\n[预订材料包]']
+]
+const SHOTS = [[1.5, 'home'], [2, 'library'], [3, 'tpl-ws'], [4, 'tpl'], [5, 'auth'], [6, 'home'], [7, 'gen-run'], [8, 'gen-done'], [9, 'decide'],
+  [10, 'source'], [11, 'diagnose'], [12, 'flat'], [13, 'qa'], [14, 'deliver'], [15, 'proof-share'], [15.5, 'done-fan'],
+  [16, 'me-fan'], [16.5, 'apply'], [17, 'plat-done'], [18, 'launch'], [19, 'kit'], [19.5, 'reserved']]
+const WS = r => r || [12, 120, 366, 487]
+const CALLOUTS = [
+  { at: 3.2, to: 3.95, shot: 'tpl-ws', r: [14, 132, 364, 370], k: 1.32, x: 520, y: 880, rot: 4 },
+  { at: 8.2, to: 8.95, shot: 'gen-done', r: [14, 168, 182, 330], k: 1.9, x: 40, y: 860, rot: -4 },
+  { at: 12.2, to: 12.95, shot: 'flat', r: [196, 170, 180, 300], k: 2.05, x: 640, y: 820, rot: 3 },
+  { at: 13.2, to: 13.95, shot: 'qa', r: [196, 170, 180, 300], k: 2.05, x: 30, y: 840, rot: -3 },
+  { at: 17.25, to: 17.95, shot: 'plat-done', r: [12, 196, 366, 272], k: 1.3, x: 560, y: 1100, rot: -3 },
+  { at: 18.25, to: 18.95, shot: 'launch', r: [12, 388, 366, 176], k: 1.32, x: 540, y: 1260, rot: 3 }
+]
+const TAPS = [[2.55, 100, 330], [4.4, 195, 400], [5.55, 195, 400], [6.55, 297, 432], [9.6, 240, 756], [10.6, 240, 756], [14.6, 240, 756], [15.3, 240, 756], [16.3, 195, 483], [17.6, 240, 756], [18.6, 240, 756], [19.3, 300, 756]]
+const STICK = A
+  ? [[3.4, '纸样跟着亮!', 'o', 90, 560, -6], [4.55, '+1 步', '', 820, 1000, 8], [7.5, '40 token', 'w', 700, 1180, 6], [8.5, '好耶!', '', 820, 1500, 8], [9.55, '已拍板 8/8', 'o', 80, 1420, -5],
+     [11.5, '一键修好', '', 760, 1250, 6], [12.55, '13 片', 'o', 90, 1500, -6], [13.55, '22/24 ✓', '', 780, 1420, 5], [14.5, 'PDF · SVG · DXF', 'w', 560, 1560, -3], [15.6, '+1 作品', 'o', 90, 1350, -6],
+     [16.6, '申请已提交', 'w', 600, 1420, 4], [17.6, '打样通过!', '', 80, 1500, -6], [18.55, '分成 ¥55', 'o', 720, 1060, 5], [19.6, '32 → 33 份', '', 90, 1400, -5]]
+  : [[2.1, 'ドキッ', '', 700, 560, 8], [3.4, 'キラッ☆', 'o', 90, 600, -8], [4.55, 'ぬいぬい', '', 760, 1000, 8], [5.5, 'ログイン♪', 'w', 610, 1450, 5], [7.4, 'ピカッ!', 'o', 720, 640, 8], [8.5, 'わぁ…!', '', 760, 1480, 6], [9.55, '決定!', 'w', 90, 1420, -5],
+     [11.5, 'シャキーン', '', 520, 1240, 6], [12.55, 'パタッ', 'o', 90, 1500, -6], [13.55, 'ピッタリ!', '', 640, 1420, 5], [14.5, 'プリント!', 'w', 560, 1560, -3], [15.6, 'やった!', 'o', 90, 1340, -6],
+     [16.6, 'ワクワク', '', 620, 1420, 4], [17.6, 'OK!!', 'o', 80, 1500, -6], [18.55, 'ジャーン!', '', 560, 1080, 5], [19.6, '予約♪', 'w', 90, 1400, -5]]
+
+// ---------- background ----------
+const bg = $('div', 'layer')
+let blobs = [], notes = [], sparks = [], speed, flash, stripes = []
+if (A) {
+  $('div', 'dots', bg)
+  blobs = [[160, 320, 300], [960, 520, 220], [900, 1700, 380], [80, 1500, 160]].map(([x, y, r]) => { const e = $('div', 'blob', bg); Object.assign(e.style, { left: x - r + 'px', top: y - r + 'px', width: 2 * r + 'px', height: 2 * r + 'px', opacity: .13 }); return { e, x, y, r } })
+} else {
+  $('div', 'tone', bg)
+  stripes = [180, 1500].map(y => { const e = $('div', 'stripe', bg); e.style.top = y + 'px'; return e })
+  speed = $('div', 'speed', bg)
+  notes = Array.from({ length: 9 }, (_, i) => { const e = $('div', 'note', bg, i % 3 ? '♪' : '♫'); return { e, x: 60 + (i * 127) % 980, s: 0.6 + (i % 4) * 0.2, ph: i * 0.37 } })
+  sparks = Array.from({ length: 7 }, (_, i) => ({ e: $('div', 'spark', bg), x: 80 + (i * 173) % 940, y: 200 + (i * 331) % 1600, ph: i * 0.61 }))
+}
+
+// ---------- top: progress (A) / episode tag (B) ----------
+let progB, cks = [], ep
+if (A) {
+  const pr = $('div', 'prog'); progB = $('b', '', pr)
+  cks = [1, 2, 3, 4, 5, 6].map(i => { const c = $('span', 'ck', pr); c.style.left = (i / 6 * 100) + '%'; return c })
+} else ep = $('div', 'ep')
+
+// ---------- persona chip + quote bubble ----------
+const chip = $('div', 'chip')
+const qb = $('div', 'qb')
+if (!A) qb.innerHTML = '<svg viewBox="0 0 1000 410" preserveAspectRatio="none"><path d="M40 30 H960 Q990 30 990 60 V330 Q990 360 960 360 H300 L200 420 L220 360 H40 Q10 360 10 330 V60 Q10 30 40 30Z" fill="#fff" stroke="#0D0916" stroke-width="10"/></svg>'
+
+// ---------- captions ----------
+function capEl(text, quote) {
+  const c = $('div', 'cap' + (quote ? ' quote' : ''))
+  const words = []
+  text.split('\n').forEach(line => {
+    const ln = $('div', 'ln', c)
+    line.split(/(\[[^\]]+\])/).filter(Boolean).forEach(seg => {
+      const hl = seg.startsWith('[')
+      const s = seg.replace(/[\[\]]/g, '')
+      if (hl) words.push($('span', 'w hl', ln, s))
+      else for (const ch of s.match(/[，。？！、,]|[^，。？！、,]{1,2}/g)) words.push($('span', 'w', ln, ch))
+    })
+  })
+  return { c, words }
+}
+const caps = CAPS.map(([bar, txt]) => ({ bar, ...capEl(txt, false) }))
+const quotes = PERSONA.map(p => p.q && { bar: SEC[p.s], ...capEl(p.q, true) })
+
+// ---------- phone ----------
+const phone = $('div'); phone.id = 'phone'
+const scr = $('div', 'scr', phone)
+const imgs = {}
+const names = [...new Set(SHOTS.map(s => s[1]).concat(CALLOUTS.map(c => c.shot)))]
+await Promise.all(names.map(n => { const im = $('img', '', scr); im.src = `shots/${THEME}/${n}.png`; imgs[n] = im; return im.decode() }))
+const SCALE = 568 / 390
+
+// ---------- callouts, taps, stickers ----------
+const cos = CALLOUTS.map(c => { const e = $('div', 'co'); const [x, y, w, h] = c.r; Object.assign(e.style, { left: c.x + 'px', top: c.y + 'px', width: w * c.k + 'px', height: h * c.k + 'px', backgroundImage: `url(shots/${THEME}/${c.shot}.png)`, backgroundSize: `${390 * c.k}px ${800 * c.k}px`, backgroundPosition: `${-x * c.k}px ${-y * c.k}px` }); return { ...c, e } })
+const taps = TAPS.map(t => ({ t, e: $('div', 'tap') }))
+const sticks = STICK.map(([bar, txt, cls, x, y, rot]) => { const e = $('div', 'sticker ' + cls, null, txt); Object.assign(e.style, { left: x + 'px', top: y + 'px' }); return { bar, e, rot } })
+
+// ---------- hook, wipe, outro ----------
+const hook1 = capEl(A ? '想做一只\n[毛绒玩偶]？' : '想做一只\n[毛绒]玩偶？', false)
+const hook2 = capEl(A ? '卡在第一步：\n[打版]' : '第一步就卡住：\n[打版]……', false)
+const hookSfx = $('div', 'sticker', null, A ? '难!' : 'ガーン')
+Object.assign(hookSfx.style, { left: A ? '720px' : '600px', top: '560px' })
+let wipe, confs = []
+if (A) { wipe = $('div', 'wipe'); confs = Array.from({ length: 28 }, (_, i) => { const e = $('div', 'conf'); e.style.background = ['#FF7A00', '#FFD23F', '#fff', '#FF9F45'][i % 4]; return { e, a: i * 2.39, v: 900 + (i * 97) % 700, sp: (i % 7) - 3 } }) }
+else { wipe = $('div', 'wipe'); flash = $('div', 'flash') }
+const logo = $('div', 'logo', null, A
+  ? `<svg width="190" height="190" viewBox="0 0 28 28" fill="none" stroke="#FF7A00" stroke-width="2.2" style="background:#fff;border-radius:48px;padding:26px;box-shadow:0 12px 0 #C24E00"><path d="M5 20 C5 10 9 5 14 5 C19 5 23 10 23 20 Z"/><path d="M8 18 C8 12 10.5 8.5 14 8.5 C17.5 8.5 20 12 20 18" stroke-dasharray="2 2"/><path d="M14 5 V23"/></svg>
+     <div style="font-weight:900;font-size:120px;margin-top:50px">纸样工作台</div>
+     <div style="font-weight:900;font-size:62px;margin-top:26px;color:#121212;background:#FF7A00;display:inline-block;padding:8px 30px;border-radius:24px;box-shadow:0 8px 0 #C24E00">好看的毛绒，先得缝得出来。</div>
+     <div style="font-size:40px;margin-top:70px;color:#ffffffcc;font-weight:700;line-height:1.6">新手 · 想法 · 3D 模型 · 创作者 · 买家<br>每个人都有一条路</div>`
+  : `<svg width="190" height="190" viewBox="0 0 28 28" fill="none" stroke="#0D0916" stroke-width="2.2" style="background:#fff;padding:26px;border:6px solid #0D0916;box-shadow:14px 14px 0 #8B5CF6;transform:rotate(-4deg)"><path d="M5 20 C5 10 9 5 14 5 C19 5 23 10 23 20 Z"/><path d="M8 18 C8 12 10.5 8.5 14 8.5 C17.5 8.5 20 12 20 18" stroke-dasharray="2 2"/><path d="M14 5 V23"/></svg>
+     <div style="font-family:'ZCOOL KuaiLe';font-size:132px;margin-top:50px;text-shadow:6px 6px 0 #0D0916,12px 12px 0 #8B5CF6">纸样工作台</div>
+     <div style="font-family:'ZCOOL KuaiLe';font-size:64px;margin-top:30px;color:#0D0916;background:#fff;display:inline-block;padding:10px 34px;border:6px solid #0D0916;box-shadow:10px 10px 0 #8B5CF6;transform:rotate(-2deg)">好看的毛绒，先得缝得出来。</div>
+     <div style="font-size:40px;margin-top:70px;color:#D8C4FF;font-weight:700;line-height:1.6">新手 · 想法 · 3D 模型 · 创作者 · 买家<br>每个人都有一条路 ♪</div>`)
+
+// ---------- render(t) ----------
+const secIdx = bar => { let k = 0; SEC.forEach((b, i) => { if (bar >= b) k = i }); return k }
+const beatPulse = t => { const x = (t / BEAT) % 1; return Math.exp(-x * 7) }
+function animWords(words, t, a, b, stagger = 0.07) {
+  words.forEach((w, i) => {
+    const p = prog(t, a + i * stagger, A ? 0.32 : 0.18), o = prog(t, b - 0.18, 0.18)
+    const s = A ? lerp(0.3, 1, eob(p, 2.6)) : lerp(1.6, 1, eoc(p))
+    const y = A ? lerp(60, 0, eoc(p)) - o * 40 : lerp(-30, 0, eoc(p)) + o * 30
+    w.style.opacity = p * (1 - o)
+    w.style.transform = `translateY(${y}px) scale(${s}) rotate(${A ? 0 : lerp(-8, 0, eoc(p))}deg)`
+  })
+}
+
+window.render = function (t) {
+  const bar = t / BAR, si = secIdx(bar), pulse = beatPulse(t)
+  // background motion
+  if (A) {
+    blobs.forEach((b, i) => { b.e.style.transform = `translate(${Math.sin(t * 0.6 + i) * 40}px,${Math.cos(t * 0.5 + i * 2) * 50}px) scale(${1 + pulse * 0.05})` })
+  } else {
+    notes.forEach(n => { const y = 1920 - ((t * 120 * n.s + n.ph * 900) % 2200); n.e.style.transform = `translate(${n.x + Math.sin(t * 2 + n.ph * 5) * 30}px,${y}px) rotate(${Math.sin(t * 3 + n.ph) * 16}deg) scale(${n.s + pulse * 0.25})`; n.e.style.opacity = 0.55 })
+    sparks.forEach(s => { const k = Math.max(0, Math.sin(t * 3 + s.ph * 7)); s.e.style.transform = `translate(${s.x}px,${s.y}px) scale(${k * (0.6 + pulse * 0.6)}) rotate(${t * 60}deg)` })
+    stripes.forEach((e, i) => e.style.transform = `translateX(${((t * 60 * (i ? -1 : 1)) % 80)}px)`)
+    const sp = SEC.some(b => b > 0 && t >= bt(b) && t < bt(b) + BEAT * 2) ? 1 - prog(t, bt(SEC[si]), BEAT * 2) : 0
+    speed.style.opacity = sp * 0.35 + (bar < 2 ? 0.12 : 0)
+    speed.style.transform = `rotate(${t * 20}deg) scale(${1 + pulse * 0.04})`
+  }
+
+  // section transition
+  const secT = SEC.filter(b => b > 0).map(b => bt(b)).find(s => t >= s - 0.3 && t < s + 0.35)
+  if (A) {
+    if (secT != null) { const p = prog(t, secT - 0.3, 0.3), q = prog(t, secT, 0.35); wipe.style.transform = `scale(${lerp(0, 440, eic(p))})`; wipe.style.opacity = 1 - eoc(q) } else wipe.style.opacity = 0
+  } else {
+    if (secT != null) { const p = prog(t, secT - 0.22, 0.22), q = prog(t, secT, 0.28); wipe.style.transform = `skewX(-20deg) translateX(${t < secT ? lerp(-2400, 0, eic(p)) : lerp(0, 2600, eoc(q))}px)`; wipe.style.opacity = 1 } else wipe.style.opacity = 0
+    const fl = SEC.find(b => b > 0 && t >= bt(b) && t < bt(b) + 0.12); flash.style.opacity = fl != null ? 0.55 * (1 - prog(t, bt(fl), 0.12)) : 0
+  }
+
+  // top bar
+  const main = si >= 1 && si <= 6
+  if (A) {
+    const pr = clamp((bar - SEC[1]) / (END_BAR - SEC[1]))
+    progB.parentElement.style.opacity = main ? 1 : 0
+    progB.style.width = Math.max(4, pr * 100) + '%'
+    cks.forEach((c, i) => { const done = si > i + 1 || (si === 6 && i === 5); c.style.background = done ? '#fff' : '#555'; c.style.transform = `scale(${done ? 1.3 : 1})` })
+  } else {
+    ep.style.opacity = main ? 1 : 0
+    ep.innerHTML = `第 ${Math.max(1, si)} 話`
+    ep.style.transform = `rotate(${3 + Math.sin(t * 2) * 1.5}deg) scale(${1 + pulse * 0.04})`
+  }
+
+  // persona chip + quote
+  const P = PERSONA.find(p => p.s === si)
+  if (P) {
+    const a = bt(SEC[si]), b = bt(SEC[si + 1] ?? END_BAR), p = prog(t, a + 0.05, 0.35), o = prog(t, b - 0.15, 0.15)
+    chip.innerHTML = A ? `<i>${si}</i>${P.tag}` : `<i>CASE ${si}</i>${P.tag}`
+    chip.style.opacity = p * (1 - o)
+    chip.style.transform = A ? `scale(${lerp(0.4, 1, eob(p, 2.4))})` : `translateX(${lerp(-400, 0, eoc(p))}px) rotate(-2deg)`
+  } else chip.style.opacity = 0
+  const aq = quotes.find(q => q && t >= bt(q.bar) && t < bt(q.bar + 0.95))
+  if (aq) { const w = win(t, bt(aq.bar), bt(aq.bar + 0.95)); qb.style.opacity = w.i * (1 - w.o); qb.style.transform = `scale(${lerp(0.6, 1, eob(w.i, 1.6))}) rotate(${A ? 0 : -2}deg)` } else qb.style.opacity = 0
+  quotes.forEach(q => { if (!q) return; animWords(q.words, t, bt(q.bar) + 0.1, bt(q.bar + 0.95), 0.06); q.c.style.top = A ? '270px' : '262px' })
+  caps.forEach(c => animWords(c.words, t, bt(c.bar) + 0.05, bt(c.bar + 0.97)))
+
+  // hook
+  animWords(hook1.words, t, 0.05, bt(0, 3.8), BEAT * 0.9)
+  animWords(hook2.words, t, bt(1, 0), bt(2) - 0.05, BEAT * 0.55)
+  const hs = prog(t, bt(1, 2.6), 0.25), ho = prog(t, bt(2) - 0.2, 0.2)
+  hookSfx.style.opacity = hs * (1 - ho)
+  hookSfx.style.transform = `scale(${lerp(2.2, 1, eoc(hs))}) rotate(${A ? 10 : -12}deg) translate(${Math.sin(t * 60) * 6 * (1 - hs)}px,0)`
+  hookSfx.className = 'sticker ' + (A ? 'o' : '')
+
+  // phone
+  const cur = [...SHOTS].reverse().find(s => bar >= s[0])
+  const inP = prog(t, bt(1.5), 0.6), outP = prog(t, bt(END_BAR) - 0.1, 0.5)
+  const baseY = lerp(1500, 0, eob(inP, 1.2)) + lerp(0, 1600, eic(outP))
+  const kick = (si >= 1 && si <= 6) ? pulse * 6 : 0
+  const tilt = A ? 0 : (si % 2 ? -1.5 : 1.5)
+  phone.style.opacity = bar < 1.5 ? 0 : 1
+  phone.style.transform = `translateY(${baseY - kick}px) rotate(${tilt}deg) scale(${1 + pulse * 0.006})`
+  names.forEach(n => { imgs[n].style.opacity = 0 })
+  if (cur) {
+    const idx = SHOTS.indexOf(cur), prev = SHOTS[idx - 1], ct = bt(cur[0]), p = prog(t, ct, A ? 0.34 : 0.14)
+    const ci = imgs[cur[1]]; ci.style.opacity = 1
+    if (A) ci.style.transform = `translateX(${lerp(100, 0, eob(p, 1.4))}%)`
+    else ci.style.transform = `scale(${lerp(1.08, 1, eoc(p))})`
+    if (prev && p < 1 && prev[1] !== cur[1]) { const pi = imgs[prev[1]]; pi.style.opacity = A ? 1 : 1 - p; pi.style.transform = A ? `translateX(${lerp(0, -100, eoc(p))}%)` : 'none'; if (!A) pi.style.zIndex = 0; ci.style.zIndex = 1 }
+  }
+
+  // callouts
+  cos.forEach(c => {
+    const w = win(t, bt(c.at), bt(c.to), A ? 0.35 : 0.18, 0.18)
+    c.e.style.opacity = w.on ? w.i * (1 - w.o) : 0
+    const s = A ? lerp(0.3, 1, eob(w.i, 2)) : lerp(1.25, 1, eoc(w.i))
+    c.e.style.transform = `rotate(${c.rot + (A ? Math.sin(t * 4) * 0.8 : 0)}deg) scale(${s * (1 - w.o * 0.2)}) translateY(${-pulse * 4}px)`
+  })
+
+  // taps (screen coords → stage)
+  const pr = phone.getBoundingClientRect(), sr = stage.getBoundingClientRect()
+  taps.forEach(({ t: [b, sx, sy], e }) => {
+    const a = bt(b), p = prog(t, a, 0.45)
+    if (t < a || t > a + 0.45) { e.style.opacity = 0; return }
+    e.style.left = (pr.left - sr.left + 16 + sx * SCALE) + 'px'; e.style.top = (pr.top - sr.top + 16 + sy * SCALE) + 'px'
+    e.style.opacity = 1 - p; e.style.transform = `scale(${lerp(0.3, 1.5, eoc(p))})`
+  })
+
+  // stickers
+  sticks.forEach(s => {
+    const a = bt(s.bar), b = bt(Math.floor(s.bar) + 0.98), w = win(t, a, b, A ? 0.3 : 0.14, 0.15)
+    s.e.style.opacity = w.on ? w.i * (1 - w.o) : 0
+    const sc = A ? lerp(0.2, 1, eob(w.i, 3)) : lerp(2.4, 1, eoc(w.i))
+    s.e.style.transform = `rotate(${s.rot + (A ? Math.sin(t * 6) * 3 : 0)}deg) scale(${sc * (1 + pulse * 0.06)})`
+  })
+
+  // outro
+  const oi = prog(t, bt(END_BAR) + 0.15, 0.6)
+  logo.style.opacity = oi
+  logo.style.transform = A ? `scale(${lerp(0.5, 1, eob(oi, 1.8))})` : `scale(${lerp(1.3, 1, eoc(oi))}) rotate(${lerp(-6, 0, eoc(oi))}deg)`
+  if (A) confs.forEach(c => { const tt = t - bt(END_BAR); if (tt < 0) { c.e.style.opacity = 0; return } const x = 540 + Math.cos(c.a) * c.v * tt, y = 900 + Math.sin(c.a) * c.v * tt * 0.8 + 900 * tt * tt; c.e.style.opacity = clamp(2.6 - tt); c.e.style.transform = `translate(${x}px,${y}px) rotate(${tt * 300 * c.sp}deg)` })
+}
+window.DURATION = TIMING.bars * BAR + 2.5
+window.READY = true
+await document.fonts.ready
+render(0)
+})()
+</script>
+</body>
+</html>

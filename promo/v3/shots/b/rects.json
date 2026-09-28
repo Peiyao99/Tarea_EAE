@@ -1,0 +1,347 @@
+{
+ "home": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "library": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "tpl": {
+  "ws": [
+   12,
+   -283,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": null
+ },
+ "tpl-ws": {
+  "ws": [
+   12,
+   84,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": null
+ },
+ "auth": {
+  "ws": [
+   12,
+   84,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": [
+   16,
+   149,
+   358,
+   503
+  ]
+ },
+ "shape": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "gen-run": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "share": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": [
+   16,
+   157,
+   358,
+   486
+  ]
+ },
+ "gen-done": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "decide": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "source": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "diagnose": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "flat": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "qa": {
+  "ws": [
+   12,
+   120,
+   366,
+   485
+  ],
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "deliver": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "proof": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "proof-share": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "done-fan": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "me-fan": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "apply": {
+  "ws": null,
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": null
+ },
+ "me-pending": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "creator": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "plat": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "plat-done": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "launch": {
+  "ws": null,
+  "bar": [
+   0,
+   712,
+   390,
+   88
+  ],
+  "dialog": null
+ },
+ "done-launch": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "kit-list": {
+  "ws": null,
+  "bar": null,
+  "dialog": null
+ },
+ "kit": {
+  "ws": null,
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": null
+ },
+ "kit-recs": {
+  "ws": null,
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": null
+ },
+ "reserve": {
+  "ws": null,
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": [
+   0,
+   378,
+   390,
+   422
+  ]
+ },
+ "reserved": {
+  "ws": null,
+  "bar": [
+   0,
+   708,
+   390,
+   92
+  ],
+  "dialog": [
+   0,
+   538,
+   390,
+   262
+  ]
+ }
+}

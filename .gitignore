@@ -164,3 +164,6 @@ prototype-v3/node_modules/
 prototype-v3/dist/
 prototype-v3/bundle.html
 prototype-v3/.parcel-cache/
+promo/v3/out/pv-*
+promo/v3/out/*.wav
+promo/v3/out/*.mp4

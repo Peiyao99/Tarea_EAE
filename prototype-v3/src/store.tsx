@@ -99,8 +99,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const gate: Ctx['gate'] = (reason, run) => { if (user) run(); else setAuthAsk({ reason, run }) }
   const login = (name: string) => { setUser(name); const a = authAsk; setAuthAsk(null); a?.run() }
 
+  const ctxRef = useRef<Ctx | null>(null)
+  // Capture hook for the promo recorder: lets a script stage screens without clicking through.
+  if (typeof window !== 'undefined') (window as unknown as { __app?: () => Ctx | null }).__app = () => ctxRef.current
   return (
-    <C.Provider value={{
+    <C.Provider value={ctxRef.current = {
       screen, go, back, user, login, logout: () => setUser(null), gate, authAsk, closeAuth: () => setAuthAsk(null),
       flow, setFlow, undo, canUndo: undoStack.length > 0, startFlow, token, setToken,
       demo, setDemo: (k, v) => setDemoRaw(d => ({ ...d, [k]: v })),
