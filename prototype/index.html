@@ -239,6 +239,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .opt-list{display:flex;flex-direction:column;gap:8px}
 .opt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);text-align:left;width:100%;transition:border-color .2s,box-shadow .2s}
 .opt[aria-checked="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.opt .sw.tplthumb{background:var(--paper);display:grid;place-items:center;width:44px;height:48px;overflow:hidden}
 .opt .sw{width:34px;height:34px;border-radius:9px;flex:none;border:1px solid rgba(0,0,0,.06)}
 .opt b{display:block;font-size:14px;font-weight:500}
 .opt small{display:block;font-size:12px;color:var(--mute);margin-top:2px}
@@ -457,6 +458,158 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
 .toast{position:absolute;left:50%;bottom:92px;z-index:70;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:#fff;font-size:13px;padding:10px 16px;border-radius:12px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .25s,transform .35s var(--ease);pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+
+/* ---------- home: input modes & uploads ---------- */
+.modes{margin:0 -14px;padding:0 14px 2px}
+.modes .chip{height:34px}
+.prompt .row{flex-wrap:wrap}
+.btn[disabled]{opacity:.42;cursor:not-allowed}
+.btn[disabled]:active{transform:none}
+.sr{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
+.drop{display:flex;flex-direction:column;gap:10px}
+.dz{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:108px;padding:14px;border:1.5px dashed var(--line-3);border-radius:14px;background:var(--paper-2);text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.dz:hover,.dz.over{border-color:var(--rust);background:#FDF3EC}
+.dz b{font-size:14px;font-weight:500}
+.dz small{font-size:12px;color:var(--mute)}
+.dz .ic{width:36px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:4px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tile{position:relative;aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:var(--paper-2);overflow:hidden;display:grid;place-items:center}
+.tile img{width:100%;height:100%;object-fit:cover}
+.tile svg{width:86%;height:86%}
+.tile .x,.slot .x{position:absolute;top:4px;right:4px;z-index:2;width:24px;height:24px;border-radius:50%;border:0;background:rgba(28,27,25,.72);color:#fff;font-size:14px;line-height:1;display:grid;place-items:center}
+.tile .cap2{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;font-size:10px;background:rgba(251,249,245,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.filerow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2)}
+.filerow .ic3{width:42px;height:42px;border-radius:10px;background:var(--night);display:grid;place-items:center;flex:none}
+.filerow b{display:block;font-size:13.5px;font-weight:500;word-break:break-all}
+.filerow small{display:block;font-size:11.5px;color:var(--mute)}
+.filerow .x{position:static;margin-left:auto;background:#E9E3D8;color:var(--ink);flex:none}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.slot{position:relative;aspect-ratio:3/4;border:1.5px dashed var(--line-3);border-radius:12px;background:var(--paper-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--mute);cursor:pointer;overflow:hidden;transition:border-color .2s}
+.slot:hover{border-color:var(--rust)}
+.slot.filled{border-style:solid;border-color:var(--line);background:#fff}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.slot svg.th{position:absolute;inset:8% 6% 4%;width:88%;height:88%}
+.slot .lab2{position:absolute;left:6px;top:6px;z-index:1;font:500 10px var(--mono);color:var(--mute-2);background:rgba(251,249,245,.9);padding:1px 5px;border-radius:4px}
+.slot b{font-size:13px;color:var(--ink);font-weight:500}
+.reqs{margin:0;padding:10px 12px;list-style:none;border-radius:12px;background:#F6F1E9;display:flex;flex-direction:column;gap:5px}
+.reqs .hh{font-size:12px;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 10px;white-space:nowrap}
+.reqs .hh span{font-weight:400;color:var(--mute);font-family:var(--mono);font-size:11px}
+.reqs li{display:flex;gap:8px;font-size:12px;line-height:1.55;color:var(--ink-2)}
+.reqs li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--rust);flex:none;margin-top:7px}
+.errs{display:flex;flex-direction:column;gap:4px}
+.errs div{font-size:12px;line-height:1.5;color:var(--rust-d);background:#FDF1EA;border-radius:8px;padding:6px 10px}
+.linkbtn{border:0;background:none;padding:2px 0;color:var(--rust);font-size:13px;text-align:left;align-self:flex-start;text-decoration:underline;text-underline-offset:3px}
+.hint-miss{color:var(--rust-d)}
+
+/* ---------- workbench: projects ---------- */
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.seg.two .thumbv{width:calc((100% - 8px)/2)}
+.proj{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:12px;align-items:center;text-align:left;width:100%}
+.proj .th{width:64px;height:72px;border-radius:12px;background:var(--night);display:grid;place-items:center;overflow:hidden}
+.proj .th svg{width:56px;height:62px}
+.proj b{font-size:14.5px;font-weight:700}
+.proj .m{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.proj .bar i{background:var(--ink)}
+.proj .nx{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.proj .nx em{font-style:normal;color:var(--rust);font-weight:500}
+
+/* ---------- flow ---------- */
+.app.flow-on .tabbar{display:none}
+.flow-hdr{flex-direction:column;align-items:stretch;gap:10px}
+.flow-hdr .r1{display:flex;align-items:center;gap:10px}
+.rail{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-inline:-18px;padding-inline:18px}
+.rail::-webkit-scrollbar{display:none}
+.rail button{flex:none;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 5px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12px;color:var(--mute);transition:all .25s}
+.rail .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font:500 10.5px var(--mono);background:#E9E3D8;color:var(--mute)}
+.rail button.done{color:var(--ink-2)}
+.rail button.done .n{background:var(--teal);color:#fff}
+.rail button.shared{border-style:dashed}
+.rail button[aria-current="step"]{background:var(--ink);border-color:var(--ink);border-style:solid;color:#fff;font-weight:500}
+.rail button[aria-current="step"] .n{background:var(--rust);color:#fff}
+.rail button:disabled{opacity:.55;cursor:default}
+.rail .join{flex:none;align-self:center;font:500 9.5px var(--mono);color:var(--mute-2);padding:0 2px;letter-spacing:.06em}
+.stage{display:none;flex-direction:column;gap:14px;padding:14px 18px 0}
+.stage.on{display:flex;animation:fadeUp .35s var(--ease)}
+.stage > *{flex-shrink:0}
+.stage-h h1{margin:0;font-family:var(--serif);font-weight:900;font-size:22px;line-height:1.3}
+.stage-h p{margin:6px 0 0;font-size:13px;line-height:1.65;color:var(--mute)}
+.stage-h .eyebrow{margin-bottom:6px}
+.flowbar{margin-top:auto}
+.box3d{height:236px;padding-bottom:30px;border-radius:14px;background:var(--night);display:grid;place-items:center;position:relative;overflow:hidden}
+.box3d svg.m{height:184px;width:auto}
+.box3d .tag{position:absolute;left:12px;top:10px;font:500 10px var(--mono);color:var(--sand);letter-spacing:.08em}
+.box3d .tag2{position:absolute;right:12px;top:10px;font-size:11px;color:var(--sand)}
+.box3d .chips{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+.box3d .chips span{font-size:11px;padding:3px 8px;border-radius:999px;background:rgba(243,239,232,.14);color:var(--paper)}
+.sw-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;min-height:36px}
+.sw-row small{display:block;font-size:11.5px;color:var(--mute);margin-top:1px}
+.segopt{display:inline-grid;grid-auto-flow:column;gap:2px;padding:3px;border-radius:10px;background:#E9E3D8;flex:none}
+.segopt button{height:28px;padding:0 10px;border:0;border-radius:8px;background:transparent;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.segopt button[aria-checked="true"]{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.views3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px}
+.views3 figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center}
+.views3 .th{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--paper-2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
+.views3 .th img{width:100%;height:100%;object-fit:contain}
+.views3 .th svg{width:90%;height:90%}
+.views3 .th::before{content:"";position:absolute;left:0;right:0;top:var(--top-line,9%);border-top:1.5px dashed var(--teal-2);transition:top .3s}
+.views3 .th::after{content:"";position:absolute;left:0;right:0;bottom:6%;border-top:1.5px dashed #A16207}
+.views3 figcaption{font-size:12px;color:var(--mute);display:flex;gap:4px;align-items:center}
+.lines-legend{display:flex;gap:14px;font-size:11px;color:var(--mute);padding:0 12px 10px}
+.lines-legend i{display:inline-block;width:16px;border-top:1.5px dashed;vertical-align:middle;margin-right:5px}
+.diag{margin:0;padding:0 14px;list-style:none}
+.diag li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:13px;line-height:1.5}
+.diag li:last-child{border-bottom:0}
+.diag li svg{margin-top:3px}
+.diag small{display:block;color:var(--mute);font-size:12px;margin-top:1px}
+.diag .pill{margin-top:1px}
+.sumline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 14px 0}
+.modecards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.modecards button{text-align:left;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;gap:4px;transition:border-color .2s,box-shadow .2s}
+.modecards button[aria-checked="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.modecards b{font-size:14px;display:flex;align-items:center;gap:6px}
+.modecards small{font-size:12px;color:var(--mute);line-height:1.5}
+.tech{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tech button{padding:10px 8px;border-radius:12px;border:1px solid var(--line);background:var(--card);text-align:left;display:flex;flex-direction:column;gap:3px;transition:border-color .2s,box-shadow .2s}
+.tech button b{font-size:13px}
+.tech button small{font-size:11px;color:var(--mute);line-height:1.4}
+.tech button[aria-checked="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.detail-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.detail-row:last-child{border-bottom:0}
+.match{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--teal-bg)}
+.match b{font-size:14px}
+.match .pct{margin-left:auto;font:500 22px var(--mono);color:var(--teal)}
+.seam-list .sw-row{border-bottom:1px solid var(--line-2);padding:4px 0}
+.seam-list .sw-row:last-child{border-bottom:0}
+.seam-list .key{width:12px;height:0;border-top:2.5px dashed var(--rust);display:inline-block;margin-right:8px;vertical-align:middle}
+.seamview{height:250px;border-radius:12px;background:var(--paper-2);display:grid;place-items:center}
+.seamview svg{height:236px;width:auto}
+.seamview .sm{transition:opacity .3s,stroke .3s}
+.flatcv{position:relative;border-radius:12px;background:#FDFCFA;overflow:hidden}
+.flatcv svg{display:block;width:100%;height:auto}
+.fp{cursor:pointer}
+.fp .ring{fill:none;stroke:var(--rust);stroke-width:26;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+.fp.sel .ring{opacity:.22}
+.fp.sel .p-cut{stroke:var(--rust-d)}
+.marks{display:flex;gap:6px;flex-wrap:wrap}
+.marks button{display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:12.5px}
+.marks button:active{transform:scale(.97)}
+.marks button svg{flex:none}
+.prop{display:grid;grid-template-columns:1fr;gap:2px}
+.spec li{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;padding:4px 0}
+.spec li svg{flex:none;margin-top:3px}
+.spec{margin:0;padding:0;list-style:none}
+.upok{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--teal-bg);color:var(--teal);font-size:13px}
+.upok b{color:var(--ink);font-weight:500;word-break:break-all}
+.kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0}
+.kv div{padding:10px 10px;border-right:1px solid var(--line-2)}
+.kv div:last-child{border-right:0}
+.kv dt{font-size:10.5px;color:var(--mute)}
+.kv dd{margin:2px 0 0;font:500 13px var(--mono)}
+.inputsum{padding:14px;display:flex;flex-direction:column;gap:10px}
+.inputsum q{font-size:14px;line-height:1.65;quotes:none}
+
+.reqs li.hh::before{display:none}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -465,14 +618,16 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
   <aside class="intro" aria-label="原型说明">
     <div class="eyebrow">PLUSH PATTERN STUDIO · MOBILE</div>
     <h1>纸样工作台<br>手机端原型</h1>
-    <p>从草图到可缝制纸样的完整链路：AI 开版、三视图 QA、参数化模板、开版直通材料包与创作者主页。右侧手机里的控件均可操作。</p>
+    <p>五种输入各走自己的前置步骤，再汇入 3D 优化、缝线规划、平面纸样与对缝 QA 的统一流程。右侧手机里的控件均可操作。</p>
     <ol class="route" id="route">
-      <li><button type="button" data-go="home"><span class="k">01</span>首页 · 分层入口</button></li>
-      <li><button type="button" data-go="ai"><span class="k">02</span>AI 开版 · 决策确认</button></li>
-      <li><button type="button" data-go="qa"><span class="k">03</span>三视图 · 对缝 QA</button></li>
-      <li><button type="button" data-go="template"><span class="k">04</span>模板开版 · 参数联动</button></li>
-      <li><button type="button" data-go="kit"><span class="k">05</span>开版直通材料包</button></li>
-      <li><button type="button" data-go="creator"><span class="k">06</span>创作者主页</button></li>
+      <li><button type="button" data-go="home"><span class="k">01</span>首页 · 输入方式</button></li>
+      <li><button type="button" data-go="ai"><span class="k">02</span>文字 / 手绘 / 参考图 · AI 开版</button></li>
+      <li><button type="button" data-go="views"><span class="k">03</span>三视图 · 对齐与重建</button></li>
+      <li><button type="button" data-go="obj"><span class="k">04</span>3D 模型 · 来源与诊断</button></li>
+      <li><button type="button" data-go="template"><span class="k">05</span>模板开版 · 参数联动</button></li>
+      <li><button type="button" data-go="projects"><span class="k">06</span>开版项目</button></li>
+      <li><button type="button" data-go="kit"><span class="k">07</span>开版直通材料包</button></li>
+      <li><button type="button" data-go="creator"><span class="k">08</span>创作者主页</button></li>
     </ol>
     <small>价格、创作者数据与销量为演示样例值，用布量、填充量为估算，布料补偿系数待实测校准。</small>
   </aside>
@@ -500,21 +655,22 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
         </div>
 
         <div class="pad stack g16" style="padding-top:8px">
-          <form class="card prompt" id="promptForm">
-            <label for="prompt">描述你的角色，或上传参考</label>
-            <textarea id="prompt" rows="3">坐姿小恐龙，背部一排软刺，成品高度约 25cm，短毛绒，哥特可爱风</textarea>
-            <div class="hscroll" role="group" aria-label="输入方式" id="inputModes">
-              <button type="button" class="chip" aria-pressed="true">文字</button>
-              <button type="button" class="chip" aria-pressed="false">手绘稿</button>
-              <button type="button" class="chip" aria-pressed="false">参考图</button>
-              <button type="button" class="chip" aria-pressed="false">三视图</button>
-              <button type="button" class="chip" aria-pressed="false">OBJ 模型</button>
+          <form class="card prompt" id="promptForm" novalidate>
+            <div class="hscroll modes" role="tablist" aria-label="输入方式" id="inputModes">
+              <button type="button" class="chip" role="tab" aria-selected="true" data-mode="text">文字</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-mode="sketch">手绘稿</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-mode="ref">参考图</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-mode="views">三视图</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-mode="obj">OBJ 模型</button>
             </div>
+            <div id="uploadArea" class="drop" hidden></div>
+            <label for="prompt" id="promptLabel">描述你的角色</label>
+            <textarea id="prompt" rows="3" placeholder="例如：坐姿小恐龙，背部一排软刺，成品高度约 25cm，短毛绒">坐姿小恐龙，背部一排软刺，成品高度约 25cm，短毛绒，哥特可爱风</textarea>
             <div class="row">
-              <span class="est">预计消耗 <span class="num">40</span> token</span>
+              <span class="est" id="estText">预计消耗 <span class="num">40</span> token</span>
               <div class="grow"></div>
               <button type="submit" class="btn rust" id="genBtn">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 L9.6 6.4 L14.5 8 L9.6 9.6 L8 14.5 L6.4 9.6 L1.5 8 L6.4 6.4 Z"/></svg>生成纸样</button>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 L9.6 6.4 L14.5 8 L9.6 9.6 L8 14.5 L6.4 9.6 L1.5 8 L6.4 6.4 Z"/></svg><span id="genLabel">生成纸样</span></button>
             </div>
           </form>
 
@@ -547,9 +703,9 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
           </article>
           <article class="card lvl-card feature">
             <div class="top"><span class="lvl-tag l2">L2</span><h3>进阶 · 导入开版</h3><span class="pill ink" style="margin-left:auto">开版师常用</span></div>
-            <p>导入三视图或 OBJ，在曲面上标缝线，展开后自动校验。</p>
+            <p>上传三视图或 3D 模型，诊断、优化后在曲面上标缝线，展开后自动校验。</p>
             <ul><li>曲面上手动标记缝线与对位点</li><li>对缝长度 QA、吃势、应变报告</li><li>SVG / DXF / A4 PDF 导出</li></ul>
-            <div class="foot"><span>订阅解锁</span><button type="button" class="btn dark" data-go="qa">导入参考图</button></div>
+            <div class="foot"><span>订阅解锁</span><span style="display:flex;gap:6px"><button type="button" class="btn ghost" data-mode-go="obj">上传 OBJ</button><button type="button" class="btn dark" data-mode-go="views">上传三视图</button></span></div>
           </article>
           <article class="card lvl-card">
             <div class="top"><span class="lvl-tag l3">L3</span><h3>专业 · AI 全流程</h3></div>
@@ -578,11 +734,10 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
             <div class="hdr-title grow"><b id="projName">坐姿小熊 · 草稿</b><span id="projMeta">模板：坐姿熊 v2 · 自动保存于 11:42</span></div>
             <div class="token"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#B83C0A" stroke-width="1.6" aria-hidden="true"><path d="M7 1 L13 7 L7 13 L1 7 Z"/></svg><span class="num" data-token>1,240</span></div>
           </div>
-          <div class="seg" role="tablist" aria-label="开版方式" id="levelSeg">
+          <div class="seg two" role="tablist" aria-label="工作台" id="levelSeg">
             <span class="thumbv" aria-hidden="true"></span>
-            <button type="button" role="tab" aria-selected="true" data-level="l1">L1 模板</button>
-            <button type="button" role="tab" aria-selected="false" data-level="l2">L2 三视图</button>
-            <button type="button" role="tab" aria-selected="false" data-level="l3">L3 AI</button>
+            <button type="button" role="tab" aria-selected="true" data-level="l1">L1 模板开版</button>
+            <button type="button" role="tab" aria-selected="false" data-level="proj">开版项目</button>
           </div>
         </header>
 
@@ -632,8 +787,95 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
           </div>
         </div>
 
-        <!-- L2 -->
-        <div class="lvl" id="lvl-l2">
+        <!-- projects -->
+        <div class="lvl" id="lvl-proj"></div>
+      </section>
+
+      <!-- ================= FLOW: one patterning project, entry-specific stages then shared ones ================= -->
+      <section class="screen" id="s-flow" aria-label="开版流程">
+        <header class="hdr flow-hdr">
+          <div class="r1">
+            <button type="button" class="icon-btn" id="flowBack" aria-label="返回"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.7"><path d="M10 3 L5 8 L10 13"/></svg></button>
+            <div class="hdr-title grow"><b id="flowTitle">坐姿恐龙 · 开版</b><span id="flowMeta">来源：文字描述</span></div>
+            <div class="token"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#B83C0A" stroke-width="1.6" aria-hidden="true"><path d="M7 1 L13 7 L7 13 L1 7 Z"/></svg><span class="num" data-token>1,240</span></div>
+          </div>
+          <nav class="rail" id="flowRail" aria-label="开版阶段"></nav>
+        </header>
+
+        <div class="stage" data-stage="input" id="st-input"></div>
+        <div class="stage" data-stage="gen">
+          <div class="stage-h"><div class="eyebrow">AI · 形体生成</div><h1 id="genTitle">正在从描述生成 3D 形体</h1><p>生成完成后自动拆件，并把拿不准的开版决策交给你。</p></div>
+          <section class="card gen" id="genPanel" aria-live="polite">
+            <div class="gen-visual" aria-hidden="true">
+              <svg width="150" height="180" viewBox="0 0 200 240"><path id="genShape" d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C156 212 132 228 104 226 C74 224 54 200 54 170 C52 130 60 90 70 60 Z" fill="none" stroke="#D8CDBF" stroke-width="2" stroke-dasharray="6 5"/><path d="M78 56 L64 42 L84 44 Z M72 82 L56 72 L76 68 Z M66 110 L50 104 L66 94 Z" fill="#B83C0A" opacity=".85"/></svg>
+              <div class="scan"></div>
+            </div>
+            <div class="gen-step" data-g="0"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span><span id="genS0">解析描述与参考</span><small>25 cm · 短毛绒</small></div>
+            <div class="gen-step" data-g="1"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>生成 3D 形体<small>v1</small></div>
+            <div class="gen-step" data-g="2"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>自动拆件<small>13 片</small></div>
+            <div class="gen-step" data-g="3"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>决策置信度路由<small>27 项</small></div>
+          </section>
+        </div>
+        <div class="stage" data-stage="decide">
+          <div id="aiBody" class="stack g14">
+            <div class="ai-head">
+              <h1>27 项开版决策，<br>8 项需要你拍板</h1>
+              <p>19 项置信度 ≥ 0.85 已自动处理，可随时展开复核。</p>
+            </div>
+
+            <section class="card route-card" aria-label="决策路由">
+              <div class="rbar" aria-hidden="true"><i style="width:70.4%;background:var(--teal-2)"></i><i style="width:29.6%;background:var(--rust)"></i></div>
+              <div class="rlegend">
+                <div><i style="background:var(--teal-2)"></i>≥ 0.85 自动执行<b>19</b></div>
+                <div><i style="background:var(--rust)"></i>0.55–0.85 给出前两项，由你选<b>8</b></div>
+                <div><i style="background:var(--line-3)"></i>&lt; 0.55 回退模板 / 人工<b>0</b></div>
+              </div>
+            </section>
+
+            <section class="card ai-preview" aria-label="3D 形体">
+              <div class="box">
+                <svg viewBox="0 0 200 256" aria-label="3D 形体，高亮当前决策部位">
+                  <path class="hl" data-part="head" d="M48 72 C48 46 72 26 100 26 C128 26 152 46 152 72 C152 98 128 118 100 118 C72 118 48 98 48 72 Z" fill="#D8CDBF"/>
+                  <path class="hl" data-part="body2" d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#CBBFAE"/>
+                  <ellipse class="hl" data-part="chin" cx="100" cy="104" rx="24" ry="9" fill="#C4B7A4"/>
+                  <ellipse class="hl" data-part="legs" cx="70" cy="232" rx="26" ry="14" fill="#BFB19E"/>
+                  <ellipse class="hl" data-part="legs" cx="130" cy="232" rx="26" ry="14" fill="#BFB19E"/>
+                  <path class="hl" data-part="arms" d="M58 140 C40 150 36 172 48 178 L58 170 Z M142 140 C160 150 164 172 152 178 L142 170 Z" fill="#BFB19E"/>
+                  <path class="hl" data-part="spikes" d="M92 30 L100 12 L108 30 Z" fill="#8A7F72"/>
+                  <circle cx="80" cy="66" r="5" fill="#2B2A33"/><circle cx="120" cy="66" r="5" fill="#2B2A33"/>
+                  <path d="M100 26 V244" stroke="#FBE6DA" stroke-width="1.2" stroke-dasharray="4 3"/>
+                  <path class="hl-line" data-part="base" d="M22 250 H178" stroke="#8A7F72" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="meta">
+                <span>3D 形体 v1 · 高亮当前决策</span>
+                <b id="aiPartName">腿部结构</b>
+                <div class="progress-line"><span class="num" id="aiCount">0/8</span><span class="bar"><i id="aiBar" style="width:0%"></i></span></div>
+                <span>点选即确认，未点选的按推荐项处理</span>
+              </div>
+            </section>
+
+            <div class="hscroll" role="tablist" aria-label="筛选" id="aiFilter">
+              <button type="button" class="chip" role="tab" aria-selected="true" data-f="todo">待确认 8</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-f="auto">已自动 19</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-f="all">全部 27</button>
+            </div>
+
+            <div id="decList" class="stack g10"></div>
+            <ul class="card auto-list" id="autoList" hidden style="margin:0;list-style:none"></ul>
+
+            <p class="consent">你的选择会匿名用于改进自动拆件模型，可在设置中关闭。</p>
+          </div>
+        </div>
+        <div class="stage" data-stage="align" id="st-align"></div>
+        <div class="stage" data-stage="recon" id="st-recon"></div>
+        <div class="stage" data-stage="source" id="st-source"></div>
+        <div class="stage" data-stage="diagnose" id="st-diagnose"></div>
+        <div class="stage" data-stage="opt" id="st-opt"></div>
+        <div class="stage" data-stage="seam" id="st-seam"></div>
+        <div class="stage" data-stage="flat" id="st-flat"></div>
+        <div class="stage" data-stage="qa">
+          <div class="stage-h"><div class="eyebrow">QA · 对缝校验</div><h1>对缝 QA 与导出</h1><p>逐组核对对缝长度、吃势和展开应变，处理完再导出打印或发起材料包。</p></div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="tools" role="toolbar" aria-label="标注工具" id="tools">
               <button type="button" class="icon-btn" aria-label="选择" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 2 L13 8 L8.5 9 L6.5 14 Z"/></svg></button>
@@ -710,71 +952,9 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
           <div class="spacer"></div>
         </div>
 
-        <!-- L3 -->
-        <div class="lvl" id="lvl-l3">
-          <section class="card gen" id="genPanel" hidden aria-live="polite">
-            <div class="gen-visual" aria-hidden="true">
-              <svg width="150" height="180" viewBox="0 0 200 240"><path id="genShape" d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C156 212 132 228 104 226 C74 224 54 200 54 170 C52 130 60 90 70 60 Z" fill="none" stroke="#D8CDBF" stroke-width="2" stroke-dasharray="6 5"/><path d="M78 56 L64 42 L84 44 Z M72 82 L56 72 L76 68 Z M66 110 L50 104 L66 94 Z" fill="#B83C0A" opacity=".85"/></svg>
-              <div class="scan"></div>
-            </div>
-            <div class="gen-step" data-g="0"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>解析描述与参考<small>25 cm · 短毛绒</small></div>
-            <div class="gen-step" data-g="1"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>生成 3D 形体<small>v1</small></div>
-            <div class="gen-step" data-g="2"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>自动拆件<small>13 片</small></div>
-            <div class="gen-step" data-g="3"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>决策置信度路由<small>27 项</small></div>
-          </section>
-
-          <div id="aiBody" class="stack g14">
-            <div class="ai-head">
-              <h1>27 项开版决策，<br>8 项需要你拍板</h1>
-              <p>19 项置信度 ≥ 0.85 已自动处理，可随时展开复核。</p>
-            </div>
-
-            <section class="card route-card" aria-label="决策路由">
-              <div class="rbar" aria-hidden="true"><i style="width:70.4%;background:var(--teal-2)"></i><i style="width:29.6%;background:var(--rust)"></i></div>
-              <div class="rlegend">
-                <div><i style="background:var(--teal-2)"></i>≥ 0.85 自动执行<b>19</b></div>
-                <div><i style="background:var(--rust)"></i>0.55–0.85 给出前两项，由你选<b>8</b></div>
-                <div><i style="background:var(--line-3)"></i>&lt; 0.55 回退模板 / 人工<b>0</b></div>
-              </div>
-            </section>
-
-            <section class="card ai-preview" aria-label="3D 形体">
-              <div class="box">
-                <svg viewBox="0 0 200 256" aria-label="3D 形体，高亮当前决策部位">
-                  <path class="hl" data-part="head" d="M48 72 C48 46 72 26 100 26 C128 26 152 46 152 72 C152 98 128 118 100 118 C72 118 48 98 48 72 Z" fill="#D8CDBF"/>
-                  <path class="hl" data-part="body2" d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#CBBFAE"/>
-                  <ellipse class="hl" data-part="chin" cx="100" cy="104" rx="24" ry="9" fill="#C4B7A4"/>
-                  <ellipse class="hl" data-part="legs" cx="70" cy="232" rx="26" ry="14" fill="#BFB19E"/>
-                  <ellipse class="hl" data-part="legs" cx="130" cy="232" rx="26" ry="14" fill="#BFB19E"/>
-                  <path class="hl" data-part="arms" d="M58 140 C40 150 36 172 48 178 L58 170 Z M142 140 C160 150 164 172 152 178 L142 170 Z" fill="#BFB19E"/>
-                  <path class="hl" data-part="spikes" d="M92 30 L100 12 L108 30 Z" fill="#8A7F72"/>
-                  <circle cx="80" cy="66" r="5" fill="#2B2A33"/><circle cx="120" cy="66" r="5" fill="#2B2A33"/>
-                  <path d="M100 26 V244" stroke="#FBE6DA" stroke-width="1.2" stroke-dasharray="4 3"/>
-                  <path class="hl-line" data-part="base" d="M22 250 H178" stroke="#8A7F72" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="meta">
-                <span>3D 形体 v1 · 高亮当前决策</span>
-                <b id="aiPartName">腿部结构</b>
-                <div class="progress-line"><span class="num" id="aiCount">0/8</span><span class="bar"><i id="aiBar" style="width:0%"></i></span></div>
-                <span>点选即确认，未点选的按推荐项处理</span>
-              </div>
-            </section>
-
-            <div class="hscroll" role="tablist" aria-label="筛选" id="aiFilter">
-              <button type="button" class="chip" role="tab" aria-selected="true" data-f="todo">待确认 8</button>
-              <button type="button" class="chip" role="tab" aria-selected="false" data-f="auto">已自动 19</button>
-              <button type="button" class="chip" role="tab" aria-selected="false" data-f="all">全部 27</button>
-            </div>
-
-            <div id="decList" class="stack g10"></div>
-            <ul class="card auto-list" id="autoList" hidden style="margin:0;list-style:none"></ul>
-
-            <p class="consent">你的选择会匿名用于改进自动拆件模型，可在设置中关闭。</p>
-            <div class="actionbar" style="margin-inline:-18px">
-              <button type="button" class="btn rust lg block" id="aiConfirm">确认 8 项并生成纸样</button>
-            </div>
-          </div>
+        <div class="actionbar flowbar">
+          <button type="button" class="btn ghost" id="flowPrev">上一步</button>
+          <button type="button" class="btn dark" id="flowNext">下一步</button>
         </div>
       </section>
 
@@ -968,6 +1148,7 @@ function setTab(tab){
   state.tab = tab;
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + tab));
   $$('#tabbar button').forEach(b => { if (b.dataset.tab === tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  $('#app').classList.toggle('flow-on', tab === 'flow');
   syncRoute();
 }
 let compact = false;
@@ -989,27 +1170,26 @@ function setLevel(lv, scrollTop){
   state.level = lv;
   $$('#levelSeg button').forEach((b, i) => { const on = b.dataset.level === lv; b.setAttribute('aria-selected', on); if (on) $('#levelSeg .thumbv').style.transform = 'translateX(calc(' + i + ' * (100% + 2px)))'; });
   $$('.lvl').forEach(p => p.classList.toggle('on', p.id === 'lvl-' + lv));
-  const meta = { l1: ['坐姿小熊 · 草稿', '模板：坐姿熊 v2 · 自动保存于 11:42'], l2: ['坐姿恐龙 · 三视图开版', '进阶层 · 成品高度 25 cm · 版本 v3'], l3: ['AI 开版 · 坐姿恐龙', '参考图 1 张 · 文字描述'] }[lv];
-  $('#projName').textContent = meta[0]; $('#projMeta').textContent = meta[1];
+  if (lv === 'l1') l1Meta(); else { $('#projName').textContent = '开版项目'; $('#projMeta').textContent = PROJECTS.length + ' 个进行中 · 自动保存'; }
   if (scrollTop !== false) $('#s-work').scrollTo({ top: 0 });
   syncRoute();
 }
-const ROUTES = { home: ['home'], ai: ['work','l3'], qa: ['work','l2'], template: ['work','l1'], kit: ['kit'], creator: ['creator'] };
+const ROUTES = { home: ['home'], template: ['work','l1'], projects: ['work','proj'], kit: ['kit'], creator: ['creator'],
+  ai: () => startFlow('text', { sample: true }), views: () => startFlow('views', { sample: true }), obj: () => startFlow('obj', { sample: true }) };
 function go(key){
   const r = ROUTES[key]; if (!r) return;
   closeSheet();
+  if (typeof r === 'function') { r(); return; }
   setTab(r[0]); if (r[1]) setLevel(r[1]);
   const sc = $('#s-' + r[0]); if (sc && !r[1]) sc.scrollTo({ top: 0 });
 }
-function currentRoute(){ if (state.tab !== 'work') return state.tab; return { l1: 'template', l2: 'qa', l3: 'ai' }[state.level]; }
+function currentRoute(){ if (state.tab === 'flow') return flowKind(state.flow.mode) === 'ai' ? 'ai' : state.flow.mode; if (state.tab !== 'work') return state.tab; return state.level === 'l1' ? 'template' : 'projects'; }
 function syncRoute(){ const k = currentRoute(); $$('#route button').forEach(b => b.setAttribute('aria-current', b.dataset.go === k)); }
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); go(g.dataset.go); } });
 $$('#tabbar button').forEach(b => b.addEventListener('click', () => { setTab(b.dataset.tab); $('#s-' + b.dataset.tab).scrollTo({ top: 0, behavior: 'smooth' }); }));
 $$('#levelSeg button').forEach(b => b.addEventListener('click', () => setLevel(b.dataset.level)));
 
 /* ---------- home ---------- */
-$$('#inputModes .chip').forEach(c => c.addEventListener('click', () => { $$('#inputModes .chip').forEach(x => x.setAttribute('aria-pressed', x === c)); }));
-$('#promptForm').addEventListener('submit', e => { e.preventDefault(); go('ai'); runGeneration(); });
 
 /* ---------- L1: parametric template ---------- */
 const STEPS = ['模板','形状','布料','关节','打印','缝制顺序'];
@@ -1060,12 +1240,13 @@ const JOINTS = [
   { k: 'thread', n: '棉线关节', d: '可转动 · 需两个定位点', r: '★★☆' },
   { k: 'disc', n: '安全关节', d: '转动顺滑 · 需加装关节件', r: '★★★' }
 ];
-const TEMPLATES = [
-  { k: 'bear', n: '坐姿熊 v2', d: '18 片 · 入门' },
-  { k: 'cat', n: '坐姿猫', d: '16 片 · 入门' },
-  { k: 'bunny', n: '站姿兔', d: '20 片 · 进阶' },
-  { k: 'dino', n: '坐姿恐龙', d: '13 片 · 进阶' }
-];
+const TPL = {
+  bear: { n: '坐姿熊 v2', short: '坐姿小熊', pieces: 18, pairs: 12, lvl: '★★☆', snout: 1, legH: 112, tail: false, cloth: 1 },
+  cat: { n: '坐姿猫', short: '坐姿小猫', pieces: 16, pairs: 11, lvl: '★★☆', snout: .45, legH: 100, tail: true, cloth: .95, def: { e: 40, s: 8 } },
+  bunny: { n: '站姿兔', short: '站姿小兔', pieces: 20, pairs: 14, lvl: '★★★', snout: .5, legH: 150, tail: false, cloth: 1.1, def: { e: 44, l: 30 } },
+  dino: { n: '坐姿恐龙', short: '坐姿恐龙', pieces: 13, pairs: 9, lvl: '★★★', snout: 1.5, legH: 112, tail: true, cloth: 1.05, def: { s: 18 } }
+};
+const TEMPLATES = Object.keys(TPL).map(k => ({ k, n: TPL[k].n, d: TPL[k].pieces + ' 片 · ' + (TPL[k].lvl === '★★☆' ? '入门' : '进阶') + (TPL[k].tail ? ' · 含尾巴' : '') }));
 
 function optList(list, cur, attr, extra){
   return '<div class="opt-list" role="radiogroup">' + list.map(o => '<button type="button" class="opt" role="radio" aria-checked="' + (o.k === cur) + '" data-' + attr + '="' + o.k + '">' + (extra ? extra(o) : '') + '<span><b>' + o.n + '</b><small>' + o.d + '</small></span>' + (o.r || o.comp ? '<span class="r">' + (o.comp ? '补偿 ' + o.comp : o.r) + '</span>' : '') + '</button>').join('') + '</div>';
@@ -1073,7 +1254,7 @@ function optList(list, cur, attr, extra){
 function renderStepBody(){
   const b = $('#stepBody'); let h = '';
   if (state.step === 1) {
-    h = '<section class="card params"><div class="sec-h"><h2>选择模板</h2><span>按动物类型 / 姿态</span></div>' + optList(TEMPLATES, state.template, 'tpl') + '</section>';
+    h = '<section class="card params"><div class="sec-h"><h2>选择模板</h2><span>按动物类型 / 姿态</span></div>' + optList(TEMPLATES, state.template, 'tpl', o => '<span class="sw tplthumb">' + tplThumb(o.k) + '</span>') + '</section>';
   } else if (state.step === 2) {
     h = '<section class="card params" aria-label="形状参数"><div class="sec-h"><h2>形状参数</h2><span>纸样与 3D 同步更新</span></div>' +
       SLIDERS.map(s => s.g ? '<div class="grp">' + s.g + '</div>' :
@@ -1090,7 +1271,7 @@ function renderStepBody(){
       '</div><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span>缝份</span><div class="seg mini" role="tablist" aria-label="缝份" id="saSeg" style="grid-template-columns:repeat(2,auto)"><button type="button" role="tab" data-sa="5" aria-selected="' + (state.sa === 5) + '">5 mm</button><button type="button" role="tab" data-sa="7" aria-selected="' + (state.sa === 7) + '">7 mm</button></div></div></section>';
   } else {
     h = '<section class="card params"><div class="sec-h"><h2>缝制顺序</h2><span>随纸样一起打印</span></div><ol class="sew">' +
-      ['头侧片 A1 × 头中条 A2，对齐刻口', '耳 C1 两两正面相对缝合，翻面后夹入头部', '身体侧片 B1 × 腹片 B2，留填充口', '腿筒 D1 缝合，脚底 D2 按对位点缝入', '头身连接，四肢按「' + JOINTS.find(j => j.k === state.joint).n + '」固定', '填充至 ' + fillGrams() + ' g 左右，藏针缝收口']
+      ['头侧片 A1 × 头中条 A2，对齐刻口', ({ cat: '尖耳 C1', bunny: '长耳 C1', dino: '背刺 C1' }[state.template] || '耳 C1') + ' 两两正面相对缝合，翻面后夹入' + (state.template === 'dino' ? '后中缝' : '头部'), '身体侧片 B1 × 腹片 B2，留填充口', '腿筒 D1 缝合，脚底 D2 按对位点缝入', '头身连接，四肢按「' + JOINTS.find(j => j.k === state.joint).n + '」固定', '填充至 ' + fillGrams() + ' g 左右，藏针缝收口']
         .map((t, i) => '<li><span class="k">0' + (i + 1) + '</span>' + t + '</li>').join('') + '</ol></section>';
   }
   b.innerHTML = h;
@@ -1098,7 +1279,7 @@ function renderStepBody(){
   const sym = $('#p-sym'); if (sym) sym.addEventListener('change', () => { state.p.sym = sym.checked; updateModel(); toast(sym.checked ? '已恢复左右对称' : '已拆分左右，可分别调整'); });
   $$('#stepBody [data-fab]').forEach(o => o.addEventListener('click', () => { state.fabric = o.dataset.fab; renderStepBody(); updateModel(); }));
   $$('#stepBody [data-joint]').forEach(o => o.addEventListener('click', () => { state.joint = o.dataset.joint; renderStepBody(); updateModel(); }));
-  $$('#stepBody [data-tpl]').forEach(o => o.addEventListener('click', () => { state.template = o.dataset.tpl; renderStepBody(); if (o.dataset.tpl !== 'bear') toast('原型仅开放坐姿熊 v2 的参数'); }));
+  $$('#stepBody [data-tpl]').forEach(o => o.addEventListener('click', () => setTemplate(o.dataset.tpl)));
   $$('#stepBody [data-sa]').forEach(o => o.addEventListener('click', () => { state.sa = +o.dataset.sa; renderStepBody(); updateModel(); }));
 }
 function paintRange(inp){ const p = (inp.value - inp.min) / (inp.max - inp.min) * 100; inp.style.setProperty('--p', p + '%'); }
@@ -1110,18 +1291,23 @@ function piece(d, tx, ty, code, name, lx, ly){
   return '<g class="pc" transform="translate(' + tx + ',' + ty + ')"><path d="' + d + '" class="p-cut"/><path d="' + d + '" class="p-sa"/><path d="' + d + '" class="p-seam"/><text x="' + lx + '" y="' + ly + '" class="p-code">' + code + '</text><text x="' + lx + '" y="' + (ly + 22) + '" class="p-name">' + name + '</text></g>';
 }
 function renderPattern(){
-  const p = state.p;
-  const sx = 28 + (p.s - 12) * 1.3;
+  const p = state.p, T = TPL[state.template];
+  const sx = (28 + (p.s - 12) * 1.3) * T.snout;
   const head = 'M10 90 C10 40 50 10 100 12 C140 14 160 40 162 70 L' + (162 + sx) + ' 78 C' + (172 + sx) + ' 82 ' + (172 + sx) + ' 100 ' + (160 + sx) + ' 104 L150 110 C140 140 110 158 70 156 C35 154 10 130 10 90 Z';
-  const eh = 30 + p.e * 1.05, ew = 64;
-  const ear = 'M0 ' + eh + ' C0 ' + (eh * .45) + ' ' + (ew * .2) + ' 0 ' + (ew / 2) + ' 0 C' + (ew * .8) + ' 0 ' + ew + ' ' + (eh * .45) + ' ' + ew + ' ' + eh + ' Z';
-  const lw = Math.round(70 * p.l / 34);
-  const leg = 'M0 20 C0 8 10 0 22 0 L' + (lw - 22) + ' 0 C' + (lw - 10) + ' 0 ' + lw + ' 8 ' + lw + ' 20 L' + lw + ' 90 C' + lw + ' 105 ' + (lw - 10) + ' 112 ' + (lw - 22) + ' 112 L22 112 C10 112 0 105 0 90 Z';
+  const lw = Math.round(70 * p.l / 34), lh = T.legH;
+  const leg = 'M0 20 C0 8 10 0 22 0 L' + (lw - 22) + ' 0 C' + (lw - 10) + ' 0 ' + lw + ' 8 ' + lw + ' 20 L' + lw + ' ' + (lh - 22) + ' C' + lw + ' ' + (lh - 7) + ' ' + (lw - 10) + ' ' + lh + ' ' + (lw - 22) + ' ' + lh + ' L22 ' + lh + ' C10 ' + lh + ' 0 ' + (lh - 7) + ' 0 ' + (lh - 22) + ' Z';
   const sw2 = Math.round(80 * p.l / 34);
   const sole = 'M0 25 C0 10 ' + (sw2 * .22) + ' 0 ' + (sw2 / 2) + ' 0 C' + (sw2 * .78) + ' 0 ' + sw2 + ' 10 ' + sw2 + ' 25 C' + sw2 + ' 40 ' + (sw2 * .78) + ' 50 ' + (sw2 / 2) + ' 50 C' + (sw2 * .22) + ' 50 0 40 0 25 Z';
   const bs = 0.9 + (p.r - 45) * 0.003;
   const body = 'M30 0 C80 -4 120 20 130 70 C140 120 130 170 100 200 L20 205 C6 170 0 120 4 70 C8 30 14 4 30 0 Z';
   const belly = 'M60 0 C100 0 120 40 120 90 C120 150 95 190 60 190 C25 190 0 150 0 90 C0 40 20 0 60 0 Z';
+  // ear-type piece differs per template
+  let ear, eh, ew = 64, earName;
+  if (state.template === 'cat') { eh = 30 + p.e * 0.9; ear = 'M0 ' + eh + ' C' + (ew * .15) + ' ' + (eh * .55) + ' ' + (ew * .38) + ' 0 ' + (ew / 2) + ' 0 C' + (ew * .62) + ' 0 ' + (ew * .85) + ' ' + (eh * .55) + ' ' + ew + ' ' + eh + ' Z'; earName = '尖耳 ×4'; }
+  else if (state.template === 'bunny') { eh = 60 + p.e * 1.6; ew = 52; ear = 'M0 ' + eh + ' C0 ' + (eh * .3) + ' ' + (ew * .15) + ' 0 ' + (ew / 2) + ' 0 C' + (ew * .85) + ' 0 ' + ew + ' ' + (eh * .3) + ' ' + ew + ' ' + eh + ' Z'; earName = '长耳 ×4'; }
+  else if (state.template === 'dino') { const hs = 18 + p.e * 0.5; eh = hs + 6; ew = 96; ear = 'M0 ' + eh + ' L16 ' + (eh - hs) + ' L32 ' + eh + ' Z M32 ' + eh + ' L48 ' + (eh - hs * .85) + ' L64 ' + eh + ' Z M64 ' + eh + ' L80 ' + (eh - hs * .7) + ' L96 ' + eh + ' Z'; earName = '背刺 ×2'; }
+  else { eh = 30 + p.e * 1.05; ear = 'M0 ' + eh + ' C0 ' + (eh * .45) + ' ' + (ew * .2) + ' 0 ' + (ew / 2) + ' 0 C' + (ew * .8) + ' 0 ' + ew + ' ' + (eh * .45) + ' ' + ew + ' ' + eh + ' Z'; earName = '耳 ×4'; }
+  const tail = T.tail ? piece('M0 30 C30 4 90 0 130 20 C110 36 70 44 30 52 C12 56 2 46 0 30 Z', 150, 526, 'F1', '尾巴 ×2', 142, 30) : '';
   const n = pageCount(); let cols = Math.ceil(Math.sqrt(n * 748 / 610)), rows = Math.ceil(n / cols);
   let grid = '';
   for (let c = 1; c < cols; c++) grid += 'M' + (748 / cols * c) + ' 0 V610 ';
@@ -1129,67 +1315,140 @@ function renderPattern(){
   let labels = ''; let i = 0;
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { if (++i > n) break; labels += '<text x="' + (748 / cols * c + 8) + '" y="' + (610 / rows * r + 20) + '">P' + i + '</text>'; }
   const mirror = p.sym ? '×2 镜像' : '左 / 右';
-  $('#patWrap').innerHTML = '<svg viewBox="-10 -10 768 630" preserveAspectRatio="xMidYMid meet" aria-label="纸样排版">' +
+  const earY = Math.max(250, 470 - eh);
+  $('#patWrap').innerHTML = '<svg viewBox="-10 -10 768 630" preserveAspectRatio="xMidYMid meet" aria-label="' + T.n + ' 纸样排版">' +
     '<g stroke="#D9D2C5" stroke-width="1.5" stroke-dasharray="3 6" fill="none"><path d="' + grid + '"/></g>' +
     '<g font-family="JetBrains Mono, monospace" font-size="15" fill="#A39D92">' + labels + '</g>' +
     piece(head, 24, 30, 'A1', '头侧片 ' + mirror, 38, 78) +
     piece('M20 0 C34 30 36 90 30 160 C28 190 22 210 20 220 C18 210 12 190 10 160 C4 90 6 30 20 0 Z', 262 + Math.max(0, sx - 28), 24, 'A2', '头中条', -6, 250) +
     '<g transform="translate(' + (352 + Math.max(0, sx - 28)) + ',40) scale(' + bs.toFixed(3) + ')">' + piece(body, 0, 0, 'B1', '身体侧片', 36, 104) + '</g>' +
     piece(belly, 560, 46, 'B2', '腹片', 34, 96) +
-    piece(ear, 30, 470 - eh, 'C1', '耳 ×4', -4, eh + 28) +
-    piece(leg, 150, 340, 'D1', '腿筒 ×2', -2, 140) +
+    piece(ear, 30, earY, 'C1', earName, -4, eh + 28) +
+    piece(leg, 150, 340, 'D1', '腿筒 ×2', -2, lh + 28) +
     piece(sole, 180 + lw, 370, 'D2', '脚底', 0, 78) +
     piece('M0 16 C0 6 8 0 18 0 L40 0 C50 0 58 6 58 16 L58 110 C58 122 50 128 40 128 L18 128 C8 128 0 122 0 110 Z', 330 + Math.max(lw, sw2) - 60, 340, 'E1', '手臂 ×4', -6, 156) +
+    tail +
     '<g transform="translate(560,380)" font-size="15" fill="#3F3C36"><rect x="0" y="0" width="180" height="150" rx="10" fill="#FBF9F5" stroke="#E2DCD1"/><text x="14" y="26" font-weight="700" fill="#1C1B19">图例</text><path d="M14 50 H44" stroke="#1C1B19" stroke-width="2"/><text x="54" y="55">裁剪线</text><path d="M14 78 H44" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 4"/><text x="54" y="83">净线</text><path d="M14 106 H44 M38 101 L44 106 L38 111" stroke="#1C1B19" stroke-width="1.4" fill="none"/><text x="54" y="111">毛向</text><rect x="14" y="124" width="14" height="14" fill="none" stroke="#1C1B19" stroke-width="1.4"/><text x="54" y="136">校准 5cm</text></g>' +
     '</svg>';
 }
+
+/* one drawing per template, ground line at y=242, not scaled */
+function animalSVG(t, p, f, opts){
+  opts = opts || {};
+  const fuzz = opts.fuzz ? ' stroke="' + f[2] + '" stroke-width="3" stroke-dasharray="1 3"' : '';
+  const asym = p.sym === false ? 4 : 0;
+  const eye = (x, y, r) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="#2B2A33"/>';
+  const seam = (d) => opts.noSeam ? '' : '<path d="' + d + '" fill="none" stroke="#B83C0A" stroke-width="1.4" stroke-dasharray="4 3"/>';
+  const lrx = 12 + p.l * 0.32;
+  if (t === 'cat') {
+    const hr = 44 + (p.r - 45) * 0.14, hy = 118 - hr - 4, eh = 14 + p.e * 0.35;
+    const ear = (s) => { const bx1 = 100 + s * hr * .92, bx2 = 100 + s * hr * .22, ay = hy - hr * .5; return '<path d="M' + bx1 + ' ' + (ay + 10) + ' L' + (100 + s * hr * .72) + ' ' + (ay - eh) + ' L' + bx2 + ' ' + (ay - 6) + ' Z" fill="' + f[2] + '"' + fuzz + '/><path d="M' + (100 + s * hr * .78) + ' ' + (ay + 4) + ' L' + (100 + s * hr * .7) + ' ' + (ay - eh * .6) + ' L' + (100 + s * hr * .42) + ' ' + (ay - 2) + ' Z" fill="#E9C9C0"/>'; };
+    return '<path d="M150 222 C196 214 204 170 186 140" fill="none" stroke="' + f[2] + '" stroke-width="15" stroke-linecap="round"/>' +
+      '<ellipse cx="100" cy="170" rx="56" ry="58" fill="' + f[1] + '"' + fuzz + '/>' +
+      '<ellipse cx="80" cy="228" rx="' + (lrx * .8) + '" ry="' + (lrx * .42) + '" fill="' + f[2] + '"/><ellipse cx="120" cy="228" rx="' + (lrx * .8) + '" ry="' + (lrx * .42) + '" fill="' + f[2] + '"/>' +
+      ear(-1) + ear(1) +
+      '<circle cx="100" cy="' + (hy + asym) + '" r="' + hr + '" fill="' + f[0] + '"' + fuzz + '/>' +
+      '<ellipse cx="100" cy="' + (hy + hr * .4) + '" rx="' + (10 + p.s * .3) + '" ry="' + (7 + p.s * .1) + '" fill="' + f[1] + '"/>' +
+      '<path d="M96 ' + (hy + hr * .28) + ' H104 L100 ' + (hy + hr * .35) + ' Z" fill="#C98B84"/>' +
+      '<ellipse cx="' + (100 - hr * .36) + '" cy="' + (hy - hr * .02) + '" rx="3.6" ry="5.4" fill="#2B2A33"/><ellipse cx="' + (100 + hr * .36) + '" cy="' + (hy - hr * .02) + '" rx="3.6" ry="5.4" fill="#2B2A33"/>' +
+      '<g stroke="#8A8479" stroke-width="1"><path d="M' + (100 - hr * .3) + ' ' + (hy + hr * .4) + ' H' + (100 - hr * .9) + ' M' + (100 + hr * .3) + ' ' + (hy + hr * .4) + ' H' + (100 + hr * .9) + '"/></g>' +
+      seam('M100 ' + (hy - hr) + ' C103 ' + (hy - hr / 2) + ' 103 ' + (hy + hr / 2) + ' 100 ' + (hy + hr)) +
+      seam('M46 162 C62 146 138 146 154 162');
+  }
+  if (t === 'bunny') {
+    const hr = 38 + (p.r - 45) * 0.12, hy = 104 - hr, el = 30 + p.e * 0.9;
+    const ear = (s) => '<ellipse cx="' + (100 + s * 15) + '" cy="' + (hy - hr - el / 2 + 12) + '" rx="10" ry="' + (el / 2) + '" fill="' + f[2] + '"' + fuzz + ' transform="rotate(' + (s * 8) + ' ' + (100 + s * 15) + ' ' + (hy - hr + 10) + ')"/><ellipse cx="' + (100 + s * 15) + '" cy="' + (hy - hr - el / 2 + 14) + '" rx="4.5" ry="' + (el / 2 - 6) + '" fill="#E9C9C0" transform="rotate(' + (s * 8) + ' ' + (100 + s * 15) + ' ' + (hy - hr + 10) + ')"/>';
+    return ear(-1) + ear(1) +
+      '<ellipse cx="100" cy="168" rx="44" ry="54" fill="' + f[1] + '"' + fuzz + '/>' +
+      '<ellipse cx="62" cy="160" rx="10" ry="22" fill="' + f[2] + '" transform="rotate(14 62 160)"/><ellipse cx="138" cy="160" rx="10" ry="22" fill="' + f[2] + '" transform="rotate(-14 138 160)"/>' +
+      '<ellipse cx="82" cy="236" rx="' + (lrx * .9) + '" ry="8" fill="' + f[2] + '"/><ellipse cx="118" cy="236" rx="' + (lrx * .9) + '" ry="8" fill="' + f[2] + '"/>' +
+      '<circle cx="100" cy="' + (hy + asym) + '" r="' + hr + '" fill="' + f[0] + '"' + fuzz + '/>' +
+      '<ellipse cx="100" cy="' + (hy + hr * .42) + '" rx="' + (8 + p.s * .25) + '" ry="' + (6 + p.s * .1) + '" fill="' + f[1] + '"/><ellipse cx="100" cy="' + (hy + hr * .32) + '" rx="3.6" ry="2.6" fill="#C98B84"/>' +
+      eye(100 - hr * .36, hy - hr * .05, 3.8) + eye(100 + hr * .36, hy - hr * .05, 3.8) +
+      seam('M100 ' + (hy - hr) + ' C103 ' + (hy - hr / 2) + ' 103 ' + (hy + hr / 2) + ' 100 ' + (hy + hr)) +
+      seam('M58 150 C72 136 128 136 142 150');
+  }
+  if (t === 'dino') {
+    const hr = 42 + (p.r - 45) * 0.12, hy = 112 - hr, sz = 7 + p.e * 0.2;
+    const spk = (x, y, s) => '<path d="M' + (x - s * .6) + ' ' + y + ' L' + x + ' ' + (y - s) + ' L' + (x + s * .6) + ' ' + y + ' Z" fill="#B83C0A"/>';
+    return '<path d="M62 206 C40 214 22 226 8 238 C28 244 54 236 76 224 Z" fill="' + f[2] + '"/>' +
+      '<path d="M56 116 C38 156 38 206 60 228 C80 246 120 246 140 228 C162 206 162 156 144 116 Z" fill="' + f[1] + '"' + fuzz + '/>' +
+      '<ellipse cx="100" cy="186" rx="30" ry="36" fill="' + f[0] + '" opacity=".75"/>' +
+      '<path d="M58 146 C42 156 40 176 50 180 L60 170 Z M142 146 C158 156 160 176 150 180 L140 170 Z" fill="' + f[2] + '"/>' +
+      '<ellipse cx="72" cy="232" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/><ellipse cx="128" cy="232" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/>' +
+      spk(88, hy - hr * .82, sz * .8) + spk(100, hy - hr * .92, sz) + spk(112, hy - hr * .82, sz * .8) +
+      '<ellipse cx="100" cy="' + (hy + asym) + '" rx="' + (hr * 1.02) + '" ry="' + (hr * .9) + '" fill="' + f[0] + '"' + fuzz + '/>' +
+      '<ellipse cx="100" cy="' + (hy + hr * .42) + '" rx="' + (16 + p.s * .6) + '" ry="' + (10 + p.s * .22) + '" fill="' + f[1] + '"/>' +
+      '<circle cx="' + (94 - p.s * .2) + '" cy="' + (hy + hr * .38) + '" r="1.8" fill="#2B2A33"/><circle cx="' + (106 + p.s * .2) + '" cy="' + (hy + hr * .38) + '" r="1.8" fill="#2B2A33"/>' +
+      eye(100 - hr * .4, hy - hr * .12, 4.4) + eye(100 + hr * .4, hy - hr * .12, 4.4) +
+      seam('M100 ' + (hy - hr * .9) + ' C103 ' + (hy - hr / 2) + ' 103 ' + (hy + hr / 2) + ' 100 ' + (hy + hr * .9)) +
+      seam('M50 150 C66 134 134 134 150 150');
+  }
+  // bear
+  const hr = 46 + (p.r - 45) * 0.14, er = 10 + p.e * 0.26, srx = 13 + p.s * 0.55, sry = 9 + p.s * 0.18;
+  const hy = 118 - hr - 4;
+  const joint = opts.joint && opts.joint !== 'sewn' ? '<g fill="none" stroke="#B83C0A" stroke-width="1.6"><circle cx="68" cy="176" r="5"/><circle cx="132" cy="176" r="5"/></g>' : '';
+  return '<circle cx="' + (100 - hr * .78) + '" cy="' + (hy - hr * .72 + asym) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/><circle cx="' + (100 + hr * .78) + '" cy="' + (hy - hr * .72) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/>' +
+    '<ellipse cx="100" cy="168" rx="62" ry="58" fill="' + f[1] + '"' + fuzz + '/>' +
+    '<ellipse cx="42" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(20 42 168)"/><ellipse cx="158" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(-20 158 168)"/>' +
+    '<circle cx="100" cy="' + hy + '" r="' + hr + '" fill="' + f[0] + '"' + fuzz + '/>' +
+    '<ellipse cx="100" cy="' + (hy + hr * .38) + '" rx="' + srx + '" ry="' + sry + '" fill="' + f[2] + '"/><ellipse cx="100" cy="' + (hy + hr * .3) + '" rx="5" ry="3.5" fill="#2B2A33"/>' +
+    '<ellipse cx="70" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/><ellipse cx="130" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/>' +
+    seam('M100 ' + (hy - hr) + ' C104 ' + (hy - hr / 2) + ' 104 ' + (hy + hr / 2) + ' 100 ' + (hy + hr)) +
+    seam('M44 160 C60 142 140 142 156 160') +
+    eye(100 - hr * .34, hy - hr * .08, 4.2) + eye(100 + hr * .34, hy - hr * .08, 4.2) + joint;
+}
+const DEF_P = { h: 22, r: 45, e: 38, s: 12, l: 34, sym: true };
+function tplThumb(k){ return '<svg viewBox="-4 -40 208 290" width="40" height="46" aria-hidden="true">' + animalSVG(k, DEF_P, FABRICS[0].c, { noSeam: true }) + '</svg>'; }
 function renderBear(){
   const p = state.p, f = FABRICS.find(x => x.k === state.fabric).c;
   const k = 0.62 + (p.h - 10) / 30 * 0.42;
-  const hr = 46 + (p.r - 45) * 0.14, er = 10 + p.e * 0.26, srx = 13 + p.s * 0.55, sry = 9 + p.s * 0.18, lrx = 12 + p.l * 0.32;
-  const hy = 118 - hr - 4;
-  const asym = p.sym ? 0 : 4;
-  const joint = state.joint === 'sewn' ? '' : '<g fill="none" stroke="#B83C0A" stroke-width="1.6"><circle cx="68" cy="176" r="5"/><circle cx="132" cy="176" r="5"/></g>';
-  const fuzz = state.fabric === 'long' ? ' stroke="' + f[2] + '" stroke-width="3" stroke-dasharray="1 3"' : '';
-  $('#bearWrap').innerHTML = '<svg viewBox="-8 -6 240 262" preserveAspectRatio="xMidYMid meet" aria-label="填充后预览">' +
+  $('#bearWrap').innerHTML = '<svg viewBox="-8 -40 240 296" preserveAspectRatio="xMidYMid meet" aria-label="' + TPL[state.template].n + ' 填充后预览">' +
     '<g stroke="#C9C1B3" stroke-width="1" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A8479"><path d="M214 242 V' + (242 - 222 * k).toFixed(1) + '" /><path d="M209 242 H219 M209 ' + (242 - 222 * k).toFixed(1) + ' H219"/><text x="190" y="' + (236 - 222 * k).toFixed(1) + '" stroke="none">' + p.h + ' cm</text></g>' +
     '<ellipse cx="100" cy="244" rx="' + (70 * k) + '" ry="6" fill="#000" opacity=".07"/>' +
     '<g transform="translate(100 242) scale(' + k.toFixed(3) + ') translate(-100 -242)">' +
-    '<circle cx="' + (100 - hr * .78) + '" cy="' + (hy - hr * .72 + asym) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/><circle cx="' + (100 + hr * .78) + '" cy="' + (hy - hr * .72) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/>' +
-    '<ellipse cx="100" cy="168" rx="62" ry="58" fill="' + f[1] + '"' + fuzz + '/>' +
-    '<ellipse cx="' + (100 - 58) + '" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(20 42 168)"/><ellipse cx="158" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(-20 158 168)"/>' +
-    '<circle cx="100" cy="' + hy + '" r="' + hr + '" fill="' + f[0] + '"' + fuzz + '/>' +
-    '<ellipse cx="100" cy="' + (hy + hr * .38) + '" rx="' + srx + '" ry="' + sry + '" fill="' + f[2] + '"/><ellipse cx="100" cy="' + (hy + hr * .3) + '" rx="5" ry="3.5" fill="#2B2A33"/>' +
-    '<ellipse cx="' + (100 - 30) + '" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/><ellipse cx="' + (100 + 30) + '" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/>' +
-    '<path d="M100 ' + (hy - hr) + ' C104 ' + (hy - hr / 2) + ' 104 ' + (hy + hr / 2) + ' 100 ' + (hy + hr) + '" fill="none" stroke="#B83C0A" stroke-width="1.4" stroke-dasharray="4 3"/>' +
-    '<path d="M44 160 C60 142 140 142 156 160" fill="none" stroke="#B83C0A" stroke-width="1.4" stroke-dasharray="4 3"/>' +
-    '<circle cx="' + (100 - hr * .34) + '" cy="' + (hy - hr * .08) + '" r="4.2" fill="#2B2A33"/><circle cx="' + (100 + hr * .34) + '" cy="' + (hy - hr * .08) + '" r="4.2" fill="#2B2A33"/>' +
-    joint + '</g></svg>';
+    animalSVG(state.template, p, f, { fuzz: state.fabric === 'long', joint: state.joint }) + '</g></svg>';
 }
 function renderChecks(){
-  const p = state.p;
-  const narrow = Math.round(18 * p.h / 22), ease = Math.round(p.s / 3), ear = Math.round((30 + p.e * 1.05) / 70 * 38);
+  const p = state.p, t = state.template;
+  const narrow = Math.round(18 * p.h / 22), ease = Math.round(p.s * TPL[t].snout / 3);
   const ok = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0F6E6A" stroke-width="2"><path d="M2.5 7.4 L5.6 10.2 L11.5 3.8"/></svg>';
   const warn = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#B83C0A" stroke-width="1.8"><path d="M8 1.5 L15 14 H1 Z M8 6 V9.5 M8 11.5 V12"/></svg>';
+  let earRow;
+  if (t === 'bunny') { const mm = Math.round(60 + p.e * 1.6); earRow = p.e <= 55 ? [true, '长耳 ' + mm + ' mm，加一层衬布即可立住'] : [false, '长耳 ' + mm + ' mm 偏软，需衬布加定型棉或铁丝']; }
+  else if (t === 'dino') { const mm = Math.round(18 + p.e * .5); earRow = p.e <= 70 ? [true, '背刺高 ' + mm + ' mm，嵌入后中缝后能立住'] : [false, '背刺高 ' + mm + ' mm，需要内填硬棉']; }
+  else { const mm = Math.round((30 + p.e * (t === 'cat' ? .9 : 1.05)) / 70 * 38); earRow = p.e <= 72 ? [true, (t === 'cat' ? '尖耳' : '耳朵') + '高度 ' + mm + ' mm，填充后能立住'] : [false, (t === 'cat' ? '尖耳' : '耳朵') + '高度 ' + mm + ' mm，需加衬或铁丝支撑']; }
+  const pairs = TPL[t].pairs + (p.sym ? 0 : 2);
   const rows = [
-    [true, '对缝长度 ' + (p.sym ? 12 : 14) + ' / ' + (p.sym ? 12 : 14) + ' 组一致'],
+    [true, '对缝长度 ' + pairs + ' / ' + pairs + ' 组一致'],
     narrow >= 14 ? [true, '最窄裁片 ' + narrow + ' mm，可翻面'] : [false, '最窄裁片 ' + narrow + ' mm，翻面困难，建议加宽头中条'],
     ease <= 8 ? [true, '下巴吃势 ' + ease + ' mm，已标注对位点'] : [false, '下巴吃势 ' + ease + ' mm 偏大，建议吻部独立成片'],
-    p.e <= 72 ? [true, '耳朵高度 ' + ear + ' mm，填充后能立住'] : [false, '耳朵高度 ' + ear + ' mm，需加衬或铁丝支撑']
+    earRow
   ];
+  if (TPL[t].tail) rows.push([true, '尾巴独立成片，缝在后中缝下端对位点']);
   $('#checks').innerHTML = rows.map(r => '<div class="ck' + (r[0] ? '' : ' warn') + '">' + (r[0] ? ok : warn) + '<span>' + r[1] + '</span></div>').join('');
   const warns = rows.filter(r => !r[0]).length;
-  $('#stLevel').textContent = warns ? '★★★' : (state.joint === 'sewn' ? '★★☆' : '★★★');
+  $('#stLevel').textContent = warns ? '★★★' : TPL[t].lvl;
 }
 function updateModel(){
   const p = state.p;
   renderPattern(); renderBear(); renderChecks();
-  const pieces = (p.sym ? 18 : 20);
-  $('#stPieces').textContent = pieces + ' 片';
-  $('#stFabric').textContent = '≈' + (0.35 * Math.pow(p.h / 22, 2) * fabricM()).toFixed(2) + ' m';
+  $('#stPieces').textContent = (TPL[state.template].pieces + (p.sym ? 0 : 2)) + ' 片';
+  $('#stFabric').textContent = '≈' + (0.35 * TPL[state.template].cloth * Math.pow(p.h / 22, 2) * fabricM()).toFixed(2) + ' m';
   $('#stFill').textContent = '≈' + fillGrams() + ' g';
   $('#pageInfo').textContent = 'A4 × ' + pageCount() + ' 页 · 缝份 ' + state.sa + ' mm';
 }
+function setTemplate(k){
+  if (state.template === k) return;
+  state.template = k;
+  const T = TPL[k];
+  state.p = Object.assign({}, DEF_P, T.def || {});
+  $('#canvasStage').style.opacity = '.3';
+  setTimeout(() => { $('#canvasStage').style.opacity = ''; }, 180);
+  renderStepBody(); updateModel(); l1Meta();
+  toast('已切换到「' + T.n + '」模板 · ' + T.pieces + ' 片');
+}
+function l1Meta(){ if (state.level !== 'l1') return; $('#projName').textContent = TPL[state.template].short + ' · 草稿'; $('#projMeta').textContent = '模板：' + TPL[state.template].n + ' · 自动保存于 11:42'; }
 $$('#viewSeg button').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; $$('#viewSeg button').forEach(x => x.setAttribute('aria-selected', x === b)); $('#canvasStage').dataset.view = state.view; }));
 
 /* ---------- L2: three views + QA ---------- */
@@ -1290,31 +1549,20 @@ function highlight(){
   const bl = $('.ai-preview [data-part="base"]'); bl.setAttribute('stroke', d.part === 'base' ? '#F3A27A' : '#8A7F72'); bl.setAttribute('stroke-width', d.part === 'base' ? 4 : 2);
 }
 $$('#aiFilter .chip').forEach(c => c.addEventListener('click', () => { state.ai.filter = c.dataset.f; $$('#aiFilter .chip').forEach(x => x.setAttribute('aria-selected', x === c)); renderDecisions(); }));
-$('#aiConfirm').addEventListener('click', () => {
-  const b = $('#aiConfirm'); if (b.disabled) return;
-  b.disabled = true; b.innerHTML = '<span style="width:16px;height:16px;border-radius:50%;border:2px solid #fff;border-top-color:transparent;animation:spin .8s linear infinite"></span>正在展开纸样…';
-  setTimeout(() => {
-    b.disabled = false; b.textContent = '确认 8 项并生成纸样';
-    setToken(1240 - 40);
-    setLevel('l2'); toast('已生成 13 片纸样 · 进入对缝 QA');
-  }, 1300);
-});
 function setToken(v){ $$('[data-token]').forEach(t => t.textContent = v.toLocaleString('en-US')); }
 let genTimers = [];
-function runGeneration(){
+function runGeneration(onDone){
   genTimers.forEach(clearTimeout); genTimers = [];
-  const panel = $('#genPanel'), body = $('#aiBody');
-  panel.hidden = false; body.hidden = true;
   state.ai.confirmed = new Set(); state.ai.choice = {}; state.ai.active = 'leg'; state.ai.filter = 'todo';
   $$('#aiFilter .chip').forEach(x => x.setAttribute('aria-selected', x.dataset.f === 'todo'));
   const steps = $$('#genPanel .gen-step'); steps.forEach(s => s.className = 'gen-step');
-  const shape = $('#genShape'); shape.setAttribute('fill', 'none');
+  const shape = $('#genShape'); shape.setAttribute('fill', 'none'); shape.setAttribute('stroke', '#D8CDBF');
   const T = [0, 650, 1650, 2500, 3200];
   steps.forEach((s, i) => {
     genTimers.push(setTimeout(() => { s.classList.add('run'); }, T[i]));
     genTimers.push(setTimeout(() => { s.classList.remove('run'); s.classList.add('done'); if (i === 1) { shape.setAttribute('fill', '#D8CDBF'); shape.setAttribute('stroke', '#B83C0A'); } }, T[i + 1]));
   });
-  genTimers.push(setTimeout(() => { panel.hidden = true; body.hidden = false; renderDecisions(); highlight(); shape.setAttribute('stroke', '#D8CDBF'); }, T[4] + 450));
+  genTimers.push(setTimeout(() => { renderDecisions(); highlight(); if (onDone) onDone(); }, T[4] + 300));
 }
 
 /* ---------- kit ---------- */
@@ -1363,7 +1611,7 @@ function confirmReserve(){
 /* ---------- creator ---------- */
 const WORKS = [
   { c: 'kit', b: ['rust', '材料包 · 预订中'], bg: '#2B2A33', t: '哥特小龙', m: 'KITCOUNT / 50 份 · ¥168', go: 'kit', svg: '<svg viewBox="0 0 240 260"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/><path d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226 Z" fill="#6A1A25"/><path d="M112 32 L100 20 L120 26 Z M98 58 L82 50 L102 46 Z M84 92 L68 86 L88 80 Z M74 128 L58 124 L76 116 Z" fill="#D8CDBF"/></svg>' },
-  { c: 'pattern', b: ['ink', '纸样 PDF'], bg: '#E9DCCB', t: '坐姿小恐龙', m: '13 片 · 进阶 · ¥38', go: 'qa', svg: '<svg viewBox="0 0 200 250"><ellipse cx="100" cy="72" rx="52" ry="46" fill="#4E5B3A"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#4E5B3A"/><path d="M92 30 L100 14 L108 30 Z" fill="#2B2A33"/><circle cx="80" cy="66" r="5" fill="#E9DCCB"/><circle cx="120" cy="66" r="5" fill="#E9DCCB"/></svg>' },
+  { c: 'pattern', b: ['ink', '纸样 PDF'], bg: '#E9DCCB', t: '坐姿小恐龙', m: '13 片 · 进阶 · ¥38', go: 'views', svg: '<svg viewBox="0 0 200 250"><ellipse cx="100" cy="72" rx="52" ry="46" fill="#4E5B3A"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#4E5B3A"/><path d="M92 30 L100 14 L108 30 Z" fill="#2B2A33"/><circle cx="80" cy="66" r="5" fill="#E9DCCB"/><circle cx="120" cy="66" r="5" fill="#E9DCCB"/></svg>' },
   { c: 'design', b: ['sand', '设计稿'], bg: '#7A1F2B', t: '蝙蝠翼小猫', m: '三视图 · 开放开版合作', svg: '<svg viewBox="0 0 220 200"><path d="M40 60 L10 10 L70 40 Z M180 60 L210 10 L150 40 Z" fill="#2B2A33"/><circle cx="110" cy="80" r="56" fill="#2B2A33"/><ellipse cx="110" cy="160" rx="50" ry="36" fill="#2B2A33"/><circle cx="88" cy="76" r="8" fill="#D8CDBF"/><circle cx="132" cy="76" r="8" fill="#D8CDBF"/></svg>' },
   { c: 'cloth', b: ['ink', '娃衣纸样'], bg: '#D8CDBF', t: '格纹背心 · 20cm 体', m: '适配坐姿系列 · ¥18', svg: '<svg viewBox="0 0 200 200"><path d="M60 30 L100 50 L140 30 L180 60 L160 90 L148 80 L148 180 L52 180 L52 80 L40 90 L20 60 Z" fill="#2B2A33"/><path d="M52 110 H148 M52 140 H148 M84 80 V180 M116 80 V180" stroke="#7A1F2B" stroke-width="4"/></svg>' },
   { c: 'acc', b: ['sand', '配件'], bg: '#4E5B3A', t: '铆钉项圈', m: '成品配件 · ¥26', svg: '<svg viewBox="0 0 200 120"><ellipse cx="100" cy="60" rx="80" ry="36" fill="none" stroke="#2B2A33" stroke-width="16"/><g fill="#D8CDBF"><path d="M30 44 L22 30 L40 38 Z M70 28 L68 12 L82 26 Z M130 28 L132 12 L118 26 Z M170 44 L178 30 L160 38 Z"/></g></svg>' },
@@ -1385,11 +1633,560 @@ $('#followBtn').addEventListener('click', () => {
   if (state.cr.follow) toast('已关注 MOTH 工作室 · 上新会通知你');
 });
 
+/* ---------- shared bits ---------- */
+const I_OK = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0F6E6A" stroke-width="2" aria-hidden="true"><path d="M2.5 7.4 L5.6 10.2 L11.5 3.8"/></svg>';
+const I_WARN = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#A16207" stroke-width="1.8" aria-hidden="true"><path d="M8 1.5 L15 14 H1 Z M8 6 V9.5 M8 11.5 V12"/></svg>';
+const I_FAIL = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#B83C0A" stroke-width="2" aria-hidden="true"><circle cx="7" cy="7" r="5.5"/><path d="M4.8 4.8 L9.2 9.2 M9.2 4.8 L4.8 9.2"/></svg>';
+const I_UP = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#B83C0A" stroke-width="1.6" aria-hidden="true"><path d="M9 12 V3 M5 6.5 L9 2.5 L13 6.5 M3 12 V15 H15 V12"/></svg>';
+const I_PLUS = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#8A8479" stroke-width="1.6" aria-hidden="true"><path d="M10 4 V16 M4 10 H16"/></svg>';
+const I_MESH = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F3EFE8" stroke-width="1.4" aria-hidden="true"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z M3 7 L12 12 L21 7 M12 12 V22"/></svg>';
+const I_IMG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A8479" stroke-width="1.4" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M3 17 L9 13 L13 16 L17 12 L21 15"/></svg>';
+const MB = 1048576;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtMB = b => (b / MB).toFixed(b < 10 * MB ? 1 : 0) + ' MB';
+const SK = {
+  sketch: '<svg viewBox="0 0 200 240" fill="none" stroke="#5E5A52" stroke-width="4" stroke-linecap="round"><path d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C168 196 188 206 196 216"/><path d="M70 60 C60 90 52 130 54 170 C56 200 74 222 104 224 C132 226 152 210 156 180"/><path d="M74 214 L70 232 L96 232 M130 214 L134 232 L108 232"/><path d="M78 56 L66 44 L82 42 M74 80 L60 72 L76 66 M68 108 L54 104 L68 94" stroke="#B83C0A"/><circle cx="130" cy="54" r="3" fill="#5E5A52"/></svg>',
+  ref1: '<svg viewBox="0 0 240 260"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/><path d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226 Z" fill="#6A1A25"/><path d="M112 32 L100 20 L120 26 Z M98 58 L82 50 L102 46 Z M84 92 L68 86 L88 80 Z M74 128 L58 124 L76 116 Z" fill="#D8CDBF"/><circle cx="172" cy="52" r="6" fill="#F3EFE8"/></svg>',
+  ref2: '<svg viewBox="0 0 200 250"><ellipse cx="100" cy="72" rx="52" ry="46" fill="#7A1F2B"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#7A1F2B"/><ellipse cx="100" cy="180" rx="30" ry="38" fill="#D8CDBF"/><path d="M92 30 L100 12 L108 30 Z" fill="#D8CDBF"/><circle cx="80" cy="66" r="6" fill="#F3EFE8"/><circle cx="120" cy="66" r="6" fill="#F3EFE8"/><ellipse cx="70" cy="234" rx="24" ry="12" fill="#6A1A25"/><ellipse cx="130" cy="234" rx="24" ry="12" fill="#6A1A25"/></svg>'
+};
+function viewSvg(k){ const s = $('#triStage figure[data-tri="' + k + '"] svg'); return s ? s.outerHTML.replace('<svg ', '<svg class="th" ') : ''; }
+function sampleFiles(mode){
+  if (mode === 'sketch') return [{ name: 'dino_sketch.jpg', size: 2.4 * MB, svg: SK.sketch, sample: true }];
+  if (mode === 'ref') return [{ name: 'dino_ref_side.png', size: 3.1 * MB, svg: SK.ref1, sample: true }, { name: 'dino_ref_front.png', size: 2.8 * MB, svg: SK.ref2, sample: true }];
+  if (mode === 'views') return ['front', 'side', 'back'].map(k => ({ name: 'dino_' + k + '.png', size: 1.6 * MB, svg: viewSvg(k), sample: true }));
+  if (mode === 'obj') return [{ name: 'dino_v3.obj', size: 18.4 * MB, obj: true, sample: true }];
+  return [];
+}
+function thumbInner(f){ if (!f) return ''; if (f.url) return '<img src="' + f.url + '" alt="">'; if (f.svg) return f.svg; return f.obj ? I_MESH : I_IMG; }
+function objRow(f, i){ return '<div class="filerow"><span class="ic3">' + I_MESH + '</span><span><b>' + esc(f.name) + '</b><small>' + fmtMB(f.size) + (f.sample ? ' · 示例文件' : ' · 待上传解析') + '</small></span>' + (i >= 0 ? '<button type="button" class="x" data-rm="' + i + '" aria-label="移除 ' + esc(f.name) + '">×</button>' : '') + '</div>'; }
+function stageH(eb, t, p){ return '<div class="stage-h"><div class="eyebrow">' + eb + '</div><h1>' + t + '</h1>' + (p ? '<p>' + p + '</p>' : '') + '</div>'; }
+function ck(ok, text){ return '<div class="ck' + (ok ? '' : ' warn') + '">' + (ok ? I_OK : I_WARN) + '<span>' + text + '</span></div>'; }
+function rangeRow(id, label, min, max, val, unit){ return '<div class="param"><div class="l"><label for="' + id + '">' + label + '</label><span class="v" id="' + id + '-v">' + val + unit + '</span></div><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" value="' + val + '"></div>'; }
+function swRow(id, label, sub, on){ return '<div class="sw-row"><label for="' + id + '">' + label + (sub ? '<small>' + sub + '</small>' : '') + '</label><span class="switch"><input id="' + id + '" type="checkbox"' + (on ? ' checked' : '') + '><i></i></span></div>'; }
+function segRow(id, label, sub, opts, cur){ return '<div class="sw-row"><span>' + label + (sub ? '<small>' + sub + '</small>' : '') + '</span><span class="segopt" role="radiogroup" aria-label="' + label + '" data-seg="' + id + '">' + opts.map(o => '<button type="button" role="radio" aria-checked="' + (o[0] === cur) + '" data-v="' + o[0] + '">' + o[1] + '</button>').join('') + '</span></div>'; }
+function knowCard(t, p){ return '<section class="know"><div class="t"><span>知识卡</span><b>' + t + '</b></div><p>' + p + '</p></section>'; }
+function bindRange(id, unit, cb){ const el = $('#' + id); if (!el) return; paintRange(el); el.addEventListener('input', () => { paintRange(el); $('#' + id + '-v').textContent = el.value + unit; cb(+el.value); }); }
+function bindSw(id, cb){ const el = $('#' + id); if (el) el.addEventListener('change', () => cb(el.checked)); }
+function bindSeg(root, cb){ $$('[data-seg]', root).forEach(g => $$('button', g).forEach(b => b.addEventListener('click', () => { $$('button', g).forEach(x => x.setAttribute('aria-checked', x === b)); cb(g.dataset.seg, b.dataset.v); }))); }
+function stepRow(label, meta){ return '<div class="gen-step"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>' + label + '<small>' + meta + '</small></div>'; }
+let flowTimers = [];
+function runFlowSteps(root, T, onDone){
+  const steps = $$('.gen-step', root);
+  steps.forEach((s, i) => {
+    flowTimers.push(setTimeout(() => s.classList.add('run'), T[i]));
+    flowTimers.push(setTimeout(() => { s.classList.remove('run'); s.classList.add('done'); }, T[i + 1]));
+  });
+  flowTimers.push(setTimeout(onDone, T[steps.length] + 300));
+}
+function dinoFront(o){
+  o = o || {};
+  const c = (part, base) => part === o.hl ? '#F3A27A' : base;
+  const infl = o.inflate ? '<g fill="none" stroke="#F3A27A" stroke-width="1.5" stroke-dasharray="4 4" transform="translate(100 150) scale(' + (1 + o.inflate / 100).toFixed(3) + ') translate(-100 -150)"><ellipse cx="100" cy="72" rx="52" ry="46"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108"/></g>' : '';
+  const claw = o.claw === 'omit' ? '' : o.claw === 'emb'
+    ? '<g fill="none" stroke="#F3A27A" stroke-width="1.3" stroke-dasharray="2 2"><path d="M56 238 l4 -8 l4 8 Z M66 240 l4 -8 l4 8 Z M126 240 l4 -8 l4 8 Z M136 238 l4 -8 l4 8 Z"/></g>'
+    : '<g fill="' + c('legs', '#8A7F72') + '"><path d="M56 238 l4 -9 l4 9 Z M66 240 l4 -9 l4 9 Z M126 240 l4 -9 l4 9 Z M136 238 l4 -9 l4 9 Z"/></g>';
+  const teeth = !o.teeth || o.teeth === 'omit' ? '' : '<path d="M90 97 l3 5 l3 -5 M104 97 l3 5 l3 -5" fill="' + (o.teeth === 'felt' ? '#F3EFE8' : 'none') + '" stroke="#F3EFE8" stroke-width="1.3"' + (o.teeth === 'emb' ? ' stroke-dasharray="1.5 1.5"' : '') + '/>';
+  const wire = o.wire ? '<g fill="none" stroke="rgba(243,239,232,.3)" stroke-width=".8"><ellipse cx="100" cy="72" rx="52" ry="14"/><ellipse cx="100" cy="72" rx="36" ry="46"/><ellipse cx="100" cy="72" rx="14" ry="46"/><path d="M50 140 H150 M44 170 H156 M46 200 H154 M100 108 V244 M70 110 C62 160 62 210 72 240 M130 110 C138 160 138 210 128 240"/></g>' : '';
+  const gus = o.gusset ? '<g fill="none" stroke="#F3A27A" stroke-width="1.6"><path d="M92 28 C90 60 90 90 94 112 M108 28 C110 60 110 90 106 112"/>' + (o.belly ? '<path d="M86 132 C82 170 84 210 90 238 M114 132 C118 170 116 210 110 238"/>' : '') + '</g>' : '';
+  return '<svg class="m" viewBox="0 0 200 256" aria-hidden="true">' +
+    '<path d="M92 30 L100 12 L108 30 Z" fill="' + c('spikes', o.spike === 'emb' ? 'none' : '#B83C0A') + '"' + (o.spike === 'emb' ? ' stroke="#B83C0A" stroke-dasharray="2 2"' : '') + '/>' +
+    '<ellipse cx="100" cy="72" rx="52" ry="46" fill="' + c('head', '#D8CDBF') + '"/>' +
+    '<path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="' + c('body', '#CBBFAE') + '"/>' +
+    '<ellipse cx="100" cy="100" rx="22" ry="9" fill="' + c('chin', '#C4B7A4') + '"/>' +
+    '<path d="M58 140 C40 150 36 172 48 178 L58 170 Z M142 140 C160 150 164 172 152 178 L142 170 Z" fill="' + c('arms', '#BFB19E') + '"/>' +
+    '<ellipse cx="70" cy="232" rx="26" ry="14" fill="' + c('legs', '#BFB19E') + '"/><ellipse cx="130" cy="232" rx="26" ry="14" fill="' + c('legs', '#BFB19E') + '"/>' +
+    claw + '<circle cx="80" cy="66" r="5" fill="#2B2A33"/><circle cx="120" cy="66" r="5" fill="#2B2A33"/>' + teeth +
+    (o.seam === false ? '' : '<path d="M100 26 V244" stroke="#FBE6DA" stroke-width="1.2" stroke-dasharray="4 3"/>') + gus + wire + infl + '</svg>';
+}
+
+/* ---------- home: input modes & uploads ---------- */
+const IMG = ['jpg', 'jpeg', 'png', 'heic', 'webp'];
+const MODES = {
+  text: { chip: '文字', long: '文字描述', cta: '生成纸样', est: 40 },
+  sketch: { chip: '手绘稿', long: '手绘稿', cta: '识别手绘并生成', est: 60, exts: IMG, max: 20, count: 1, title: '上传手绘稿',
+    reqs: ['JPG / PNG / HEIC / WebP，单张，≤ 20 MB', '长边 ≥ 1024 px，正面或 3/4 视角', '线条闭合，白底或浅色纸，阴影越少越准', '在补充描述里写成品高度（cm）'] },
+  ref: { chip: '参考图', long: '参考图', cta: '分析参考图并生成', est: 60, exts: IMG, max: 20, count: 4, title: '上传参考图',
+    reqs: ['JPG / PNG / WebP，1–4 张，每张 ≤ 20 MB', '同一角色的多个角度，主体完整无遮挡', '纯色背景识别最准，避免多个角色同框', '只上传你拥有版权或已获授权的图片'] },
+  views: { chip: '三视图', long: '三视图', cta: '对齐三视图', est: 80, exts: IMG, max: 20, count: 3, title: '上传三视图',
+    reqs: ['正视、侧视、背视各 1 张，PNG / JPG，每张 ≤ 20 MB', '三张同一比例、同一地面线，不带透视', '线稿或平涂色稿均可，背景留白', '在补充描述里写成品高度（cm）'] },
+  obj: { chip: 'OBJ 模型', long: '3D 模型', cta: '上传并诊断', est: 100, exts: ['obj', 'fbx', 'glb', 'gltf', 'stl'], max: 100, count: 1, title: '上传 3D 模型',
+    reqs: ['OBJ，也支持 FBX / GLB / STL，单个文件 ≤ 100 MB', '面数建议 ≤ 50 万，尽量是封闭网格', '站立或坐姿中立姿态，注明建模单位 mm / cm', '贴图可选，只用于配色参考'] }
+};
+state.home = { mode: 'text', files: { sketch: [], ref: [], views: [null, null, null], obj: [] }, errs: [] };
+const acceptOf = M => M.exts.map(x => '.' + x).join(',');
+function setMode(m){ state.home.mode = m; state.home.errs = []; renderUpload(); updateGen(); }
+function renderUpload(){
+  const m = state.home.mode, M = MODES[m], area = $('#uploadArea'), ta = $('#prompt');
+  $$('#inputModes .chip').forEach(c => c.setAttribute('aria-selected', c.dataset.mode === m));
+  if (m === 'text') { area.hidden = true; area.innerHTML = ''; $('#promptLabel').textContent = '描述你的角色'; ta.rows = 3; return; }
+  area.hidden = false; $('#promptLabel').textContent = '补充描述 · 可选'; ta.rows = 2;
+  const files = state.home.files[m];
+  let body = '';
+  if (m === 'views') {
+    body = '<div class="slots">' + ['正视', '侧视', '背视'].map((n, i) => {
+      const f = files[i];
+      return '<label class="slot' + (f ? ' filled' : '') + '" for="slot' + i + '"><span class="lab2">' + ['FRONT', 'SIDE', 'BACK'][i] + '</span>' +
+        (f ? thumbInner(f) + '<button type="button" class="x" data-rm="' + i + '" aria-label="移除' + n + '">×</button>' : I_PLUS + '<b>' + n + '</b><span>点击上传</span>') +
+        '<input type="file" class="sr" id="slot' + i + '" data-slot="' + i + '" accept="' + acceptOf(M) + '"></label>';
+    }).join('') + '</div>';
+  } else {
+    const full = files.length >= M.count;
+    body = (full ? '' : '<label class="dz" for="fileIn" id="dz"><span class="ic">' + I_UP + '</span><b>' + M.title + '</b><small>点击选择' + (M.count > 1 ? '，最多 ' + M.count + ' 张' : '') + ' · 也可以把文件拖到这里</small><input type="file" class="sr" id="fileIn" accept="' + acceptOf(M) + '"' + (M.count > 1 ? ' multiple' : '') + '></label>') +
+      (files.length ? (m === 'obj' ? files.map((f, i) => objRow(f, i)).join('') : '<div class="tiles">' + files.map((f, i) => '<div class="tile">' + thumbInner(f) + '<span class="cap2">' + esc(f.name) + '</span><button type="button" class="x" data-rm="' + i + '" aria-label="移除 ' + esc(f.name) + '">×</button></div>').join('') + '</div>') : '');
+  }
+  const errs = state.home.errs.length ? '<div class="errs" role="alert">' + state.home.errs.map(e => '<div>' + esc(e) + '</div>').join('') + '</div>' : '';
+  area.innerHTML = body + errs +
+    '<ul class="reqs"><li class="hh">文件要求<span>' + M.exts.filter(x => x !== 'jpeg' && x !== 'gltf').map(x => x === 'webp' ? 'WebP' : x.toUpperCase()).join(' / ') + ' · ≤ ' + M.max + ' MB</span></li>' + M.reqs.map(r => '<li>' + r + '</li>').join('') + '</ul>' +
+    '<button type="button" class="linkbtn" id="useSample">手边没有文件？用示例' + M.chip + '体验</button>';
+  $$('input[type=file]', area).forEach(inp => inp.addEventListener('change', () => { addFiles(inp.files, inp.dataset.slot != null ? +inp.dataset.slot : null); inp.value = ''; }));
+  $$('[data-rm]', area).forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); const i = +b.dataset.rm; if (m === 'views') files[i] = null; else files.splice(i, 1); state.home.errs = []; renderUpload(); updateGen(); }));
+  $('#useSample').addEventListener('click', () => { state.home.files[m] = sampleFiles(m); state.home.errs = []; renderUpload(); updateGen(); toast('已载入示例' + M.chip); });
+  const dz = $('#dz');
+  if (dz) {
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); addFiles(e.dataTransfer.files, null); });
+  }
+}
+function addFiles(list, slot){
+  const m = state.home.mode, M = MODES[m], errs = [], jobs = [];
+  Array.from(list || []).forEach(file => {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (!M.exts.includes(ext)) { errs.push(file.name + ' 的格式不支持，请上传 ' + M.exts.map(x => x.toUpperCase()).join(' / ')); return; }
+    if (file.size > M.max * MB) { errs.push(file.name + ' 为 ' + fmtMB(file.size) + '，超过 ' + M.max + ' MB 上限，请压缩后重试'); return; }
+    jobs.push(file);
+  });
+  const files = state.home.files[m];
+  if (m !== 'views') {
+    const room = M.count - files.length;
+    if (jobs.length > room) { errs.push('最多 ' + M.count + (m === 'obj' ? ' 个文件' : ' 张') + '，已忽略多出的 ' + (jobs.length - room) + ' 个'); jobs.length = Math.max(0, room); }
+  }
+  state.home.errs = errs;
+  let pending = jobs.length;
+  if (!pending) { renderUpload(); updateGen(); return; }
+  jobs.forEach(file => {
+    const rec = { name: file.name, size: file.size, obj: m === 'obj' };
+    const put = () => {
+      if (m === 'views') { const idx = slot != null ? slot : files.findIndex(x => !x); if (idx >= 0) files[idx] = rec; }
+      else files.push(rec);
+      if (--pending === 0) { renderUpload(); updateGen(); toast('已添加 ' + jobs.length + ' 个文件'); }
+    };
+    if (m === 'obj' || /\.heic$/i.test(file.name)) { put(); return; }
+    const r = new FileReader(); r.onload = () => { rec.url = r.result; put(); }; r.onerror = put; r.readAsDataURL(file);
+  });
+}
+function homeMissing(){
+  const m = state.home.mode, f = state.home.files[m];
+  if (m === 'text') return $('#prompt').value.trim().length >= 4 ? '' : '先写一句角色描述';
+  if (m === 'views') { const miss = f.filter(x => !x).length; return miss ? '还差 ' + miss + ' 张视图' : ''; }
+  return f.length ? '' : '先上传' + MODES[m].chip;
+}
+function updateGen(){
+  const M = MODES[state.home.mode], miss = homeMissing();
+  $('#genLabel').textContent = M.cta; $('#genBtn').disabled = !!miss;
+  $('#estText').innerHTML = miss ? '<span class="hint-miss">' + miss + '</span>' : '预计消耗 <span class="num">' + M.est + '</span> token';
+}
+$$('#inputModes .chip').forEach(c => c.addEventListener('click', () => setMode(c.dataset.mode)));
+$('#prompt').addEventListener('input', updateGen);
+$('#promptForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const m = state.home.mode; if (homeMissing()) return;
+  if (m === 'obj') {
+    const b = $('#genBtn'); b.disabled = true; let p = 0;
+    const t = setInterval(() => { p = Math.min(100, p + 10); $('#genLabel').textContent = '上传中 ' + p + '%'; if (p >= 100) { clearInterval(t); startFlow('obj'); toast('上传成功 · 已解析网格'); updateGen(); } }, 90);
+    return;
+  }
+  startFlow(m);
+});
+function modeFocus(m){ setMode(m); $('#s-home').scrollTo({ top: $('#promptForm').offsetTop - 80, behavior: 'smooth' }); }
+document.addEventListener('click', e => { const b = e.target.closest('[data-mode-go]'); if (b) modeFocus(b.dataset.modeGo); });
+
+/* ---------- flow: entry-specific stages, then shared ones ---------- */
+const STAGE_N = { input: '输入', gen: 'AI 生成', decide: '决策确认', align: '视图对齐', recon: '重建 3D', source: '模型来源', diagnose: '模型诊断', opt: '3D 优化', seam: '缝线规划', flat: '平面纸样', qa: 'QA 与导出' };
+const FLOW_STAGES = { ai: ['input', 'gen', 'decide'], views: ['input', 'align', 'recon'], obj: ['input', 'source', 'diagnose'] };
+const SHARED = ['opt', 'seam', 'flat', 'qa'];
+const flowKind = m => m === 'views' ? 'views' : m === 'obj' ? 'obj' : 'ai';
+const flowStages = () => FLOW_STAGES[flowKind(state.flow.mode)].concat(SHARED);
+const curKey = () => flowStages()[state.flow.idx];
+function freshPieces(){
+  return {
+    H1: { n: '头侧片', d: 'M10 90 C10 40 50 10 100 12 C140 14 160 40 162 70 L220 78 C232 82 232 100 218 104 L150 110 C140 140 110 158 70 156 C35 154 10 130 10 90 Z', x: 14, y: 20, c: [90, 84], qty: 2, sa: 5, grain: 0, fab: 'main' },
+    H2: { n: '头中条', d: 'M20 0 C34 30 36 90 30 160 C28 190 22 210 20 220 C18 210 12 190 10 160 C4 90 6 30 20 0 Z', x: 262, y: 14, c: [20, 110], qty: 1, sa: 5, grain: 0, fab: 'main', lab: [-8, 250] },
+    B1: { n: '身体侧片', d: 'M30 0 C80 -4 120 20 130 70 C140 120 130 170 100 200 L20 205 C6 170 0 120 4 70 C8 30 14 4 30 0 Z', x: 318, y: 18, c: [62, 96], qty: 2, sa: 5, grain: 0, fab: 'main' },
+    B2: { n: '腹片', d: 'M60 0 C100 0 120 40 120 90 C120 150 95 190 60 190 C25 190 0 150 0 90 C0 40 20 0 60 0 Z', x: 484, y: 24, c: [60, 90], qty: 1, sa: 5, grain: 0, fab: 'belly' },
+    S1: { n: '背刺', d: 'M0 40 L15 0 L30 40 Z M36 40 L51 4 L66 40 Z M72 40 L87 8 L102 40 Z', x: 632, y: 40, c: [51, 26], qty: 2, sa: 5, grain: 0, fab: 'spike', lab: [0, 72] },
+    L1: { n: '腿', d: 'M0 60 C0 20 30 0 60 0 C90 0 110 20 110 60 L110 130 L0 130 Z', x: 20, y: 300, c: [55, 64], qty: 2, sa: 5, grain: 0, fab: 'main' },
+    L2: { n: '脚底', d: 'M0 25 C0 10 16 0 34 0 C52 0 68 10 68 25 C68 40 52 50 34 50 C16 50 0 40 0 25 Z', x: 152, y: 336, c: [34, 25], qty: 2, sa: 5, grain: 0, fab: 'belly', lab: [0, 80] },
+    A1: { n: '手臂', d: 'M0 16 C0 6 8 0 18 0 L40 0 C50 0 58 6 58 16 L58 90 C58 102 50 108 40 108 L18 108 C8 108 0 102 0 90 Z', x: 250, y: 300, c: [29, 50], qty: 2, sa: 5, grain: 0, fab: 'main', lab: [-4, 138] },
+    T1: { n: '尾巴', d: 'M0 60 C30 10 110 0 170 30 C140 44 90 60 40 80 C20 86 4 78 0 60 Z', x: 338, y: 310, c: [70, 46], qty: 2, sa: 5, grain: null, fab: 'main', lab: [40, 118] }
+  };
+}
+function freshFlow(mode, files, desc){
+  return {
+    mode, files, desc, idx: 1, reached: 1, genDone: false, reconDone: false, diagDone: false,
+    source: 'ai', unit: 'cm', height: 25, diagMode: 'auto',
+    adv: { faces: 20, smooth: 40, minw: 8, emb: 6, sym: true, keep: true },
+    views: { h: 25, ground: true, lock: true, mirror: true, patched: false },
+    tech: 'unwrap', optHl: '',
+    opt: { inflate: 4, minw: 8, claw: 'emb', teeth: 'emb', spike: '3d', sym: true, showInflate: true, tol: 5, useSeams: true, morph: true, headG: true, bellyG: true, sole: true, gw: 24, darts: '2' },
+    seams: { back: true, belly: true, head: true, leg: true, tail: true, arm: true, chin: false }, fill: 'belly',
+    sel: 'H1', pieces: freshPieces(), marks: [],
+    from: state.tab === 'flow' ? 'home' : state.tab, title: '坐姿恐龙'
+  };
+}
+state.flow = freshFlow('text', [], '');
+function startFlow(mode, opts){
+  opts = opts || {};
+  let files = mode === 'views' ? state.home.files.views.slice() : (state.home.files[mode] || []).slice();
+  const need = mode === 'views' ? files.some(x => !x) : (mode !== 'text' && !files.length);
+  if (opts.sample || need) files = sampleFiles(mode);
+  const desc = mode === 'text' || !opts.sample ? $('#prompt').value.trim() : '';
+  flowTimers.forEach(clearTimeout); flowTimers = [];
+  state.flow = freshFlow(mode, files, desc);
+  if (opts.title) state.flow.title = opts.title;
+  closeSheet();
+  $('#flowTitle').textContent = state.flow.title + ' · 开版';
+  $('#flowMeta').textContent = '来源：' + MODES[mode].long + (mode === 'obj' ? ' · ' + files[0].name : files.length ? ' · ' + files.filter(Boolean).length + ' 个文件' : '');
+  $('#genTitle').textContent = { text: '正在从描述生成 3D 形体', sketch: '正在识别手绘稿', ref: '正在分析 ' + files.length + ' 张参考图' }[mode] || '';
+  const s0 = $('#genS0'); if (s0) s0.textContent = { text: '解析文字描述', sketch: '识别手绘线稿', ref: '合并参考图视角' }[mode] || '解析输入';
+  setTab('flow');
+  const st = flowStages();
+  let i = 1;
+  if (opts.stage) { i = Math.max(1, st.indexOf(opts.stage)); Object.assign(state.flow, { genDone: true, reconDone: true, diagDone: true }); }
+  state.flow.reached = i;
+  gotoStage(i);
+}
+function gotoStage(i){
+  const f = state.flow, st = flowStages();
+  i = Math.max(0, Math.min(st.length - 1, i));
+  flowTimers.forEach(clearTimeout); flowTimers = [];
+  f.idx = i; f.reached = Math.max(f.reached, i);
+  const key = st[i];
+  $$('#s-flow .stage').forEach(s => s.classList.toggle('on', s.dataset.stage === key));
+  renderRail();
+  (RENDER[key] || (() => {}))();
+  updateFlowBar();
+  $('#s-flow').scrollTo({ top: 0 });
+  syncRoute();
+}
+function renderRail(){
+  const f = state.flow, st = flowStages();
+  $('#flowRail').innerHTML = st.map((k, i) => {
+    const join = k === SHARED[0] ? '<span class="join">统一流程 →</span>' : '';
+    const done = i < f.idx || (i <= f.reached && i !== f.idx && i < f.reached);
+    const name = k === 'input' ? MODES[f.mode].chip : STAGE_N[k];
+    return join + '<button type="button" class="' + (done ? 'done' : '') + (SHARED.includes(k) ? ' shared' : '') + '" data-si="' + i + '"' + (i === f.idx ? ' aria-current="step"' : '') + (i > f.reached ? ' disabled' : '') + '><span class="n">' + (done ? '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>' : i + 1) + '</span>' + name + '</button>';
+  }).join('');
+  $$('#flowRail button').forEach(b => b.addEventListener('click', () => gotoStage(+b.dataset.si)));
+  const cur = $('#flowRail [aria-current]'); if (cur) cur.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+function updateFlowBar(){
+  const f = state.flow, st = flowStages(), key = st[f.idx], next = st[f.idx + 1];
+  let label = next ? '下一步 · ' + STAGE_N[next] : '保存并发起材料包', dis = false;
+  if (key === 'gen' && !f.genDone) { label = 'AI 生成中…'; dis = true; }
+  if (key === 'decide') label = '确认决策 · 进入 3D 优化';
+  if (key === 'align') label = '重建 3D 形体';
+  if (key === 'recon' && !f.reconDone) { label = '重建中…'; dis = true; }
+  if (key === 'source') label = '开始诊断';
+  if (key === 'diagnose') { if (!f.diagDone) { label = '诊断中…'; dis = true; } else label = f.diagMode === 'auto' ? '自动修复并进入 3D 优化' : '应用设置并进入 3D 优化'; }
+  if (key === 'seam') label = '展开为平面纸样';
+  $('#flowNext').textContent = label; $('#flowNext').disabled = dis;
+  $('#flowPrev').disabled = f.idx === 0;
+}
+$('#flowPrev').addEventListener('click', () => gotoStage(state.flow.idx - 1));
+$('#flowNext').addEventListener('click', () => {
+  const f = state.flow, key = curKey();
+  if (key === 'decide') toast('已确认 ' + state.ai.confirmed.size + '/8 项，其余按推荐处理');
+  if (key === 'diagnose') toast(f.diagMode === 'auto' ? '已自动修复 ' + diagItems().filter(d => d[3]).length + ' 项' : '已按高级设置修复，面数 ' + f.adv.faces + 'k');
+  if (key === 'flat') { const miss = specRows().filter(r => !r[0]).length; if (miss) toast('还有 ' + miss + ' 项图纸规范未完成，导出前可回来补齐'); }
+  if (key === 'qa') { go('kit'); toast('纸样已保存 · 打样验证后即可发起材料包'); return; }
+  gotoStage(f.idx + 1);
+});
+$('#flowBack').addEventListener('click', () => { const to = state.flow.from || 'home'; setTab(to); });
+
+const RENDER = {
+  input: renderInputStage,
+  gen: () => { if (!state.flow.genDone) runGeneration(() => { state.flow.genDone = true; if (curKey() === 'gen') { updateFlowBar(); flowTimers.push(setTimeout(() => { if (curKey() === 'gen') gotoStage(state.flow.idx + 1); }, 700)); } }); },
+  decide: () => { renderDecisions(); highlight(); },
+  align: renderAlign, recon: renderRecon, source: renderSource, diagnose: renderDiagnose,
+  opt: renderOpt, seam: renderSeam, flat: renderFlat
+};
+
+function renderInputStage(){
+  const f = state.flow, M = MODES[f.mode], files = f.files.filter(Boolean);
+  $('#st-input').innerHTML = stageH('输入 · ' + M.chip, '开版输入', '这一步在首页完成。要换文件或改描述，回首页重新提交会新建一个开版项目。') +
+    '<section class="card inputsum"><div style="display:flex;gap:8px;align-items:center"><span class="pill ink">' + M.chip + '</span><span style="font-size:12px;color:var(--mute)">' + (files.length ? files.length + ' 个文件' : '纯文字') + '</span></div>' +
+    (files.length ? (f.mode === 'obj' ? objRow(files[0], -1) : '<div class="tiles">' + files.map(x => '<div class="tile">' + thumbInner(x) + '<span class="cap2">' + esc(x.name) + '</span></div>').join('') + '</div>') : '') +
+    (f.desc ? '<q>' + esc(f.desc) + '</q>' : '') + '<button type="button" class="btn ghost" data-go="home">回首页修改</button></section>';
+}
+
+/* three views */
+function renderAlign(){
+  const f = state.flow, v = f.views, root = $('#st-align');
+  root.innerHTML = stageH('三视图 · 第 1 步', '视图对齐', '三张视图按同一地面线和成品高度对齐后，才能重建出准确的 3D 形体。') +
+    '<section class="card"><div class="views3" id="alViews" style="--top-line:' + (22 - v.h * 0.5) + '%">' + f.files.map((x, i) => '<figure><div class="th">' + thumbInner(x) + '</div><figcaption>' + I_OK + ['正视', '侧视', '背视'][i] + '</figcaption></figure>').join('') + '</div>' +
+    '<div class="lines-legend"><span><i style="border-color:var(--teal-2)"></i>头顶线</span><span><i style="border-color:#A16207"></i>地面基准线</span></div></section>' +
+    '<section class="card params"><div class="sec-h"><h2>对齐设置</h2><span>三张视图共用</span></div>' +
+    rangeRow('al-h', '成品高度', 15, 40, v.h, ' cm') +
+    swRow('al-ground', '地面基准线自动识别', '按脚底最低点对齐三张图', v.ground) +
+    swRow('al-lock', '锁定三视图比例', '以正视高度为准缩放另外两张', v.lock) +
+    swRow('al-mirror', '左右对称重建', '正视只取一半轮廓，另一半镜像', v.mirror) + '</section>' +
+    '<section class="card checks" aria-label="对齐检查"><h3>对齐检查</h3>' +
+    ck(true, '三张视图高度一致，误差 1.2%') + ck(true, '正视与侧视的头、身、脚位置对应') +
+    ck(v.patched, '侧视腿部被尾巴遮挡' + (v.patched ? '，已用正视轮廓补全' : '，这一段重建会不准')) +
+    ck(true, '背视背刺 5 个，与侧视一致') +
+    (v.patched ? '' : '<button type="button" class="btn ghost" id="al-patch" style="height:38px;font-size:13px;align-self:flex-start">用正视轮廓补全遮挡</button>') + '</section>';
+  bindRange('al-h', ' cm', x => { v.h = x; f.height = x; $('#alViews').style.setProperty('--top-line', (22 - x * 0.5) + '%'); });
+  bindSw('al-ground', x => v.ground = x); bindSw('al-lock', x => v.lock = x); bindSw('al-mirror', x => v.mirror = x);
+  const pb = $('#al-patch'); if (pb) pb.addEventListener('click', () => { v.patched = true; renderAlign(); toast('已用正视轮廓补全侧视腿部'); });
+}
+function renderRecon(){
+  const f = state.flow, root = $('#st-recon');
+  if (!f.reconDone) {
+    root.innerHTML = stageH('三视图 · 第 2 步', '重建 3D 形体', '三张视图的轮廓求交得到体积，再按对称面合并、平滑。') +
+      '<section class="card gen" aria-live="polite"><div class="gen-visual"><div style="display:flex;gap:10px;height:120px">' + f.files.map(x => '<div style="width:74px;height:110px;border-radius:8px;background:rgba(243,239,232,.9);display:grid;place-items:center;overflow:hidden">' + thumbInner(x) + '</div>').join('') + '</div><div class="scan"></div></div>' +
+      stepRow('提取三视图轮廓', '3 张') + stepRow('轮廓求交 · 体积重建', '体素 2 mm') + stepRow('对称合并与平滑', f.views.mirror ? '镜像' : '不对称') + stepRow('标注难缝区域', '') + '</section>';
+    runFlowSteps(root, [0, 600, 1500, 2300, 2900], () => { f.reconDone = true; if (curKey() === 'recon') { renderRecon(); updateFlowBar(); } });
+    return;
+  }
+  root.innerHTML = stageH('三视图 · 第 2 步', '3D 形体已重建', '与三视图轮廓的最大偏差 2.1 mm。下一步按毛绒开版的要求优化形体。') +
+    '<div class="box3d"><span class="tag">3D 形体 v1 · 三视图重建</span>' + dinoFront({ claw: '3d', teeth: 'emb' }) + '<div class="chips"><span>高度 ' + f.views.h + ' cm</span><span>偏差 ≤ 2.1 mm</span><span>难缝区域 2 处</span></div></div>' +
+    '<section class="card checks"><h3>重建结果</h3>' + ck(true, '轮廓偏差 ≤ 2.1 mm，三视图一致') + ck(true, f.views.patched ? '侧视遮挡处已按正视补全' : '侧视遮挡处按对称推断') + ck(false, '爪尖、牙齿小于 6 mm，3D 优化时需要取舍') + ck(false, '腋下凹陷 12 mm，填充后会被撑平') + '</section>';
+}
+
+/* 3D model upload */
+const SRC = [
+  ['ai', 'AI 生成', '文生 3D / 图生 3D 工具导出', '常见问题：网格噪点、非流形边、细节过密'],
+  ['self', '自己建模', 'Blender、ZBrush、Nomad 等', '常见问题：细长部件、深凹陷、单位不明'],
+  ['scan', '3D 扫描 / 手办翻模', '手机扫描或结构光扫描', '常见问题：孔洞、背面缺失、表面噪点']
+];
+function renderSource(){
+  const f = state.flow, file = f.files[0], root = $('#st-source');
+  root.innerHTML = stageH('3D 模型 · 第 1 步', '这个模型是怎么做出来的？', '来源不同，常见问题也不同。选对来源，诊断才会检查对应项目，并给出合适的修复方式。') +
+    '<div class="upok">' + I_OK + '<span>上传成功 · <b>' + esc(file.name) + '</b> · ' + fmtMB(file.size) + '</span></div>' +
+    '<div class="box3d"><span class="tag">预览 · 线框</span>' + dinoFront({ wire: true, seam: false, claw: '3d', teeth: 'emb' }) + '<div class="chips"><span>186,420 面</span><span>1 个网格</span><span>单位未声明</span></div></div>' +
+    '<div class="opt-list" role="radiogroup" aria-label="模型来源">' + SRC.map(s => '<button type="button" class="opt" role="radio" aria-checked="' + (f.source === s[0]) + '" data-src="' + s[0] + '"><span><b>' + s[1] + '</b><small>' + s[2] + '</small><small style="color:var(--rust-d)">' + s[3] + '</small></span></button>').join('') + '</div>' +
+    '<section class="card params"><div class="sec-h"><h2>尺寸</h2><span>决定纸样比例</span></div>' +
+    segRow('unit', '建模单位', '文件没写单位时按这个解析', [['mm', 'mm'], ['cm', 'cm'], ['m', 'm']], f.unit) +
+    rangeRow('src-h', '成品高度', 15, 40, f.height, ' cm') + '</section>';
+  $$('[data-src]', root).forEach(b => b.addEventListener('click', () => { f.source = b.dataset.src; f.diagDone = false; $$('[data-src]', root).forEach(x => x.setAttribute('aria-checked', x === b)); }));
+  bindSeg(root, (k, val) => { f.unit = val; f.diagDone = false; });
+  bindRange('src-h', ' cm', x => f.height = x);
+}
+function diagItems(){
+  const u = state.flow.unit;
+  return {
+    ai: [['fail', '非流形边 214 处', 'AI 生成网格常见，会导致展开失败', '自动修复'], ['warn', '表面噪点 · 起伏 0.8 mm', '布面看不出，但会干扰缝线吸附', '平滑'], ['warn', '面数 186k，细节过密', '开版只需约 2 万面', '重拓扑'], ['warn', '爪尖、牙齿小于 6 mm', '缝不出立体效果', '转刺绣'], ['ok', '封闭网格', '可以直接计算体积与填充量', ''], ['ok', '头身比例与描述一致', '1 : 1.2', '']],
+    self: [['ok', '封闭网格 · 无非流形边', '拓扑干净', ''], ['warn', '面数 186k', '开版只需约 2 万面', '重拓扑'], ['fail', '尾巴尖最窄 5 mm', '翻面和填充都做不到', '加粗至 8 mm'], ['warn', '腋下凹陷深 14 mm', '填充后会被撑平，外形对不上', '抬高凹陷'], ['warn', '单位未声明', '已按 ' + u + ' 解析', '确认单位']],
+    scan: [['fail', '孔洞 6 处', '扫描盲区，主要在脚底和腋下', '补洞'], ['fail', '背面缺失 12%', '扫描角度不足', '镜像补全'], ['warn', '表面噪点 · 起伏 1.4 mm', '', '平滑'], ['warn', '面数 1.2M', '开版只需约 2 万面', '重拓扑'], ['ok', '比例与尺寸', '按 ' + u + ' 解析，高度 ' + state.flow.height + ' cm', '']]
+  }[state.flow.source];
+}
+function renderDiagnose(){
+  const f = state.flow, root = $('#st-diagnose'), srcName = SRC.find(s => s[0] === f.source)[1];
+  if (!f.diagDone) {
+    root.innerHTML = stageH('3D 模型 · 第 2 步', '正在诊断模型', '按「' + srcName + '」模型的常见问题检查网格、尺度和可缝性。') +
+      '<section class="card gen" aria-live="polite"><div class="gen-visual">' + dinoFront({ wire: true, seam: false, claw: '3d' }).replace('class="m"', 'width="150" height="190"') + '<div class="scan"></div></div>' +
+      stepRow('网格拓扑', '封闭性 · 非流形') + stepRow('尺度与单位', f.unit) + stepRow('细长与薄壁部件', '< 8 mm') + stepRow('可缝性评估', '凹陷 · 细节') + '</section>';
+    runFlowSteps(root, [0, 500, 1100, 1700, 2300], () => { f.diagDone = true; if (curKey() === 'diagnose') { renderDiagnose(); updateFlowBar(); } });
+    return;
+  }
+  const D = diagItems(), n = s => D.filter(d => d[0] === s).length, fixN = D.filter(d => d[3]).length, a = f.adv;
+  root.innerHTML = stageH('3D 模型 · 第 2 步', '诊断报告', '「' + srcName + '」模型共检查 ' + D.length + ' 项，其中 ' + fixN + ' 项可以自动处理。') +
+    '<section class="card"><div class="sumline"><span class="pill rust">需处理 ' + n('fail') + '</span><span class="pill amber">建议 ' + n('warn') + '</span><span class="pill teal">通过 ' + n('ok') + '</span></div><ul class="diag">' +
+    D.map(d => '<li>' + (d[0] === 'ok' ? I_OK : d[0] === 'warn' ? I_WARN : I_FAIL) + '<span>' + d[1] + (d[2] ? '<small>' + d[2] + '</small>' : '') + '</span>' + (d[3] ? '<span class="pill sand">' + d[3] + '</span>' : '') + '</li>').join('') + '</ul></section>' +
+    '<div class="sec-h"><h2>怎么处理</h2><span>之后都进入 3D 优化</span></div>' +
+    '<div class="modecards" role="radiogroup" aria-label="处理方式">' +
+    '<button type="button" role="radio" aria-checked="' + (f.diagMode === 'auto') + '" data-dm="auto"><b>自动开版 <span class="pill rust">推荐</span></b><small>按推荐参数一次修复 ' + fixN + ' 项，直接进入 3D 优化看效果。</small></button>' +
+    '<button type="button" role="radio" aria-checked="' + (f.diagMode === 'adv') + '" data-dm="adv"><b>高级设置</b><small>逐项设定修复强度与细节取舍，适合开版师。</small></button></div>' +
+    (f.diagMode === 'adv' ? '<section class="card params"><div class="sec-h"><h2>修复参数</h2><span>作用于整个模型</span></div>' +
+      rangeRow('adv-faces', '重拓扑面数', 5, 50, a.faces, 'k') + rangeRow('adv-smooth', '平滑强度', 0, 100, a.smooth, '%') +
+      rangeRow('adv-minw', '最小部件宽度', 4, 15, a.minw, ' mm') + rangeRow('adv-emb', '细节转刺绣阈值', 2, 10, a.emb, ' mm') +
+      swRow('adv-sym', '对称修复', '以较完整的一侧为准镜像', a.sym) + swRow('adv-keep', '保留原始比例', '关闭后按常见毛绒头身比微调', a.keep) + '</section>' : '') +
+    knowCard('为什么先诊断', '毛绒开版需要封闭、平滑、没有细长尖角的形体。模型里的问题如果带到展开，会变成对不上的缝线和翻不了面的裁片，返工成本远高于现在修。');
+  $$('[data-dm]', root).forEach(b => b.addEventListener('click', () => { f.diagMode = b.dataset.dm; renderDiagnose(); updateFlowBar(); }));
+  bindRange('adv-faces', 'k', x => a.faces = x); bindRange('adv-smooth', '%', x => a.smooth = x);
+  bindRange('adv-minw', ' mm', x => a.minw = x); bindRange('adv-emb', ' mm', x => a.emb = x);
+  bindSw('adv-sym', x => a.sym = x); bindSw('adv-keep', x => a.keep = x);
+}
+
+/* shared: 3D optimisation */
+const TECH = {
+  unwrap: ['曲面展开', '沿缝线展平曲面，最还原造型', '进阶'],
+  match: ['模板匹配', '变形最接近的已验证模板，最好缝', '入门'],
+  gusset: ['撑片法', '加头部 / 腹部撑片，立体感强', '进阶']
+};
+function optPieces(){
+  const o = state.flow.opt, t = state.flow.tech;
+  if (t === 'match') return 13;
+  if (t === 'gusset') return 11 + (o.headG ? 1 : 0) + (o.bellyG ? 1 : 0) + (o.sole ? 2 : 0) + (+o.darts ? 0 : 0);
+  return 13 + (o.claw === '3d' ? 4 : 0) + (o.teeth === 'felt' ? 1 : 0) + (o.spike === 'emb' ? -2 : 0);
+}
+function paintOptPreview(){
+  const f = state.flow, o = f.opt, box = $('#optBox'); if (!box) return;
+  const src = { ai: 'AI 生成', views: '三视图重建', obj: '导入模型' }[flowKind(f.mode)];
+  box.innerHTML = '<span class="tag">3D 形体 · ' + src + '</span>' + (o.showInflate && f.tech === 'unwrap' ? '<span class="tag2">虚线 = 填充后外轮廓</span>' : '') +
+    dinoFront({ inflate: o.showInflate && f.tech === 'unwrap' ? o.inflate + 2 : 0, claw: o.claw, teeth: o.teeth, spike: o.spike, hl: f.optHl, gusset: f.tech === 'gusset' && o.headG, belly: o.bellyG }) +
+    '<div class="chips"><span>预计 ' + optPieces() + ' 片</span><span>难度 ' + TECH[f.tech][2] + '</span><span>' + f.height + ' cm</span></div>';
+}
+function renderOpt(){
+  const f = state.flow, o = f.opt, root = $('#st-opt');
+  let set = '';
+  if (f.tech === 'unwrap') {
+    set = swRow('op-show', '显示填充膨胀', '预览填充后外轮廓会鼓出多少', o.showInflate) +
+      rangeRow('op-inf', '填充膨胀补偿', 0, 8, o.inflate, '%') + rangeRow('op-minw', '最小部件宽度', 6, 15, o.minw, ' mm') +
+      '<div class="grp">细节取舍 · 小于最小宽度的部分</div>' +
+      segRow('claw', '爪尖', '约 5 mm', [['emb', '刺绣'], ['3d', '立体'], ['omit', '省略']], o.claw) +
+      segRow('teeth', '牙齿', '约 3 mm', [['emb', '刺绣'], ['felt', '毛毡'], ['omit', '省略']], o.teeth) +
+      segRow('spike', '背刺', '5 个', [['3d', '立体嵌入'], ['emb', '刺绣']], o.spike) +
+      swRow('op-sym', '左右对称编辑', '改一侧，另一侧同步', o.sym);
+  } else if (f.tech === 'match') {
+    set = '<div class="match"><span class="sw tplthumb" style="width:44px;height:48px;display:grid;place-items:center;background:#fff;border-radius:9px">' + tplThumb('dino') + '</span><span><b>坐姿恐龙模板</b><small style="display:block;font-size:12px;color:var(--mute)">13 片 · 已打样验证 2 轮</small></span><span class="pct">91%</span></div>' +
+      '<div class="grp">与你的模型相比</div>' +
+      '<div class="detail-row"><span>吻部</span><span class="num">+6 mm</span></div><div class="detail-row"><span>尾巴</span><span class="num">+18 mm</span></div><div class="detail-row"><span>背刺</span><span class="num">多 1 个</span></div>' +
+      rangeRow('op-tol', '允许偏差', 2, 10, o.tol, ' mm') +
+      swRow('op-useSeams', '沿用模板缝线', '已打样验证，最省事', o.useSeams) + swRow('op-morph', '按偏差自动变形模板', '超出允许偏差的部位才变形', o.morph);
+  } else {
+    set = swRow('op-headG', '头部撑片', '额头到后脑一条，头型更圆', o.headG) + swRow('op-bellyG', '腹部撑片', '坐姿更稳，肚子更鼓', o.bellyG) +
+      swRow('op-sole', '脚底独立底片', '脚能站平', o.sole) + rangeRow('op-gw', '撑片宽度', 15, 40, o.gw, ' mm') +
+      segRow('darts', '头部省道', '收出后脑弧度', [['0', '0'], ['2', '2'], ['4', '4']], o.darts);
+  }
+  const know = { unwrap: ['为什么要做膨胀补偿', '填充后布面向外鼓，外轮廓会长 3–6%。展开前按布料弹性把形体向内收，成品才接近设计尺寸。'], match: ['模板匹配适合什么', '造型接近已有模板时，直接变形模板最稳：缝线和对位点都经过打样验证，适合想尽快出材料包的项目。'], gusset: ['撑片是什么', '在两片侧片之间加一条窄布，让头部或腹部有厚度。撑片越宽越立体，但对缝越长、越难缝顺。'] }[f.tech];
+  root.innerHTML = stageH('统一流程 · 第 1 步', '3D 优化 · 让模型缝得出来', '毛绒是软壳，填充后会鼓，细节会被吃掉。先选开版技术，再设定这个技术需要你拍板的几项。') +
+    '<div class="box3d" id="optBox"></div>' +
+    '<div class="sec-h"><h2>开版技术</h2><span>决定下面开放哪些设定</span></div>' +
+    '<div class="tech" role="radiogroup" aria-label="开版技术">' + Object.keys(TECH).map(k => '<button type="button" role="radio" aria-checked="' + (f.tech === k) + '" data-tech="' + k + '"><b>' + TECH[k][0] + '</b><small>' + TECH[k][1] + '</small></button>').join('') + '</div>' +
+    '<section class="card params">' + set + '</section>' + knowCard(know[0], know[1]);
+  paintOptPreview();
+  $$('[data-tech]', root).forEach(b => b.addEventListener('click', () => { f.tech = b.dataset.tech; f.optHl = f.tech === 'gusset' ? 'head' : ''; renderOpt(); }));
+  bindSeg(root, (k, v) => { o[k] = v; f.optHl = { claw: 'legs', teeth: 'chin', spike: 'spikes', darts: 'head' }[k] || ''; paintOptPreview(); });
+  bindRange('op-inf', '%', x => { o.inflate = x; paintOptPreview(); }); bindRange('op-minw', ' mm', x => o.minw = x);
+  bindRange('op-tol', ' mm', x => o.tol = x); bindRange('op-gw', ' mm', x => { o.gw = x; paintOptPreview(); });
+  bindSw('op-show', x => { o.showInflate = x; paintOptPreview(); }); bindSw('op-sym', x => o.sym = x);
+  bindSw('op-useSeams', x => o.useSeams = x); bindSw('op-morph', x => o.morph = x);
+  bindSw('op-headG', x => { o.headG = x; f.optHl = 'head'; paintOptPreview(); }); bindSw('op-bellyG', x => { o.bellyG = x; f.optHl = 'body'; paintOptPreview(); }); bindSw('op-sole', x => { o.sole = x; f.optHl = 'legs'; paintOptPreview(); });
+}
+
+/* shared: seams */
+const SEAMS = [['back', '后中缝', '收背刺，刺根藏在缝份里'], ['belly', '腹中缝', '腹片左右分开，坐姿更稳'], ['head', '头侧缝', '把头分成前后两片'], ['leg', '腿开口', '腿缝入身体侧片'], ['tail', '尾巴分片', '尾巴独立成片'], ['arm', '手臂接缝', '手臂与身体分开'], ['chin', '下巴省道', '吻部下方收出弧度']];
+const SEAM_D = { back: 'M112 32 C96 60 80 100 72 150 C68 180 70 200 74 212', belly: 'M150 104 C128 120 116 150 118 180 C120 200 130 214 140 222', head: 'M112 32 C140 40 176 42 200 58', leg: 'M104 176 C112 162 136 160 150 170 C160 180 156 200 140 206 C124 210 106 200 104 176 Z', tail: 'M80 202 C72 212 74 226 84 228', arm: 'M138 122 C150 114 164 124 158 140', chin: 'M168 96 C158 104 146 104 138 99' };
+const FILL_POS = { belly: [128, 192, '腹片侧面'], back: [70, 184, '后中缝下段'], tail: [84, 222, '尾巴根部'] };
+function seamSvg(){
+  const f = state.flow, fp = FILL_POS[f.fill];
+  return '<svg viewBox="0 0 240 260" aria-label="侧视缝线规划">' +
+    '<g fill="#EFE8DC" stroke="#A39D92" stroke-width="1.6"><path d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226 Z"/><path d="M104 70 C74 108 62 168 72 208 C82 240 140 246 160 222 C176 200 172 140 152 104 C150 100 132 104 120 100 L162 96 C192 96 208 80 202 58 C190 28 140 18 112 32 Z"/><ellipse cx="136" cy="240" rx="30" ry="11"/></g>' +
+    '<circle cx="172" cy="52" r="5" fill="#2B2A33"/>' +
+    '<g fill="#FBE6DA" stroke="#B83C0A" stroke-width="1.2"><path d="M112 32 L100 20 L120 26 Z"/><path d="M98 58 L82 50 L102 46 Z"/><path d="M84 92 L68 86 L88 80 Z"/><path d="M74 128 L58 124 L76 116 Z"/><path d="M68 164 L52 162 L70 152 Z"/></g>' +
+    SEAMS.map(s => '<path class="sm" d="' + SEAM_D[s[0]] + '" fill="none" stroke="' + (f.seams[s[0]] ? '#B83C0A' : '#C9C1B3') + '" stroke-width="' + (f.seams[s[0]] ? 2.2 : 1.4) + '" stroke-dasharray="' + (f.seams[s[0]] ? '5 3' : '2 4') + '"/>').join('') +
+    '<g><path d="M' + (fp[0] - 10) + ' ' + fp[1] + ' H' + (fp[0] + 10) + '" stroke="#0F6E6A" stroke-width="5" stroke-linecap="round"/><text x="' + (fp[0] + 14) + '" y="' + (fp[1] + 4) + '" font-size="10" fill="#0B5753">填充口</text></g>' +
+    '<path d="M10 252 H230" stroke="#A16207" stroke-width="1"/></svg>';
+}
+function seamStat(){ const on = Object.values(state.flow.seams).filter(Boolean).length; return '裁片 ' + (7 + on) + ' 片 · 缝线 ' + on + ' 条'; }
+function renderSeam(){
+  const f = state.flow, root = $('#st-seam');
+  root.innerHTML = stageH('统一流程 · 第 2 步', '缝线规划', '缝线决定裁片怎么分。系统按形体曲率建议了 7 条，逐条开关看效果：关掉的缝线会让相邻裁片合并。') +
+    '<section class="card views"><div class="seamview" id="seamView">' + seamSvg() + '</div>' +
+    '<div style="display:flex;align-items:center;gap:8px"><div class="tools" role="toolbar" aria-label="缝线工具" id="seamTools">' +
+    '<button type="button" class="icon-btn" aria-label="添加缝线" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5" stroke-dasharray="2.5 2"><path d="M2 13 C6 3 10 13 14 3"/></svg></button>' +
+    '<button type="button" class="icon-btn" aria-label="添加省道" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 3 L8 13 L13 3"/></svg></button>' +
+    '<button type="button" class="icon-btn" aria-label="添加对位点" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"/><path d="M8 1 V4 M8 12 V15 M1 8 H4 M12 8 H15"/></svg></button></div>' +
+    '<span class="grow"></span><span class="num" style="font-size:12px;color:var(--mute)" id="seamStat">' + seamStat() + '</span></div></section>' +
+    '<section class="card params seam-list"><div class="sec-h"><h2>建议缝线</h2><span>虚线 = 启用</span></div>' + SEAMS.map(s => swRow('sm-' + s[0], '<span class="key"></span>' + s[1], s[2], f.seams[s[0]])).join('') + '</section>' +
+    '<section class="card params">' + segRow('fill', '填充口位置', '最后用藏针缝收口', [['belly', '腹片侧面'], ['back', '后中缝'], ['tail', '尾巴根']], f.fill) + '</section>' +
+    knowCard('缝线放在哪', '缝线尽量走在形体转折处和视觉背面：后中缝藏刺根，腹中缝藏在坐姿底部。正面缝线越少，成品越干净。');
+  const paint = () => { $('#seamView').innerHTML = seamSvg(); $('#seamStat').textContent = seamStat(); };
+  SEAMS.forEach(s => bindSw('sm-' + s[0], x => { f.seams[s[0]] = x; paint(); if (s[0] === 'back' && !x) toast('关掉后中缝后，背刺需要改为贴缝'); }));
+  bindSeg(root, (k, v) => { f.fill = v; paint(); });
+  $$('#seamTools button').forEach(b => b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; $$('#seamTools button').forEach(x => x.setAttribute('aria-pressed', x === b && on)); if (on) toast('在上方模型上点两点，' + b.getAttribute('aria-label').replace('添加', '添加一条')); }));
+}
+
+/* shared: flat pattern editing */
+const MARKS = [['emb', '刺绣位置'], ['eye', '安全眼开孔'], ['fill', '填充口'], ['ladder', '藏针缝'], ['notch', '对位点']];
+const FAB_N = { main: '主布', belly: '腹布', spike: '背刺布' };
+function markGlyph(t, x, y){
+  if (t === 'emb') return '<g><circle cx="' + x + '" cy="' + y + '" r="8" fill="none" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="2 2"/><circle cx="' + x + '" cy="' + y + '" r="2" fill="#B83C0A"/></g>';
+  if (t === 'eye') return '<g><circle cx="' + x + '" cy="' + y + '" r="7" fill="#2B2A33"/><circle cx="' + (x + 2) + '" cy="' + (y - 2) + '" r="2" fill="#fff"/></g>';
+  if (t === 'fill') return '<path d="M' + (x - 12) + ' ' + y + ' H' + (x + 12) + ' M' + (x - 12) + ' ' + (y - 5) + ' V' + (y + 5) + ' M' + (x + 12) + ' ' + (y - 5) + ' V' + (y + 5) + '" stroke="#0F6E6A" stroke-width="3" fill="none"/>';
+  if (t === 'ladder') return '<path d="M' + (x - 12) + ' ' + y + ' l4 -5 l4 10 l4 -10 l4 10 l4 -10 l4 5" stroke="#1C1B19" stroke-width="1.5" fill="none"/>';
+  return '<path d="M' + (x - 6) + ' ' + (y - 6) + ' L' + x + ' ' + (y + 5) + ' L' + (x + 6) + ' ' + (y - 6) + ' Z" fill="#B83C0A"/>';
+}
+function flatSvg(){
+  const f = state.flow, P = f.pieces;
+  let g = '';
+  Object.keys(P).forEach(k => {
+    const p = P[k], lab = p.lab || [p.c[0] - 30, p.c[1] + 40];
+    const arrow = p.grain == null ? '' : '<g transform="translate(' + p.c[0] + ' ' + p.c[1] + ') rotate(' + p.grain + ')"><path d="M0 -24 V24 M-6 16 L0 24 L6 16" fill="none" stroke="#1C1B19" stroke-width="1.8"/></g>';
+    const marks = f.marks.filter(m => m.p === k).map((m, i) => markGlyph(m.t, p.c[0] + 24 + (i % 2) * 24, p.c[1] - 22 + Math.floor(i / 2) * 22)).join('');
+    g += '<g class="fp' + (k === f.sel ? ' sel' : '') + '" data-p="' + k + '" transform="translate(' + p.x + ',' + p.y + ')"><path class="ring" d="' + p.d + '"/><path class="p-cut" d="' + p.d + '" style="stroke-width:' + (6 + p.sa * 1.2) + '"/><path class="p-sa" d="' + p.d + '" style="stroke-width:' + (4 + p.sa * 1.2) + '"/><path class="p-seam" d="' + p.d + '"/>' + arrow +
+      '<text class="p-code" x="' + lab[0] + '" y="' + lab[1] + '">' + k + '</text><text class="p-name" x="' + lab[0] + '" y="' + (lab[1] + 19) + '">' + p.n + ' ×' + p.qty + '</text>' + marks + '</g>';
+  });
+  return '<svg viewBox="0 0 760 500" aria-label="平面纸样">' +
+    '<g stroke="#E6E0D5" stroke-width="1" stroke-dasharray="3 6"><path d="M253 0 V500 M506 0 V500 M0 250 H760"/></g>' + g +
+    '<g transform="translate(560,300)"><rect width="60" height="60" fill="none" stroke="#1C1B19" stroke-width="1.6"/><text x="0" y="78" font-size="14" fill="#3F3C36">5 cm 校准</text></g>' +
+    '<g transform="translate(540,400)" font-size="13" fill="#3F3C36"><rect width="210" height="88" rx="8" fill="#FBF9F5" stroke="#E2DCD1"/><text x="12" y="24" font-weight="700" fill="#1C1B19">坐姿恐龙 v3</text><text x="12" y="46">2026-09-28 · 比例 1:1</text><text x="12" y="68">默认缝份 5 mm · 9 种裁片</text></g></svg>';
+}
+function specRows(){
+  const f = state.flow, P = f.pieces, keys = Object.keys(P);
+  const noGrain = keys.filter(k => P[k].grain == null);
+  const has = t => f.marks.some(m => m.t === t);
+  const notch = f.marks.filter(m => m.t === 'notch').length;
+  return [
+    [true, '裁片编号与名称 ' + keys.length + '/' + keys.length],
+    [!noGrain.length, noGrain.length ? noGrain.join('、') + ' 缺布纹 / 毛向箭头' : '布纹 / 毛向箭头齐全'],
+    [true, '缝份已标注 · 默认 5 mm'],
+    [true, '对位点 ' + (14 + notch) + ' 个，已编号'],
+    [has('fill'), has('fill') ? '填充口已标注' : '未标注填充口，建议在 B2 腹片侧面'],
+    [has('eye') || has('emb'), has('eye') || has('emb') ? '眼睛 / 刺绣位置已标注' : '未标注眼睛或刺绣位置'],
+    [true, '1:1 校准方块 5 × 5 cm'],
+    [true, '版本 v3 · 日期 2026-09-28']
+  ];
+}
+function renderFlat(){
+  const f = state.flow, P = f.pieces, p = P[f.sel], root = $('#st-flat');
+  const S = specRows(), okN = S.filter(r => r[0]).length;
+  const mine = f.marks.map((m, i) => ({ m, i })).filter(x => x.m.p === f.sel);
+  root.innerHTML = stageH('统一流程 · 第 3 步', '平面纸样编辑', '展开后的裁片在这里按纸样规范整理：编号、数量、缝份、毛向，再标出需要手工完成的部分。点裁片开始编辑。') +
+    '<section class="card" style="padding:8px"><div class="flatcv" id="flatCv">' + flatSvg() + '</div></section>' +
+    '<div class="hscroll" role="tablist" aria-label="裁片" id="pieceChips">' + Object.keys(P).map(k => '<button type="button" class="chip" role="tab" aria-selected="' + (k === f.sel) + '" data-pc="' + k + '">' + k + ' ' + P[k].n + (P[k].grain == null ? ' ·!' : '') + '</button>').join('') + '</div>' +
+    '<section class="card params"><div class="sec-h"><h2>' + f.sel + ' · ' + p.n + '</h2><span>' + FAB_N[p.fab] + '</span></div>' +
+    segRow('qty', '裁剪数量', '', [['1', '×1'], ['2', '×2 镜像'], ['4', '×4']], String(p.qty)) +
+    segRow('sa', '缝份', '', [['5', '5 mm'], ['7', '7 mm'], ['10', '10 mm']], String(p.sa)) +
+    '<div class="sw-row"><span>布纹 / 毛向<small>' + (p.grain == null ? '未设置' : '箭头 ' + p.grain + '°，裁剪时对齐布背毛向') + '</small></span><button type="button" class="btn ghost" id="grainBtn" style="height:34px;font-size:12.5px">' + (p.grain == null ? '添加毛向箭头' : '旋转 90°') + '</button></div>' +
+    segRow('fab', '布料', '', [['main', '主布'], ['belly', '腹布'], ['spike', '背刺布']], p.fab) + '</section>' +
+    '<section class="card params"><div class="sec-h"><h2>手工标记</h2><span>加到 ' + f.sel + '</span></div><div class="marks">' +
+    MARKS.map(m => '<button type="button" data-mk="' + m[0] + '"><svg width="26" height="18" viewBox="-14 -9 28 18" aria-hidden="true">' + markGlyph(m[0], 0, 0) + '</svg>' + m[1] + '</button>').join('') + '</div>' +
+    (mine.length ? '<div class="marks">' + mine.map(x => '<button type="button" data-unmk="' + x.i + '" aria-label="移除' + MARKS.find(m => m[0] === x.m.t)[1] + '">' + MARKS.find(m => m[0] === x.m.t)[1] + ' ×</button>').join('') + '</div>' : '<div style="font-size:12px;color:var(--mute)">这片还没有手工标记</div>') + '</section>' +
+    '<section class="card checks" aria-label="图纸规范"><h3>图纸规范 ' + okN + '/' + S.length + '</h3><ul class="spec">' + S.map(r => '<li>' + (r[0] ? I_OK : I_WARN) + '<span>' + r[1] + '</span></li>').join('') + '</ul></section>';
+  $$('#flatCv .fp').forEach(g => g.addEventListener('click', () => { f.sel = g.dataset.p; renderFlat(); }));
+  $$('#pieceChips [data-pc]').forEach(b => b.addEventListener('click', () => { f.sel = b.dataset.pc; renderFlat(); }));
+  bindSeg(root, (k, v) => { p[k] = k === 'fab' ? v : +v; renderFlat(); });
+  $('#grainBtn').addEventListener('click', () => { p.grain = p.grain == null ? 0 : (p.grain + 90) % 360; renderFlat(); });
+  $$('[data-mk]', root).forEach(b => b.addEventListener('click', () => { f.marks.push({ p: f.sel, t: b.dataset.mk }); renderFlat(); toast('已在 ' + f.sel + ' 添加' + MARKS.find(m => m[0] === b.dataset.mk)[1]); }));
+  $$('[data-unmk]', root).forEach(b => b.addEventListener('click', () => { f.marks.splice(+b.dataset.unmk, 1); renderFlat(); }));
+  const sc = $('#pieceChips [aria-selected="true"]'); if (sc) sc.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+
+/* ---------- workbench: projects ---------- */
+const PROJECTS = [
+  { t: '哥特小龙', mode: 'text', stage: 'decide', note: '8 项开版决策待确认', w: 0 },
+  { t: '坐姿小恐龙', mode: 'views', stage: 'opt', note: '3D 已重建，待选开版技术', w: 1 },
+  { t: '恐龙手办翻模', mode: 'obj', stage: 'flat', note: '图纸规范 5/8', w: 1 }
+];
+function renderProjects(){
+  $('#lvl-proj').innerHTML = '<div class="sec-h"><h2>进行中的开版</h2><span>' + PROJECTS.length + ' 个</span></div>' +
+    PROJECTS.map((p, i) => {
+      const st = FLOW_STAGES[flowKind(p.mode)].concat(SHARED), si = st.indexOf(p.stage);
+      return '<button type="button" class="card proj" data-resume="' + i + '"><span class="th" style="background:' + WORKS[p.w].bg + '">' + WORKS[p.w].svg + '</span><span class="stack g8" style="min-width:0"><b>' + p.t + '</b><span class="m"><span class="pill sand">' + MODES[p.mode].chip + '</span>' + p.note + '</span><span class="bar"><i style="width:' + ((si + 1) / st.length * 100) + '%"></i></span><span class="nx"><span class="num">' + (si + 1) + ' / ' + st.length + ' · ' + STAGE_N[p.stage] + '</span><em>继续</em></span></span></button>';
+    }).join('') +
+    '<button type="button" class="btn ghost block" data-go="home">新建开版 · 回首页选择输入方式</button>' +
+    knowCard('一个项目的完整路径', '不同输入只影响前两步：文字、手绘、参考图走 AI 生成与决策确认；三视图走视图对齐与重建；3D 模型走来源判断与诊断。之后统一进入 3D 优化、缝线规划、平面纸样和对缝 QA。');
+  $$('[data-resume]').forEach(b => b.addEventListener('click', () => { const p = PROJECTS[+b.dataset.resume]; startFlow(p.mode, { stage: p.stage, title: p.t, sample: true }); }));
+}
+
 /* ---------- boot ---------- */
-setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); setLevel('l1', false); measureHdr(); $('#s-work').addEventListener('scroll', onWorkScroll, { passive: true }); if (document.fonts) document.fonts.ready.then(measureHdr);
+setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); renderProjects(); renderUpload(); updateGen(); setLevel('l1', false); measureHdr(); $('#s-work').addEventListener('scroll', onWorkScroll, { passive: true }); if (document.fonts) document.fonts.ready.then(measureHdr);
 $$('#route button').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
 const h = (location.hash || '').slice(1); if (ROUTES[h]) go(h); else syncRoute();
-window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state };
+window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state, startFlow, gotoStage, setMode, setTemplate };
 })();
 </script>
 </body>
