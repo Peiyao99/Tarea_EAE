@@ -4,8 +4,8 @@
 
 | 文件 | 风格 | 配乐 |
 | --- | --- | --- |
-| `out/pattern-studio-a.mp4` | 黑橙 · 圆角弹跳、关卡进度条、贴纸 | 124 BPM 马林巴流行，C–G–Am–F |
-| `out/pattern-studio-b.mp4` | 黑紫 · 日系漫画网点、速度线、拟声词、音符 | 140 BPM 轻音乐队，王道进行 IV–V–iii–vi |
+| `pattern-studio-orange.mp4` | 黑橙 · 圆角弹跳、关卡进度条、贴纸 | 124 BPM 马林巴流行，C–G–Am–F |
+| `pattern-studio-purple.mp4` | 黑紫 · 日系漫画网点、速度线、拟声词、音符 | 140 BPM 轻音乐队，王道进行 IV–V–iii–vi |
 
 配乐由 `music.js` 用代码合成，不含采样和第三方音乐，可以直接商用。
 
