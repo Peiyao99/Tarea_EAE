@@ -159,3 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 promo/out/
+
+prototype-v3/node_modules/
+prototype-v3/dist/
+prototype-v3/bundle.html
+prototype-v3/.parcel-cache/

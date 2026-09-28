@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 38 33% 96%;
+    --foreground: 40 6% 11%;
+    --card: 40 40% 99%;
+    --card-foreground: 40 6% 11%;
+    --popover: 40 40% 99%;
+    --popover-foreground: 40 6% 11%;
+    --primary: 19 90% 38%;
+    --primary-foreground: 36 60% 97%;
+    --secondary: 36 22% 90%;
+    --secondary-foreground: 40 6% 11%;
+    --muted: 36 22% 91%;
+    --muted-foreground: 32 7% 40%;
+    --accent: 36 22% 90%;
+    --accent-foreground: 40 6% 11%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 34 18% 84%;
+    --input: 34 18% 80%;
+    --ring: 19 90% 38%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body { font-family: 'Noto Sans SC', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+}
+@layer utilities {
+  .font-display { font-family: 'Noto Serif SC', 'Songti SC', serif; }
+  .bg-paper {
+    background-color: #EAE3D6;
+    background-image: linear-gradient(rgba(60,45,30,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(60,45,30,.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .text-balance { text-wrap: balance; }
+}
+/* A transform makes fixed children (bottom bars, overlays) anchor to the phone frame. */
+.phone { transform: translateZ(0); }
+.phone-bottom { position: absolute; }
+@media (max-width: 1023px) { html, body { overflow: hidden; } }
