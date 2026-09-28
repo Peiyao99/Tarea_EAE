@@ -19,7 +19,7 @@ export const MODES: Record<Exclude<Mode, 'tpl'>, { label: string; long: string; 
 }
 
 export type StageKey = 'shape' | 'gen' | 'decide' | 'align' | 'recon' | 'source' | 'diagnose' | 'opt' | 'seam' | 'flat' | 'qa' | 'deliver' | 'proof' | 'launch'
-export const STAGE_N: Record<StageKey, string> = { shape: '调形状', gen: 'AI 起形', decide: '拍板', align: '对齐三视图', recon: '重建形体', source: '模型来源', diagnose: '模型体检', opt: '开版方式', seam: '缝线与填充口', flat: '平面纸样', qa: '对缝 QA', deliver: '导出纸样', proof: '打样验证', launch: '发起材料包' }
+export const STAGE_N: Record<StageKey, string> = { shape: '调形状', gen: 'AI 起形', decide: '拍板', align: '对齐三视图', recon: '重建形体', source: '模型来源', diagnose: '模型体检', opt: '开版方式', seam: '缝线与填充口', flat: '平面纸样', qa: '对缝 QA', deliver: '导出纸样', proof: '缝好登记', launch: '发起材料包' }
 const SHARED: StageKey[] = ['opt', 'seam', 'flat', 'qa', 'deliver', 'proof', 'launch']
 export function stagesFor(mode: Mode): StageKey[] {
   if (mode === 'tpl') return ['shape', 'qa', 'deliver', 'proof', 'launch']
@@ -114,3 +114,13 @@ export const FABRICS = [
   { k: 'moss', n: '苔绿 · 水晶超柔', hex: '#5A6B45' }, { k: 'ink', n: '墨灰 · 水晶超柔', hex: '#4A4854' },
   { k: 'snow', n: '奶白 · 摇粒绒', hex: '#EDE6DA' }, { k: 'rose', n: '烟粉 · 长毛绒', hex: '#D9A4A0' }
 ]
+
+export type KitItem = { id: string; k: Kind; n: string; sub: string; by: string; price: number; pdf: number; custom: number | null; count: number; target: number; days: number; rounds: number; level: '入门' | '进阶'; status: '预订中' | '现货'; colors: string[] }
+export const KITS: KitItem[] = [
+  { id: 'dragon', k: 'dino', n: '哥特小龙', sub: '神奇动物系列', by: 'MOTH 工作室', price: 168, pdf: 38, custom: 680, count: 32, target: 50, days: 12, rounds: 2, level: '进阶', status: '预订中', colors: ['wine', 'ink', 'moss', 'snow'] },
+  { id: 'bear', k: 'bear', n: '生日熊', sub: '入门系列', by: '官方', price: 128, pdf: 0, custom: null, count: 50, target: 50, days: 0, rounds: 3, level: '入门', status: '现货', colors: ['oat', 'snow', 'rose'] },
+  { id: 'cat', k: 'cat', n: '蹲坐猫', sub: '日常系列', by: '@Neko', price: 148, pdf: 28, custom: null, count: 19, target: 40, days: 9, rounds: 2, level: '入门', status: '预订中', colors: ['ink', 'oat', 'snow'] },
+  { id: 'bunny', k: 'bunny', n: '长耳兔', sub: '站姿系列', by: '@兔兔社', price: 158, pdf: 32, custom: 520, count: 41, target: 50, days: 5, rounds: 3, level: '进阶', status: '预订中', colors: ['snow', 'rose', 'oat'] }
+]
+export const kitOf = (id?: string) => KITS.find(x => x.id === id) || KITS[0]
+export const fabricOf = (k: string) => FABRICS.find(f => f.k === k) || FABRICS[0]

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, ImagePlus, Loader2, Sparkles, Upload, UserRound, X } from 'lucide-react'
+import { ArrowRight, ImagePlus, Loader2, Sparkles, Upload, X } from 'lucide-react'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { CASES, MODES, TEMPLATES, type Mode } from '@/data'
+import { AvatarButton } from '@/components/Avatar'
 import { useApp, type FileRec } from '@/store'
 import { CaseArt } from '@/components/Art'
 
@@ -88,7 +89,7 @@ export function Home() {
         <b className="font-display text-[18px]">纸样工作台</b>
         <span className="flex-1" />
         <Badge variant="outline" className="rounded-full bg-card font-mono">◇ {(app.demo.lowToken ? 12 : app.token).toLocaleString('en-US')}</Badge>
-        <button aria-label={app.user ? '我的账户' : '登录'} onClick={() => app.setAcct(true)} className="grid size-9 place-items-center rounded-full border bg-card text-[13px] font-bold">{app.user ? app.user[0] : <UserRound className="size-4" />}</button>
+        <AvatarButton />
       </header>
 
       <section className="flex flex-col gap-2">

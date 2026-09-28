@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Check, ChevronLeft, ChevronDown, CircleAlert, Download, ImagePlus, RotateCcw, TriangleAlert, Undo2, X } from 'lucide-react'
+import { Check, ChevronLeft, ChevronDown, CircleAlert, Download, ImagePlus, RotateCcw, TriangleAlert, Lock, ChevronRight, Undo2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -43,7 +44,9 @@ function Steps({ items, t, onDone }: { items: [string, string][]; t: number[]; o
 /* ---------- the flow screen ---------- */
 export function Flow() {
   const app = useApp(), f = app.flow, set = app.setFlow
+  const stages = f.stages.filter(k => k !== 'launch' || (app.user && app.role === 'creator' && f.proof.who === 'plat'))
   const key = f.stages[f.idx]
+  const stageName = (k: StageKey) => k === 'proof' && app.role === 'creator' && f.proof.who === 'plat' ? '平台打样' : STAGE_N[k]
   const [hi, setHi] = useState<{ parts: Part[]; pieces: string[] }>({ parts: [], pieces: [] })
   const [allSteps, setAllSteps] = useState(false)
   const [leave, setLeave] = useState(false)
@@ -77,8 +80,8 @@ export function Flow() {
           <Button variant="outline" size="icon" className="size-9 rounded-full" aria-label="撤销" disabled={!app.canUndo} onClick={app.undo}><Undo2 className="size-4" /></Button>
         </div>
         <button className="flex flex-col gap-1.5 text-left" onClick={() => setAllSteps(true)} aria-label="查看全部步骤">
-          <span className="flex items-baseline gap-2"><b className="font-mono text-xs font-medium text-primary">{f.idx + 1} / {f.stages.length}</b><span className="text-[15px] font-bold">{STAGE_N[key]}</span><span className="ml-auto text-xs text-muted-foreground">全部步骤</span></span>
-          <Progress value={(f.idx + 1) / f.stages.length * 100} className="h-1" />
+          <span className="flex items-baseline gap-2"><b className="font-mono text-xs font-medium text-primary">{f.idx + 1} / {stages.length}</b><span className="text-[15px] font-bold">{stageName(key)}</span><span className="ml-auto text-xs text-muted-foreground">全部步骤</span></span>
+          <Progress value={(f.idx + 1) / stages.length * 100} className="h-1" />
         </button>
       </header>
 
@@ -102,10 +105,10 @@ export function Flow() {
       <Sheet open={allSteps} onOpenChange={setAllSteps}>
         <SheetContent side="bottom" className="rounded-t-[24px]">
           <SheetHeader><SheetTitle>全部步骤</SheetTitle></SheetHeader>
-          <ol className="flex flex-col gap-1.5 px-4 pb-6">{f.stages.map((k, i) => <li key={k}>
-            {isShared(k) && !isShared(f.stages[i - 1] || 'gen') && f.mode !== 'tpl' && <div className="px-1 pb-1 pt-2 font-mono text-[11px] text-muted-foreground">以下是统一流程</div>}
+          <ol className="flex flex-col gap-1.5 px-4 pb-6">{stages.map((k, i) => <li key={k}>
+            {isShared(k) && !isShared(stages[i - 1] || 'gen') && f.mode !== 'tpl' && <div className="px-1 pb-1 pt-2 font-mono text-[11px] text-muted-foreground">以下是统一流程</div>}
             <button disabled={i > f.reached} onClick={() => { setAllSteps(false); goto(i) }} className={cn('flex h-11 w-full items-center gap-3 rounded-xl border px-3 text-left text-[14px] disabled:opacity-45', i === f.idx && 'border-foreground font-bold ring-1 ring-foreground')}>
-              <span className={cn('grid size-6 place-items-center rounded-full font-mono text-[11px]', i < f.reached || i < f.idx ? 'bg-emerald-700 text-white' : i === f.idx ? 'bg-primary text-primary-foreground' : 'bg-muted')}>{i + 1}</span>{STAGE_N[k]}{i === f.idx && <span className="ml-auto text-xs text-primary">当前</span>}
+              <span className={cn('grid size-6 place-items-center rounded-full font-mono text-[11px]', i < f.reached || i < f.idx ? 'bg-emerald-700 text-white' : i === f.idx ? 'bg-primary text-primary-foreground' : 'bg-muted')}>{i + 1}</span>{stageName(k)}{i === f.idx && <span className="ml-auto text-xs text-primary">当前</span>}
             </button></li>)}</ol>
         </SheetContent>
       </Sheet>
@@ -113,7 +116,7 @@ export function Flow() {
       <Dialog open={leave} onOpenChange={setLeave}>
         <DialogContent className="max-w-[340px] rounded-[22px]">
           <DialogHeader><DialogTitle>先离开这个项目？</DialogTitle>
-            <DialogDescription>{app.user ? `进度已自动存进工作台，停在「${STAGE_N[key]}」，回来接着做。` : '你还没登录，离开后这次的进度不会保存。'}</DialogDescription></DialogHeader>
+            <DialogDescription>{app.user ? `进度已自动存进工作台，停在「${stageName(key)}」，回来接着做。` : '你还没登录，离开后这次的进度不会保存。'}</DialogDescription></DialogHeader>
           <DialogFooter className="flex-row gap-2">
             {!app.user && <Button variant="outline" className="flex-1 rounded-full" onClick={() => { setLeave(false); app.gate('登录后保存这只设计', () => toast.success('已保存到工作台')) }}>登录保存</Button>}
             {app.user && <Button variant="outline" className="flex-1 rounded-full" onClick={() => setLeave(false)}>继续开版</Button>}
@@ -148,7 +151,7 @@ export function Flow() {
 
   /* ---------- stages ---------- */
   function renderStage(): { body: ReactNode; label: string; disabled?: boolean; onNext?: () => void } {
-    const nextName = f.stages[f.idx + 1] ? '下一步 · ' + STAGE_N[f.stages[f.idx + 1]] : '完成'
+    const nextName = stages[f.idx + 1] ? '下一步 · ' + stageName(stages[f.idx + 1]) : '完成'
     switch (key as StageKey) {
       case 'gen': return genStage()
       case 'decide': return decideStage()
@@ -350,28 +353,57 @@ export function Flow() {
   }
 
   function proofStage() {
-    const P = f.proof, passed = P.checks.every(Boolean) && !!P.photo
+    const P = f.proof, creator = app.user && app.role === 'creator', plat = creator && P.who === 'plat'
     const setP = (p: Partial<F['proof']>) => set(x => ({ ...x, proof: { ...x.proof, ...p } }))
-    return { label: passed ? '下一步 · ' + STAGE_N.launch : '完成打样检查后继续', disabled: !passed, body: <>
-      <H t="打一个样，验证能缝" p="缝出实物、检查过，才能发起材料包。" />
-      <Card><Line l="谁来打样"><Pick label="谁来打样" value={P.who} onChange={v => setP({ who: v })} opts={[['self', '我自己缝'], ['plat', '平台代打样']]} /></Line>{P.who === 'plat' && <p className="text-xs text-muted-foreground">平台代打样 ¥88 · 约 5 天寄到（示例价格）</p>}</Card>
+    const save = () => app.gate('登录后，缝好的这只会存进你的作品', () => {
+      app.addWork({ title: f.title, kind: f.kind, photo: P.photo, note: P.note, time: TIMES.find(t => t[0] === P.time)![1], community: P.community, cases: P.cases })
+      set(x => ({ ...x, launched: false })); app.go({ name: 'done' })
+    })
+    const who = creator && <Card><Line l="这次怎么做" s="平台打样通过后才能发起材料包"><Pick label="这次怎么做" value={P.who} onChange={v => setP({ who: v })} opts={[['self', '自己缝'], ['plat', '平台打样']]} /></Line></Card>
+    if (plat) {
+      const passed = P.platBack
+      return { label: passed ? '下一步 · 发起材料包' : P.platSent ? '等样品回传' : '提交平台打样 · ¥88', disabled: P.platSent && !passed,
+        onNext: passed ? next : () => { setP({ platSent: true }); toast.success('已提交平台打样', { description: '约 5 天，样品照片和检查报告会回传到这里' }) }, body: <>
+        <H t="交给平台打一个样" p="平台按你的纸样缝出实物并检查，通过后这套纸样才能发起材料包。" />
+        {who}
+        <Card className="gap-0 py-1">{[['提交纸样', '纸样和缝制说明一起提交', true], ['平台打样', '约 5 天 · ¥88（示例价格）', P.platSent], ['回传照片与检查报告', '对缝、填充、坐稳、外观 4 项', P.platBack], ['验证通过', '获得打样验证标记', P.platBack]].map(([a, b, ok], i) => (
+          <div key={a as string} className="flex items-center gap-3 border-b py-2.5 last:border-0">
+            <span className={cn('grid size-6 place-items-center rounded-full font-mono text-[11px]', ok ? 'bg-emerald-700 text-white' : 'bg-muted')}>{ok ? <Check className="size-3.5" /> : i + 1}</span>
+            <span className="flex-1"><b className="text-[14px] font-medium">{a as string}</b><div className="text-xs text-muted-foreground">{b as string}</div></span></div>))}</Card>
+        {P.platSent && !P.platBack && <Button variant="outline" className="rounded-full" onClick={() => setP({ platBack: true, photo: app.snapRef.current?.() || null, checks: [true, true, true] })}>演示：模拟样品回传</Button>}
+        {P.platBack && <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-[13px] text-emerald-900"><Check className="size-4" />打样通过，可以发起材料包了</div>}
+      </> }
+    }
+    return { label: P.community || P.cases ? '保存并分享' : '保存到我的作品', disabled: !P.photo, onNext: save, body: <>
+      <H t="缝好了？登记一下" p="记下这只是怎么做出来的。分享出去，下一个人就能照着你的做。" />
+      {who}
       <Card>
-        <b className="text-[14px]">打样照片</b>
-        <label className="relative flex h-32 cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border-[1.5px] border-dashed bg-muted/40 text-xs text-muted-foreground">
-          {P.photo ? <img src={P.photo} alt="打样照片" className="absolute inset-0 size-full object-cover" /> : <><ImagePlus className="size-5" /><b className="text-[13px] text-foreground">上传打样照片</b>正面、侧面各一张最好</>}
+        <b className="text-[14px]">成品照片</b>
+        <label className="relative flex h-36 cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border-[1.5px] border-dashed bg-muted/40 text-xs text-muted-foreground">
+          {P.photo ? <img src={P.photo} alt="成品照片" className="absolute inset-0 size-full object-contain" /> : <><ImagePlus className="size-5" /><b className="text-[13px] text-foreground">上传成品照片</b>正面、侧面各一张最好</>}
           <input type="file" accept="image/*" className="sr-only" onChange={e => { const file = e.target.files?.[0]; if (!file) return; const r = new FileReader(); r.onload = () => setP({ photo: String(r.result) }); r.readAsDataURL(file) }} />
         </label>
-        {!P.photo && <button className="self-start text-[13px] text-primary underline underline-offset-4" onClick={() => setP({ photo: app.snapRef.current?.() || null })}>没有照片？用 3D 截图代替</button>}
+        {!P.photo && <button className="self-start text-[13px] text-primary underline underline-offset-4" onClick={() => setP({ photo: app.snapRef.current?.() || null })}>还没拍？先用 3D 截图占位</button>}
       </Card>
-      <Card><b className="text-[14px]">检查清单 {P.checks.filter(Boolean).length}/4</b>{['对缝都对上了', '填充后形状对', '能自己坐稳', '外观满意'].map((n, i) => <Line key={n} l={n}><Switch checked={P.checks[i]} onCheckedChange={v => setP({ checks: P.checks.map((c, j) => j === i ? v : c) })} aria-label={n} /></Line>)}</Card>
-      {passed && <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-[13px] text-emerald-900"><Check className="size-4" />验证通过，可以发起材料包了</div>}
+      <Card>
+        <Line l="做了多久"><Pick label="做了多久" value={P.time} onChange={v => setP({ time: v })} opts={TIMES.map(t => [t[0], t[1]])} /></Line>
+        <Line l="难度感受"><Pick label="难度感受" value={P.feel} onChange={v => setP({ feel: v })} opts={[['easy', '比想的简单'], ['ok', '刚好'], ['hard', '有点难']]} /></Line>
+        <Textarea value={P.note} onChange={e => setP({ note: e.target.value })} placeholder="踩过的坑、改过的地方，比如：背刺先疏缝再合后中缝" className="min-h-20 rounded-xl text-[14px]" />
+      </Card>
+      <Card><b className="text-[14px]">自查 <span className="font-normal text-muted-foreground">· 选填，会显示在作品页</span></b>{['对缝都对上了', '填充后形状对', '能自己坐稳'].map((n, i) => <Line key={n} l={n}><Switch checked={P.checks[i]} onCheckedChange={v => setP({ checks: P.checks.map((c, j) => j === i ? v : c) })} aria-label={n} /></Line>)}</Card>
+      <Card>
+        <Line l="分享到社区" s="关注你的人和同款模板页能看到"><Switch checked={P.community} onCheckedChange={v => setP({ community: v })} aria-label="分享到社区" /></Line>
+        <Line l="投稿到案例库" s="审核通过后出现在首页「照着案例做一只」"><Switch checked={P.cases} onCheckedChange={v => setP({ cases: v })} aria-label="投稿到案例库" /></Line>
+      </Card>
+      {!creator && <button onClick={() => app.go({ name: app.user ? 'me' : 'apply' })} className="flex items-center gap-3 rounded-[20px] border border-dashed px-3.5 py-3 text-left">
+        <Lock className="size-4 text-muted-foreground" /><span className="flex-1 text-[13px]"><b>想让平台打样、发起材料包？</b><span className="block text-muted-foreground">这是创作者功能，需要先申请</span></span><ChevronRight className="size-4 text-muted-foreground" /></button>}
     </> }
   }
 
   function launchStage() {
     const L = f.launch, cost = 96, fee = Math.round(L.price * 0.1), share = L.price - cost - fee
     const setL = (p: Partial<F['launch']>) => set(x => ({ ...x, launch: { ...x.launch, ...p } }))
-    return { label: '提交材料包审核', onNext: () => app.gate('登录后发起材料包', () => { set(x => ({ ...x, launched: true })); app.go({ name: 'done' }) }), body: <>
+    return { label: '提交材料包审核', onNext: () => { set(x => ({ ...x, launched: true })); app.go({ name: 'done' }) }, body: <>
       <H t="发起材料包" p="达标后平台统一裁切、配布、质检、发货。" />
       <Card><SliderRow l="起做份数" min={20} max={200} v={L.qty} u=" 份" on={v => setL({ qty: v })} /><Line l="预订期" s="到期没达标自动全额退款"><Pick label="预订期" value={L.days} onChange={v => setL({ days: v })} opts={[['7', '7 天'], ['14', '14 天'], ['21', '21 天']]} /></Line><SliderRow l="售价" min={98} max={298} v={L.price} u=" 元" on={v => setL({ price: v })} /></Card>
       <Card><b className="text-[14px]">每份的钱去哪了 <span className="font-normal text-muted-foreground">· 示例成本</span></b>
@@ -382,6 +414,8 @@ export function Flow() {
     </> }
   }
 }
+
+const TIMES: [string, string][] = [['w1', '一个周末'], ['w2', '两个周末'], ['wk', '一周以上']]
 
 function SliderRow({ l, min, max, v, u, on }: { l: string; min: number; max: number; v: number; u: string; on?: (v: number) => void }) {
   const [val, setVal] = useState(v)

@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
-import { Box, Check, FolderOpen, Home as HomeIcon, LayoutGrid, Package, QrCode, Share2, Download, Smartphone, ArrowRight, Scissors, BookOpen, Truck } from 'lucide-react'
+import { Check, FolderOpen, Home as HomeIcon, LayoutGrid, Package, QrCode, Share2, Download, Smartphone, ArrowRight, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { AppProvider, DEMO_KEYS, useApp } from '@/store'
-import { CASES, FABRICS, MODES, STAGE_N, TEMPLATES, type Kind, type Mode, type StageKey } from '@/data'
+import { AppProvider, useApp } from '@/store'
+import { CASES, MODES, STAGE_N, type Kind, type Mode, type StageKey } from '@/data'
 import { Home } from '@/screens/Home'
 import { Library, TemplateDetail } from '@/screens/Library'
 import { Flow } from '@/screens/Flow'
-import { Viewer } from '@/three/Viewer'
+import { KitDetail, KitList } from '@/screens/Kit'
+import { Apply, DemoPanel, Me, ROLE_N } from '@/screens/Me'
+import { CreatorPage } from '@/screens/Creator'
 import { CaseArt } from '@/components/Art'
+import { AvatarButton } from '@/components/Avatar'
 import { cn } from '@/lib/utils'
 
 export default function App() {
@@ -24,38 +24,87 @@ const NAV = [
   { k: 'home', n: '首页', i: HomeIcon }, { k: 'library', n: '模板库', i: LayoutGrid },
   { k: 'projects', n: '工作台', i: FolderOpen }, { k: 'kit', n: '材料包', i: Package }
 ] as const
+const TABS = ['home', 'library', 'projects', 'kit']
 
 function Shell() {
   const app = useApp(), s = app.screen
-  const immersive = s.name === 'flow' || s.name === 'tpl' || s.name === 'done'
   return (
-    <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-14 lg:px-10">
-      <aside className="hidden max-w-[360px] justify-self-end lg:flex lg:flex-col lg:gap-4">
-        <span className="font-mono text-xs text-muted-foreground">PROTOTYPE · v3 · shadcn/ui + three.js</span>
-        <h1 className="font-display text-[34px] font-black leading-[1.2]">纸样工作台</h1>
-        <p className="text-[15px] leading-relaxed text-foreground/80">从一句话、草图、三视图或 3D 模型开始，拿到能直接裁剪缝制的毛绒纸样。模板和真实案例带你入门，3D 与纸样在同一个工作区里互相定位。</p>
-        <ul className="flex flex-col gap-1.5 text-[13.5px] text-foreground/75">
-          <li>未登录可以浏览模板和案例，开始生成、保存、发起材料包时弹出注册</li>
-          <li>右上角头像里可以切换演示状态：上传失败、生成失败、token 不足等</li>
-        </ul>
-      </aside>
+    <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-12 lg:px-10">
+      <aside className="hidden w-[330px] justify-self-end lg:block"><Journey /></aside>
       <div id="phone" className="phone relative mx-auto flex h-dvh w-full max-w-[430px] flex-col overflow-clip bg-background lg:h-[844px] lg:w-[390px] lg:rounded-[44px] lg:border-[10px] lg:border-[#1C1B19] lg:shadow-[0_40px_80px_-40px_rgba(40,30,20,.6)]">
-        <main key={s.name + (s.tpl || '')} className={cn('min-h-0 flex-1 animate-in fade-in-0 duration-200', s.name === 'flow' ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain')}>
+        <main key={s.name + (s.tpl || '') + (s.id || '')} className={cn('min-h-0 flex-1 animate-in fade-in-0 duration-200', s.name === 'flow' ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain')}>
           {s.name === 'home' && <Home />}
           {s.name === 'library' && <Library />}
           {s.name === 'tpl' && s.tpl && <TemplateDetail k={s.tpl} />}
           {s.name === 'flow' && <Flow />}
           {s.name === 'projects' && <Projects />}
-          {s.name === 'kit' && <Kit />}
+          {s.name === 'kit' && <KitList />}
+          {s.name === 'kitDetail' && <KitDetail id={s.id} />}
           {s.name === 'done' && <Done />}
+          {s.name === 'me' && <Me />}
+          {s.name === 'apply' && <Apply />}
+          {s.name === 'creator' && <CreatorPage self />}
+          {s.name === 'profile' && <CreatorPage self={false} />}
         </main>
-        {!immersive && <BottomNav />}
+        {TABS.includes(s.name) && <BottomNav />}
         <AuthDialog />
         <ShareCard />
-        <AccountSheet />
-        <Toaster position="top-center" richColors={false} toastOptions={{ className: 'rounded-2xl' }} />
+        <Toaster position="top-center" toastOptions={{ className: 'rounded-2xl' }} />
       </div>
-      <div className="hidden lg:block" />
+      <aside className="hidden w-[300px] lg:block"><DemoPanel open /></aside>
+    </div>
+  )
+}
+
+/* ---------- user journey (desktop side panel) ---------- */
+type Node = 'browse' | 'signup' | 'make' | 'export' | 'sew' | 'buy' | 'apply' | 'review' | 'cmake' | 'plat' | 'launch' | 'center'
+const LANES: { role: string; sub: string; nodes: [Node, string, string][] }[] = [
+  { role: '兴趣用户', sub: '默认身份 · 注册即是', nodes: [['browse', '看案例和模板', '不登录也能看'], ['signup', '用到功能时注册', '生成、开版、保存'], ['make', '开版', 'AI / 三视图 / 模型 / 模板'], ['export', '导出纸样', '打印拼贴'], ['sew', '自己缝 · 登记分享', '社区、案例库'], ['buy', '买材料包', '别人验证过的纸样']] },
+  { role: '创作者', sub: '从「我的」申请 · 审核开通', nodes: [['apply', '申请', '作品或作品集'], ['review', '审核', '1–3 个工作日'], ['cmake', '开版', '同一套工具'], ['plat', '平台打样', '通过才可上架'], ['launch', '发起材料包', '定份数、售价、分成'], ['center', '创作者中心', '数据、私信、上新']] }
+]
+
+function useNode(): Node | null {
+  const app = useApp(), s = app.screen, f = app.flow, creator = !!app.user && app.role === 'creator'
+  if (app.authAsk) return 'signup'
+  switch (s.name) {
+    case 'home': case 'library': case 'tpl': case 'profile': return 'browse'
+    case 'projects': return creator ? 'cmake' : 'make'
+    case 'kit': case 'kitDetail': return 'buy'
+    case 'apply': return 'apply'
+    case 'creator': return 'center'
+    case 'me': return !app.user ? 'signup' : app.role === 'pending' ? 'review' : app.role === 'creator' ? 'center' : null
+    case 'done': return f.launched ? 'launch' : 'sew'
+    case 'flow': {
+      const k = f.stages[f.idx]
+      if (k === 'launch') return 'launch'
+      if (k === 'proof') return creator && f.proof.who === 'plat' ? 'plat' : 'sew'
+      if (k === 'deliver') return 'export'
+      return creator ? 'cmake' : 'make'
+    }
+  }
+  return null
+}
+
+function Journey() {
+  const app = useApp(), cur = useNode()
+  const id = app.user ? ROLE_N[app.role] : '访客'
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <span className="font-mono text-xs text-muted-foreground">PROTOTYPE · v3.1 · 用户历程</span>
+        <h1 className="font-display text-[28px] font-black leading-tight">纸样工作台</h1>
+        <p className="text-[13px] text-muted-foreground">当前身份 <b className="text-foreground">{id}</b>。高亮的是这一屏在历程里的位置。</p>
+      </div>
+      {LANES.map((l, li) => (
+        <section key={l.role} className={cn('flex flex-col gap-1 rounded-[20px] border bg-card/80 p-3.5', li === 1 && app.role !== 'creator' && app.role !== 'pending' && 'opacity-80')}>
+          <div className="flex items-baseline gap-2 pb-1"><b className="text-[15px]">{l.role}</b><span className="text-[11.5px] text-muted-foreground">{l.sub}</span></div>
+          <ol className="flex flex-col">{l.nodes.map(([k, n, d], i) => (
+            <li key={k} className="flex gap-2.5">
+              <span className="flex flex-col items-center"><span className={cn('grid size-5 shrink-0 place-items-center rounded-full border font-mono text-[10px]', cur === k ? 'border-primary bg-primary text-primary-foreground' : 'bg-card')}>{i + 1}</span>{i < l.nodes.length - 1 && <span className="w-px flex-1 bg-border" />}</span>
+              <span className={cn('pb-2 text-[13px] leading-5', cur === k && 'font-bold text-primary')}>{n}<small className="block text-[11px] font-normal text-muted-foreground">{d}</small></span>
+            </li>))}</ol>
+        </section>
+      ))}
     </div>
   )
 }
@@ -125,45 +174,16 @@ function ShareCard() {
           </div>
           <div className="flex items-end gap-3 bg-[#F3EFE8] p-3.5 text-[#1C1B19]">
             <div className="min-w-0 flex-1"><b className="font-display block text-[18px] font-black">{sh?.title}</b><span className="text-[12.5px] text-[#1C1B19]/70">{sh?.sub}</span></div>
-            <div className="flex flex-col items-center gap-0.5"><div className="grid size-14 place-items-center rounded-lg border border-dashed border-[#1C1B19]/40"><QrCode className="size-7 opacity-50" /></div><span className="text-[9.5px] text-[#1C1B19]/60">上架后生成</span></div>
+            <div className="flex flex-col items-center gap-0.5"><div className="grid size-14 place-items-center rounded-lg border border-dashed border-[#1C1B19]/40"><QrCode className="size-7 opacity-50" /></div><span className="text-[9.5px] text-[#1C1B19]/60">扫码看作品</span></div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Button variant="outline" className="h-11 rounded-full" onClick={() => toast.success('已唤起系统分享（演示）')}><Share2 className="size-4" />分享图片</Button>
           <Button variant="outline" className="h-11 rounded-full" onClick={() => toast.success('已保存到相册（演示）')}><Download className="size-4" />保存图片</Button>
         </div>
-        <Button className="h-11 rounded-full" onClick={() => app.setShare(null)}>继续编辑</Button>
+        <Button className="h-11 rounded-full" onClick={() => app.setShare(null)}>继续</Button>
       </DialogContent>
     </Dialog>
-  )
-}
-
-function AccountSheet() {
-  const app = useApp()
-  return (
-    <Sheet open={app.acct} onOpenChange={app.setAcct}>
-      <SheetContent side="bottom" className="max-h-[85%] overflow-y-auto rounded-t-[24px]">
-        <SheetHeader className="text-left">
-          <SheetTitle>{app.user ? app.user : '还没登录'}</SheetTitle>
-          <SheetDescription>{app.user ? `token 余额 ${app.token.toLocaleString('en-US')}` : '浏览模板和案例不需要登录'}</SheetDescription>
-        </SheetHeader>
-        <div className="flex flex-col gap-4 pt-4">
-          {app.user
-            ? <Button variant="outline" className="h-11 rounded-full" onClick={() => { app.logout(); toast('已退出登录') }}>退出登录</Button>
-            : <Button className="h-11 rounded-full" onClick={() => { app.setAcct(false); app.gate('登录后，作品会存进你的工作台', () => toast.success('登录成功')) }}>登录 / 注册</Button>}
-          <section className="flex flex-col gap-1 rounded-2xl border bg-card p-3">
-            <b className="text-[13px]">演示状态</b>
-            <span className="text-[12px] text-muted-foreground">用来走查异常路径，正式产品里没有这个面板</span>
-            {DEMO_KEYS.map(([k, n, d]) => (
-              <label key={k} className="flex items-center gap-3 border-t py-2.5 first-of-type:border-0">
-                <div className="flex-1"><div className="text-[14px]">{n}</div><div className="text-[12px] text-muted-foreground">{d}</div></div>
-                <Switch checked={app.demo[k]} onCheckedChange={v => app.setDemo(k, v)} />
-              </label>
-            ))}
-          </section>
-        </div>
-      </SheetContent>
-    </Sheet>
   )
 }
 
@@ -178,7 +198,7 @@ function Projects() {
   const empty = app.demo.emptyProj || !app.user
   return (
     <div className="flex flex-col gap-4 px-4 pb-28 pt-4">
-      <header className="flex items-baseline gap-2"><h1 className="font-display text-[22px] font-black">工作台</h1><span className="text-xs text-muted-foreground">{empty ? '' : PROJECTS.length + ' 个项目'}</span></header>
+      <header className="flex items-center gap-2"><h1 className="font-display text-[22px] font-black">工作台</h1><span className="flex-1 text-xs text-muted-foreground">{empty ? '' : PROJECTS.length + ' 个项目'}</span><AvatarButton /></header>
       {empty ? (
         <div className="flex flex-col items-center gap-3 rounded-[20px] border bg-card px-6 py-10 text-center">
           <FolderOpen className="size-10 text-muted-foreground/50" />
@@ -204,54 +224,37 @@ function Projects() {
   )
 }
 
-function Kit() {
-  const app = useApp()
-  const [fab, setFab] = useState(FABRICS[0])
-  const t = TEMPLATES[0]
+/** G-10: conclusion → card → up to three next actions → close. Hobby and creator endings differ. */
+function Done() {
+  const app = useApp(), f = app.flow, w = app.works[0]
+  if (f.launched) return (
+    <DoneFrame title="材料包已提交审核" sub="平台 2 个工作日内复核纸样和打样报告，通过后开始接受预订。" kind={f.kind} stats={[['首批', f.launch.qty + ' 套'], ['定价', '¥' + f.launch.price], ['预订期', f.launch.days + ' 天']]}
+      actions={[['做一张分享卡', () => app.setShare({ title: f.title, sub: `材料包 · ¥${f.launch.price} · 审核中` })], ['去创作者中心', () => app.go({ name: 'creator' })], ['再开一版', () => app.go({ name: 'library' })]]} />
+  )
   return (
-    <div className="flex flex-col gap-4 pb-28">
-      <header className="px-4 pt-4"><h1 className="font-display text-[22px] font-black">材料包</h1><span className="text-xs text-muted-foreground">打样通过的纸样 + 现货面料，拆开就能缝</span></header>
-      <div className="relative mx-4 h-[46vh] min-h-[300px] overflow-hidden rounded-[20px] bg-[#2B2A33]">
-        <Viewer kind={t.k} color={fab.hex} className="absolute inset-0" />
-        <Badge className="absolute left-3 top-3 rounded-full">打样 {t.rounds} 轮</Badge>
-      </div>
-      <div className="flex flex-col gap-3 px-4">
-        <div className="flex items-baseline justify-between"><b className="font-display text-[20px] font-black">{t.n} 材料包</b><b className="font-mono text-[18px]">¥168</b></div>
-        <section className="flex flex-col gap-2 rounded-[20px] border bg-card p-3.5">
-          <div className="flex items-baseline justify-between"><b className="text-[14px]">面料</b><span className="text-[12px] text-muted-foreground">{fab.n} · 现货</span></div>
-          <div className="flex gap-2" role="radiogroup" aria-label="面料颜色">
-            {FABRICS.map(f => <button key={f.k} role="radio" aria-checked={fab.k === f.k} aria-label={f.n} onClick={() => setFab(f)} className={cn('grid size-10 place-items-center rounded-full border-2', fab.k === f.k ? 'border-foreground' : 'border-transparent')}><span className="grid size-8 place-items-center rounded-full" style={{ background: f.hex }}>{fab.k === f.k && <Check className="size-4 text-white mix-blend-difference" />}</span></button>)}
-          </div>
-        </section>
-        <ul className="grid grid-cols-3 gap-2 text-center text-[12px]">
-          {[[Scissors, '预裁纸样', t.pieces + ' 片 1:1'], [BookOpen, '跟着缝', '分步视频'], [Truck, '发货', '7 天内']].map(([I, a, b]) => { const Ic = I as typeof Box; return <li key={a as string} className="flex flex-col items-center gap-1 rounded-2xl border bg-card py-3"><Ic className="size-5" /><b>{a as string}</b><span className="text-muted-foreground">{b as string}</span></li> })}
-        </ul>
-        <Button className="h-12 rounded-full text-[15px]" onClick={() => app.gate('登录后预订材料包', () => toast.success('已预订，开团后通知你'))}>预订这个颜色</Button>
-      </div>
-    </div>
+    <DoneFrame title="这只已经存进你的作品" sub={w?.cases ? '投稿到案例库的内容审核通过后，会出现在首页「照着案例做一只」。' : '随时可以在「我的」里分享出去。'} kind={f.kind} photo={w?.photo}
+      stats={[['用时', w?.time || '—'], ['社区', w?.community ? '已分享' : '未分享'], ['案例库', w?.cases ? <span key="c" className="inline-flex items-center gap-1"><Clock className="size-3" />审核中</span> : '未投稿']]}
+      actions={[['做一张分享卡', () => app.setShare({ title: f.title, sub: `自己缝的 · ${w?.time || ''}` })], ['看我的作品', () => app.go({ name: 'me' })], ['再做一只', () => app.go({ name: 'library' })]]} />
   )
 }
 
-/** G-10: conclusion → card → up to three next actions → close. */
-function Done() {
-  const app = useApp(), f = app.flow
+function DoneFrame({ title, sub, kind, photo, stats, actions }: { title: string; sub: string; kind: Kind; photo?: string | null; stats: [string, React.ReactNode][]; actions: [string, () => void][] }) {
+  const app = useApp()
   return (
     <div className="flex min-h-full flex-col gap-4 px-4 pb-8 pt-10">
       <div className="flex flex-col gap-1">
         <span className="grid size-11 place-items-center rounded-full bg-primary text-primary-foreground"><Check className="size-6" /></span>
-        <h1 className="font-display mt-2 text-[26px] font-black leading-tight">材料包已提交审核</h1>
-        <p className="text-[14px] text-muted-foreground">平台 2 个工作日内复核纸样和打样照片，通过后开始接受预订。</p>
+        <h1 className="font-display mt-2 text-[26px] font-black leading-tight">{title}</h1>
+        <p className="text-[14px] text-muted-foreground">{sub}</p>
       </div>
       <div className="overflow-hidden rounded-[20px] border bg-card">
-        <div className="h-[170px] bg-[#EFE8DC]"><CaseArt kind={f.kind} color={null} light /></div>
+        <div className="h-[170px] bg-[#2B2A33]">{photo ? <img src={photo} alt="作品" className="size-full object-contain" /> : <CaseArt kind={kind} color={null} />}</div>
         <dl className="grid grid-cols-3 border-t text-center">
-          {[['首批', f.launch.qty + ' 套'], ['定价', '¥' + f.launch.price], ['开团', f.launch.days + ' 天']].map(([a, b]) => <div key={a} className="border-r py-2.5 last:border-0"><dt className="text-[11px] text-muted-foreground">{a}</dt><dd className="font-mono text-[14px]">{b}</dd></div>)}
+          {stats.map(([a, b]) => <div key={a} className="border-r py-2.5 last:border-0"><dt className="text-[11px] text-muted-foreground">{a}</dt><dd className="font-mono text-[14px]">{b}</dd></div>)}
         </dl>
       </div>
       <div className="flex flex-col gap-2">
-        <Button className="h-12 rounded-full text-[15px]" onClick={() => app.setShare({ title: f.title, sub: `材料包 · ¥${f.launch.price} · 审核中` })}><Share2 className="size-4" />做一张分享卡</Button>
-        <Button variant="outline" className="h-12 rounded-full" onClick={() => app.go({ name: 'projects' })}>回到工作台</Button>
-        <Button variant="ghost" className="h-12 rounded-full" onClick={() => app.go({ name: 'library' })}>再做一只</Button>
+        {actions.map(([n, fn], i) => <Button key={n} variant={i === 0 ? 'default' : i === 1 ? 'outline' : 'ghost'} className="h-12 rounded-full text-[15px]" onClick={fn}>{i === 0 && <Share2 className="size-4" />}{n}</Button>)}
       </div>
       <button className="mt-auto text-[13px] text-muted-foreground" onClick={() => app.go({ name: 'home' })}>关闭</button>
     </div>

@@ -10,6 +10,7 @@ import { useApp } from '@/store'
 import { CaseArt } from '@/components/Art'
 import { PartThumb } from '@/components/PatternView'
 import { Workspace } from '@/components/Workspace'
+import { AvatarButton } from '@/components/Avatar'
 import { cn } from '@/lib/utils'
 
 const TAGS = ['全部', '免费', '入门', '坐姿', '站姿', '神奇动物']
@@ -25,7 +26,7 @@ export function Library() {
   return (
     <div className="flex flex-col pb-28">
       <header className="sticky top-0 z-10 flex flex-col gap-3 border-b bg-background/95 px-4 pb-3 pt-4 backdrop-blur">
-        <div className="flex items-center gap-2"><h1 className="font-display text-[22px] font-black">模板库</h1><span className="text-xs text-muted-foreground">都打过样才上架</span></div>
+        <div className="flex items-center gap-2"><h1 className="font-display text-[22px] font-black">模板库</h1><span className="flex-1 text-xs text-muted-foreground">都打过样才上架</span><AvatarButton /></div>
         <label className="flex h-10 items-center gap-2 rounded-full border bg-card px-3.5"><Search className="size-4 text-muted-foreground" /><Input value={q} onChange={e => setQ(e.target.value)} placeholder={tab === 'tpl' ? '搜动物、姿态' : '搜耳朵、尾巴、背刺'} className="h-9 border-0 px-0 shadow-none focus-visible:ring-0" /></label>
         <Tabs value={tab} onValueChange={v => setTab(v as 'tpl' | 'parts')}>
           <TabsList className="grid h-10 w-full grid-cols-2 rounded-full p-1"><TabsTrigger value="tpl" className="rounded-full">模板 · 教程</TabsTrigger><TabsTrigger value="parts" className="rounded-full">部件库</TabsTrigger></TabsList>

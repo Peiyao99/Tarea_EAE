@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Axis3d, ChevronUp, Replace } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -41,6 +41,8 @@ export function Workspace({ viewer, pieces, marks, hiParts, hiPieces, onSelect, 
   const [folded, setFolded] = useState(false)
   const vref = useRef<ViewerHandle>(null)
   useEffect(() => { snapRef.current = () => vref.current?.snapshot() || '' }, [snapRef])
+  // Layout cleanup runs before the viewer disposes its renderer, so the last frame survives for later steps.
+  useLayoutEffect(() => () => { const last = vref.current?.snapshot() || ''; snapRef.current = () => last }, [snapRef])
 
   const pick = (piece: string | null, part: Part) => {
     onSelect(piece, part)
