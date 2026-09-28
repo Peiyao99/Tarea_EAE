@@ -709,6 +709,52 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
 /* clip, not hidden: focus and scrollIntoView must not scroll the phone frame itself */
 .app,.screens,.device{overflow:clip}
 
+
+/* ---------- v2.1 workspace ---------- */
+.ws{position:sticky;top:var(--fhH,0px);z-index:14;margin:10px 12px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 14px 26px -22px rgba(40,30,20,.55);flex-shrink:0}
+.ws-bar{display:flex;align-items:center;gap:6px;padding:8px 8px 6px 10px}
+.ws-ic{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex:none}
+.ws-ic[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.ws-ic[aria-pressed="true"] svg{stroke:#fff}
+.ws-stage{position:relative;height:clamp(200px,34vh,280px);display:grid;grid-template-columns:1fr 1fr;transition:height .3s var(--ease)}
+.ws-stage[data-view="3d"]{grid-template-columns:1fr 0fr}
+.ws-stage[data-view="pat"]{grid-template-columns:0fr 1fr}
+.ws-stage[data-view="3d"] .ws-pat,.ws-stage[data-view="pat"] .ws-3d{display:none}
+.ws-3d{position:relative;background:#2B2A33;min-width:0}
+.ws-3d canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block;cursor:grab}
+.ws-3d canvas:active{cursor:grabbing}
+.ws-cam{position:absolute;left:6px;top:6px;display:flex;gap:4px}
+.ws-cam button{height:24px;padding:0 7px;border-radius:6px;border:0;background:rgba(243,239,232,.14);color:#F3EFE8;font-size:11px}
+.ws-hint{position:absolute;right:8px;bottom:6px;font-size:10px;color:rgba(243,239,232,.55);pointer-events:none}
+.ws-fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--sand);font-size:12px;padding:12px;text-align:center}
+.ws-pat{background:#FDFCFA;min-width:0;display:grid;place-items:center;border-left:1px solid var(--line-2);overflow:hidden}
+.ws-pat svg{width:100%;height:100%}
+.ws-foot{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;padding:6px 12px 10px;font-size:11.5px;color:var(--mute)}
+.ws-foot input[type=range]{height:22px}
+.ws-foot .v{font:500 11px var(--mono);color:var(--ink);min-width:34px;text-align:right}
+.ws-sel{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-height:30px;font-size:12.5px;color:var(--ink-2)}
+.ws-sel span{flex:1;min-width:0}
+.ws-sel b{font-family:var(--mono);font-weight:500;color:var(--rust)}
+.ws-sel .btn{height:30px;font-size:12px;padding:0 10px;flex:none}
+.ws.compact .ws-stage{height:clamp(130px,20vh,170px)}
+.ws.compact .ws-foot{padding-top:2px;padding-bottom:6px}
+.ws.folded .ws-stage,.ws.folded .ws-foot{display:none}
+.ws.folded #wsFold svg{transform:rotate(180deg)}
+.stage .stage-h .eyebrow{display:none}
+#st-opt #optBox,#aiBody .ai-preview,#st-seam .seamview,#st-flat section:has(#flatCv){display:none}
+#libTab button[aria-selected="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sewsteps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sewsteps button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;text-align:left;font-size:13.5px;line-height:1.5}
+.sewsteps button.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.sewsteps .k{font:500 12px var(--mono);color:var(--rust);flex:none}
+.sewsteps .pcs{font:500 11px var(--mono);color:var(--mute);flex:none}
+#s-tpl .ws{position:relative;top:auto;margin:0}
+.partbig{height:170px;border-radius:14px;background:#FDFCFA;border:1px solid var(--line);display:grid;place-items:center}
+.partbig svg{height:150px;width:auto}
+.work .img > svg{max-width:88%}
+.opt .sw.partthumb{width:52px;height:44px;background:#FDFCFA;display:grid;place-items:center;overflow:hidden}
+.opt .sw.partthumb svg{width:100%;height:100%}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -884,6 +930,29 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
           </div>
           <button type="button" class="prog" id="flowProg" aria-label="查看全部步骤"><span class="t"><b id="progN">第 2 / 10 步</b><span id="progName">AI 生成</span></span><span class="all">全部步骤</span><span class="pbar"><i id="progBar"></i></span></button>
         </header>
+        <section class="ws" id="ws" hidden aria-label="工作区：3D 与纸样">
+          <div class="ws-bar">
+            <div class="seg mini" role="tablist" aria-label="视图" id="wsView" style="grid-template-columns:repeat(3,auto)">
+              <button type="button" role="tab" aria-selected="false" data-v="3d">3D</button>
+              <button type="button" role="tab" aria-selected="false" data-v="pat">纸样</button>
+              <button type="button" role="tab" aria-selected="true" data-v="split">并排</button>
+            </div>
+            <span class="grow"></span>
+            <button type="button" class="ws-ic" id="wsAxes" aria-pressed="true" aria-label="坐标轴与网格"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 13 V3 M3 13 H13 M3 13 L8.5 8.5"/></svg></button>
+            <button type="button" class="ws-ic" id="wsFold" aria-expanded="true" aria-label="收起工作区"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1C1B19" stroke-width="1.6" style="transition:transform .25s"><path d="M3 9 L7 5 L11 9"/></svg></button>
+          </div>
+          <div class="ws-stage" id="wsStage" data-view="split">
+            <div class="ws-3d" id="ws3d"><canvas aria-label="3D 模型，拖动旋转，点部位可选中"></canvas>
+              <div class="ws-cam" id="wsCam"><button type="button" data-yaw="0">正</button><button type="button" data-yaw="-1.5708">侧</button><button type="button" data-yaw="3.1416">背</button></div>
+              <span class="ws-hint">拖动旋转 · 双指缩放</span></div>
+            <div class="ws-pat" id="wsPat"></div>
+          </div>
+          <div class="ws-foot">
+            <label for="wsOp">不透明度</label><input type="range" id="wsOp" min="15" max="100" value="100"><span class="v" id="wsOpV">100%</span>
+            <div class="ws-sel"><span id="wsSel">点裁片或部位，两边会一起高亮</span><button type="button" class="btn ghost" id="wsSwap" hidden>替换部件</button></div>
+          </div>
+        </section>
+
 
         <div class="stage" data-stage="input" id="st-input"></div>
         <div class="stage" data-stage="gen">
@@ -904,7 +973,7 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
             <div class="ai-head stage-h">
               <div class="eyebrow"></div>
               <h1>27 个开版决定，<br>8 个得你拍板</h1>
-              <p>AI 有把握的 19 个已经定了，随时可以翻出来复核。剩下 8 个给你两个选项，点一下就算确认。</p>
+              <p>点一下就算确认，没点的按推荐。</p>
             </div>
 
             <details class="card more"><summary>AI 已经定了 19 个<span>看看怎么分的</span></summary><div class="route-card">
@@ -935,7 +1004,7 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
                 <span>3D 形体 v1 · 高亮当前决策</span>
                 <b id="aiPartName">腿部结构</b>
                 <div class="progress-line"><span class="num" id="aiCount">0/8</span><span class="bar"><i id="aiBar" style="width:0%"></i></span></div>
-                <span>点选即确认，未点选的按推荐项处理</span>
+                
               </div>
             </section>
 
@@ -959,7 +1028,7 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
         <div class="stage" data-stage="seam" id="st-seam"></div>
         <div class="stage" data-stage="flat" id="st-flat"></div>
         <div class="stage" data-stage="qa">
-          <div class="stage-h"><div class="eyebrow"></div><h1>最后一关：对缝</h1><p>两片布要缝在一起，长度差得控制在 1 mm 内。把红色那条处理掉，就能导出。</p></div>
+          <div class="stage-h"><div class="eyebrow"></div><h1>最后一关：对缝</h1><p>把红色那条处理掉，就能导出。</p></div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="tools" role="toolbar" aria-label="标注工具" id="tools">
               <button type="button" class="icon-btn" aria-label="选择" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 2 L13 8 L8.5 9 L6.5 14 Z"/></svg></button>
@@ -1051,6 +1120,7 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
         <header class="hdr" style="flex-direction:column;align-items:stretch;gap:10px">
           <div style="display:flex;align-items:center;gap:10px"><button type="button" class="icon-btn" data-back="from" aria-label="返回"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.7"><path d="M10 3 L5 8 L10 13"/></svg></button><div class="hdr-title grow"><b>模板库</b><span>每个模板都打过样才上架</span></div></div>
           <label class="search" for="libQ"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8A8479" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11 L14.5 14.5"/></svg><input id="libQ" type="search" placeholder="搜动物、姿态或风格" autocomplete="off"></label>
+          <div class="seg two" role="tablist" aria-label="模板或部件" id="libTab"><span class="thumbv" aria-hidden="true" style="display:none"></span><button type="button" role="tab" aria-selected="true" data-lt3="tpl">模板 · 教程</button><button type="button" role="tab" aria-selected="false" data-lt3="parts">部件库</button></div>
           <div class="hscroll" id="libTags" role="tablist" aria-label="标签"></div>
         </header>
         <div class="pad stack g14" style="padding-top:14px" id="libBody"></div>
@@ -1225,6 +1295,7 @@ html.embed .sheet,.framed .sheet{padding-bottom:30px}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -2158,7 +2229,7 @@ function renderOpt(){
       segRow('darts', '头部省道', '收出后脑弧度', [['0', '0'], ['2', '2'], ['4', '4']], o.darts);
   }
   const know = { unwrap: ['为什么要做膨胀补偿', '填充后布面向外鼓，外轮廓会长 3–6%。展开前按布料弹性把形体向内收，成品才接近设计尺寸。'], match: ['模板匹配适合什么', '造型接近已有模板时，直接变形模板最稳：缝线和对位点都经过打样验证，适合想尽快出材料包的项目。'], gusset: ['撑片是什么', '在两片侧片之间加一条窄布，让头部或腹部有厚度。撑片越宽越立体，但对缝越长、越难缝顺。'] }[f.tech];
-  root.innerHTML = stageH('', '选一种开版方式', '毛绒是软壳，塞了棉会鼓，小细节会被吃掉。开版方式决定裁片怎么分、你要调什么。拿不准就用推荐。') +
+  root.innerHTML = stageH('', '选一种开版方式', '拿不准就用推荐。') +
     '<div class="box3d" id="optBox"></div>' +
     '<div class="tech" role="radiogroup" aria-label="开版技术">' + Object.keys(TECH).map(k => '<button type="button" role="radio" aria-checked="' + (f.tech === k) + '" data-tech="' + k + '"><b>' + TECH[k][0] + (k === 'unwrap' ? '<span class="rec">推荐</span>' : '') + '</b><small>' + TECH[k][1] + '</small></button>').join('') + '</div>' +
     moreBox({ unwrap: '膨胀补偿与细节取舍', match: '模板偏差', gusset: '撑片设定' }[f.tech], set, f.tech !== 'unwrap') + knowCard(know[0], know[1]);
@@ -2189,7 +2260,7 @@ function seamSvg(){
 function seamStat(){ const on = Object.values(state.flow.seams).filter(Boolean).length; return '裁片 ' + (7 + on) + ' 片 · 缝线 ' + on + ' 条'; }
 function renderSeam(){
   const f = state.flow, root = $('#st-seam');
-  root.innerHTML = stageH('', '确认缝线和填充口', '缝线按曲率画好了 7 条。正面缝线越少越干净，觉得多余就关掉。你只需要定一件事：棉从哪塞进去。') +
+  root.innerHTML = stageH('', '确认缝线和填充口', '只需要定一件事：棉从哪塞进去。') +
     '<section class="card views"><div class="seamview" id="seamView">' + seamSvg() + '</div>' +
     '<div style="display:flex;align-items:center;gap:8px"><div class="tools" role="toolbar" aria-label="缝线工具" id="seamTools">' +
     '<button type="button" class="icon-btn" aria-label="添加缝线" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5" stroke-dasharray="2.5 2"><path d="M2 13 C6 3 10 13 14 3"/></svg></button>' +
@@ -2250,7 +2321,7 @@ function renderFlat(){
   const f = state.flow, P = f.pieces, p = P[f.sel], root = $('#st-flat');
   const S = specRows(), okN = S.filter(r => r[0]).length;
   const mine = f.marks.map((m, i) => ({ m, i })).filter(x => x.m.p === f.sel);
-  root.innerHTML = stageH('', '给纸样补上手工信息', '毛向、填充口、眼睛位置。补齐下面这张清单，纸样才能拿去裁。点裁片开始改。') +
+  root.innerHTML = stageH('', '给纸样补上手工信息', '补齐清单，纸样才能拿去裁。') +
     '<section class="card" style="padding:8px"><div class="flatcv" id="flatCv">' + flatSvg() + '</div></section>' +
     '<section class="card checks" aria-label="图纸规范"><h3>图纸规范 ' + okN + '/' + S.length + '</h3><ul class="spec">' + S.map(r => '<li>' + (r[0] ? I_OK : I_WARN) + '<span>' + r[1] + '</span></li>').join('') + '</ul></section>' +
     '<div class="hscroll" role="tablist" aria-label="裁片" id="pieceChips">' + Object.keys(P).map(k => '<button type="button" class="chip" role="tab" aria-selected="' + (k === f.sel) + '" data-pc="' + k + '">' + k + ' ' + P[k].n + (P[k].grain == null ? ' ·!' : '') + '</button>').join('') + '</div>' +
@@ -2700,11 +2771,318 @@ Object.assign(ROUTES, {
 const _currentRoute = currentRoute;
 currentRoute = function(){ if (state.tab === 'lib' || state.tab === 'tpl') return 'lib'; if (state.tab === 'flow' && ['deliver', 'proof', 'launch'].includes(curKey())) return 'deliver'; return _currentRoute(); };
 
+/* ================= v2.1: one workspace (3D + pattern) shared by flow, tutorials and parts ================= */
+const PIECE_PART = { H1: 'head', H2: 'head', B1: 'body', B2: 'belly', S1: 'spikes', L1: 'legs', L2: 'legs', A1: 'arms', T1: 'tail', C1: 'ears' };
+const PART_N = { head: '头部', body: '身体', belly: '腹部', spikes: '背刺', legs: '腿', arms: '手臂', tail: '尾巴', ears: '耳朵' };
+const DEC_PART = { legs: 'legs', head: 'head', chin: 'head', arms: 'arms', spikes: 'spikes', body2: 'body', base: null };
+const EAR_D = {
+  bear: 'M0 70 C0 32 13 0 32 0 C51 0 64 32 64 70 Z',
+  cat: 'M0 70 C10 40 24 0 32 0 C40 0 54 40 64 70 Z',
+  bunny: 'M0 150 C0 45 10 0 26 0 C42 0 52 45 52 150 Z'
+};
+function piecesFor(kind){
+  const P = freshPieces();
+  if (kind === 'dino') return P;
+  delete P.S1; if (kind !== 'cat') delete P.T1;
+  P.H1.d = 'M10 90 C10 40 50 10 100 12 C140 14 160 40 162 70 L178 78 C186 82 186 100 176 104 L150 110 C140 140 110 158 70 156 C35 154 10 130 10 90 Z';
+  P.C1 = { n: { bear: '圆耳', cat: '尖耳', bunny: '长耳' }[kind], d: EAR_D[kind], x: 620, y: kind === 'bunny' ? 20 : 40, c: [30, kind === 'bunny' ? 80 : 44], qty: 4, sa: 5, grain: 0, fab: 'main', lab: [0, kind === 'bunny' ? 180 : 100] };
+  if (kind === 'cat') P.T1.n = '细尾';
+  return P;
+}
+function patSvg(P, marks, hiSet){
+  let g = '';
+  Object.keys(P).forEach(k => {
+    const p = P[k], lab = p.lab || [p.c[0] - 30, p.c[1] + 40];
+    const arrow = p.grain == null ? '' : '<g transform="translate(' + p.c[0] + ' ' + p.c[1] + ') rotate(' + p.grain + ')"><path d="M0 -24 V24 M-6 16 L0 24 L6 16" fill="none" stroke="#1C1B19" stroke-width="1.8"/></g>';
+    const mk = (marks || []).filter(m => m.p === k).map((m, i) => markGlyph(m.t, p.c[0] + 24 + (i % 2) * 24, p.c[1] - 22 + Math.floor(i / 2) * 22)).join('');
+    g += '<g class="fp' + (hiSet.has(k) ? ' sel' : '') + '" data-p="' + k + '" transform="translate(' + p.x + ',' + p.y + ')"><path class="ring" d="' + p.d + '"/><path class="p-cut" d="' + p.d + '" style="stroke-width:' + (6 + p.sa * 1.2) + '"/><path class="p-sa" d="' + p.d + '" style="stroke-width:' + (4 + p.sa * 1.2) + '"/><path class="p-seam" d="' + p.d + '"/>' + arrow +
+      '<text class="p-code" x="' + lab[0] + '" y="' + lab[1] + '">' + k + '</text><text class="p-name" x="' + lab[0] + '" y="' + (lab[1] + 19) + '">' + p.n + ' ×' + p.qty + '</text>' + mk + '</g>';
+  });
+  return '<svg viewBox="0 0 760 500" preserveAspectRatio="xMidYMid meet" aria-label="纸样">' + g + '</svg>';
+}
+
+const WS = { kind: 'dino', view: 'split', op: 1, axes: true, sel: null, hiParts: new Set(), hiPieces: new Set(), seams: null, fill: null, inflate: 0, variant: { spikes: 5, tail: 'dragon' }, ctx: 'flow', onSelect: null, ready: false };
+const wsEl = document.getElementById('ws');
+function wsPieces(){ return WS.ctx === 'flow' ? state.flow.pieces : WS.tplPieces; }
+function wsMarks(){ return WS.ctx === 'flow' ? state.flow.marks : []; }
+
+/* ---------- three.js scene ---------- */
+let R3 = null;
+function initThree(){
+  if (R3) return true;
+  if (!window.THREE) { $('#ws3d').insertAdjacentHTML('beforeend', '<div class="ws-fallback">3D 视图需要联网加载渲染库</div>'); return false; }
+  const canvas = $('#ws3d canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x2B2A33);
+  const camera = new THREE.PerspectiveCamera(34, 1, 1, 3000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3844, 0.95));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.65); dl.position.set(120, 220, 160); scene.add(dl);
+  const grid = new THREE.GridHelper(260, 13, 0x5f5c6a, 0x3c3b45); scene.add(grid);
+  const axes = new THREE.Group();
+  [[0xE0643A, [1, 0, 0], 'X'], [0x3FB8A8, [0, 1, 0], 'Y'], [0xE9DCCB, [0, 0, 1], 'Z']].forEach(a => {
+    const dir = new THREE.Vector3(...a[1]);
+    axes.add(new THREE.ArrowHelper(dir, new THREE.Vector3(0, 0.3, 0), 96, a[0], 8, 5));
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+    x.fillStyle = '#' + a[0].toString(16).padStart(6, '0'); x.font = 'bold 44px monospace'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(a[2], 32, 34);
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthTest: false }));
+    s.scale.set(14, 14, 1); s.position.copy(dir.clone().multiplyScalar(108)); s.position.y += 0.3; axes.add(s);
+  });
+  scene.add(axes);
+  const model = new THREE.Group(); scene.add(model);
+  R3 = { renderer, scene, camera, grid, axes, model, meshes: [], lines: {}, fillMark: null, shell: null, yaw: -0.55, pitch: 0.18, dist: 330, target: new THREE.Vector3(0, 70, 0), dirty: true };
+  bindOrbit(canvas);
+  new ResizeObserver(() => { sizeThree(); }).observe($('#ws3d'));
+  sizeThree();
+  (function loop(){ requestAnimationFrame(loop); if (R3.dirty && !wsEl.hidden && WS.view !== 'pat') { placeCam(); R3.renderer.render(R3.scene, R3.camera); R3.dirty = false; } })();
+  return true;
+}
+function sizeThree(){ if (!R3) return; const b = $('#ws3d').getBoundingClientRect(); if (!b.width || !b.height) return; R3.renderer.setSize(b.width, b.height, false); R3.camera.aspect = b.width / b.height; R3.camera.updateProjectionMatrix(); placeCam(); R3.renderer.render(R3.scene, R3.camera); R3.dirty = false; }
+function placeCam(){ const r = R3, cp = Math.cos(r.pitch); r.camera.position.set(r.target.x + r.dist * cp * Math.sin(r.yaw), r.target.y + r.dist * Math.sin(r.pitch), r.target.z + r.dist * cp * Math.cos(r.yaw)); r.camera.lookAt(r.target); }
+function bindOrbit(canvas){
+  const pts = new Map(); let moved = false, pinch0 = 0, dist0 = 0;
+  canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); moved = false; if (pts.size === 2) { const v = [...pts.values()]; pinch0 = Math.hypot(v[0][0] - v[1][0], v[0][1] - v[1][1]); dist0 = R3.dist; } });
+  canvas.addEventListener('pointermove', e => {
+    if (!pts.has(e.pointerId)) return;
+    const prev = pts.get(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pts.size === 2) { const v = [...pts.values()]; const d = Math.hypot(v[0][0] - v[1][0], v[0][1] - v[1][1]); R3.dist = Math.max(160, Math.min(560, dist0 * pinch0 / Math.max(d, 1))); moved = true; R3.dirty = true; return; }
+    const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+    if (Math.abs(dx) + Math.abs(dy) > 1) moved = true;
+    R3.yaw -= dx * 0.012; R3.pitch = Math.max(-0.3, Math.min(1.3, R3.pitch + dy * 0.01)); R3.dirty = true;
+  });
+  const up = e => { const was = pts.has(e.pointerId); pts.delete(e.pointerId); if (was && !moved && pts.size === 0) pick(e); };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', e => pts.delete(e.pointerId));
+  canvas.addEventListener('wheel', e => { e.preventDefault(); R3.dist = Math.max(160, Math.min(560, R3.dist + e.deltaY * 0.4)); R3.dirty = true; }, { passive: false });
+}
+function pick(e){
+  const b = e.target.getBoundingClientRect();
+  const v = new THREE.Vector2((e.clientX - b.left) / b.width * 2 - 1, -(e.clientY - b.top) / b.height * 2 + 1);
+  const rc = new THREE.Raycaster(); rc.setFromCamera(v, R3.camera);
+  const hit = rc.intersectObjects(R3.meshes, false).find(h => h.object.userData.part);
+  if (!hit) return;
+  const part = hit.object.userData.part, P = wsPieces();
+  const piece = Object.keys(P).find(k => PIECE_PART[k] === part);
+  wsSelect(piece || null, part);
+}
+
+/* ---------- model ---------- */
+const COL = { head: 0xD8CDBF, body: 0xCBBFAE, belly: 0xE6DCCF, legs: 0xBFB19E, arms: 0xBFB19E, tail: 0xB9AB97, spikes: 0xB83C0A, ears: 0xC4B6A2 };
+function buildModel(){
+  const r = R3; r.model.clear(); r.meshes = []; r.lines = {}; r.fillMark = null; r.shell = null;
+  const k = WS.kind, v = WS.variant;
+  const mat = part => { const m = new THREE.MeshStandardMaterial({ color: COL[part] || 0x2B2A33, roughness: .9, metalness: 0, transparent: true, opacity: WS.op }); m.userData.base = COL[part]; return m; };
+  const add = (geo, part, pos, scale, rot) => { const m = new THREE.Mesh(geo, part ? mat(part) : new THREE.MeshStandardMaterial({ color: 0x1C1B19 })); m.position.set(...pos); if (scale) m.scale.set(...scale); if (rot) m.rotation.set(...rot); m.userData.part = part; r.model.add(m); if (part) r.meshes.push(m); return m; };
+  const S = rad => new THREE.SphereGeometry(rad, 32, 24);
+  const tall = k === 'bunny';
+  add(S(34), 'body', [0, 48, 0], [1, tall ? 1.4 : 1.2, .95]);
+  add(S(26), 'belly', [0, 44, 17], [.82, tall ? 1.3 : 1.05, .5]);
+  const hy = tall ? 118 : 112;
+  add(S(k === 'dino' ? 28 : 30), 'head', [0, hy, 4], [1, .9, 1]);
+  add(S(k === 'dino' ? 16 : 10), 'head', [0, hy - 8, k === 'dino' ? 26 : 26], [1, .72, 1.05]);
+  add(S(3.4), null, [-12, hy + 6, 25]); add(S(3.4), null, [12, hy + 6, 25]);
+  [-1, 1].forEach(s => {
+    add(S(16), 'legs', [s * 18, tall ? 8 : 10, 12], [1, tall ? .5 : .6, tall ? 1.6 : 1.3]);
+    add(S(10), 'arms', [s * 34, 62, 10], [.8, 1.4, .8], [0, 0, -s * .4]);
+  });
+  if (k === 'bear') [-1, 1].forEach(s => add(S(10), 'ears', [s * 22, hy + 24, 0], [1, 1, .6]));
+  if (k === 'cat') [-1, 1].forEach(s => add(new THREE.ConeGeometry(10, 22, 16), 'ears', [s * 17, hy + 28, 2], null, [0, 0, -s * .25]));
+  if (k === 'bunny') [-1, 1].forEach(s => add(S(8), 'ears', [s * 11, hy + 50, 0], [1, 3.4, .6], [0, 0, -s * .12]));
+  const tailKind = k === 'dino' ? v.tail : k === 'cat' ? 'thin' : 'none';
+  if (tailKind === 'dragon') add(new THREE.ConeGeometry(16, 62, 20), 'tail', [0, 18, -46], null, [-Math.PI / 2 - .25, 0, 0]);
+  if (tailKind === 'thin') { const c = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 14, -30), new THREE.Vector3(0, 10, -58), new THREE.Vector3(0, 40, -72), new THREE.Vector3(0, 70, -64)]); add(new THREE.TubeGeometry(c, 40, 5, 10, false), 'tail', [0, 0, 0]); }
+  const n = k === 'dino' ? v.spikes : 0;
+  for (let i = 0; i < n; i++) { const t = n === 1 ? 0 : i / (n - 1), a = -0.35 - t * 1.45; add(new THREE.ConeGeometry(7, 17, 12), 'spikes', [0, 84 + 58 * Math.cos(a + .35) * (1 - t * .25), -40 * Math.sin(-a) + 4], null, [a, 0, 0]); }
+  // seams (dashed), shown or faint by plan
+  const line = (key, pts, closed) => {
+    const g = new THREE.BufferGeometry().setFromPoints(new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p)), !!closed).getPoints(80));
+    const l = new THREE.Line(g, new THREE.LineDashedMaterial({ color: 0xF3A27A, dashSize: 4, gapSize: 3, transparent: true, depthTest: false }));
+    l.computeLineDistances(); r.model.add(l); (r.lines[key] = r.lines[key] || []).push(l);
+  };
+  const ring = (cx, cy, cz, rad, plane) => Array.from({ length: 16 }, (_, i) => { const a = i / 16 * Math.PI * 2; return plane === 'xy' ? [cx + rad * Math.cos(a), cy + rad * Math.sin(a), cz] : plane === 'xz' ? [cx + rad * Math.cos(a), cy, cz + rad * Math.sin(a)] : [cx, cy + rad * Math.sin(a), cz + rad * Math.cos(a)]; });
+  line('back', [[0, hy + 25, 6], [0, hy + 14, -22], [0, 84, -36], [0, 50, -41], [0, 18, -32]]);
+  line('belly', [[0, 88, 22], [0, 64, 31], [0, 38, 31], [0, 14, 22]]);
+  line('head', ring(0, hy, 4, 29, 'xy'), true);
+  [-1, 1].forEach(s => { line('leg', ring(s * 18, 16, 12, 15, 'xz'), true); line('arm', ring(s * 30, 72, 10, 9, 'xz'), true); });
+  if (tailKind !== 'none') line('tail', ring(0, 20, -34, 13, 'yz'), true);
+  if (k === 'dino') line('chin', [[-9, hy - 16, 30], [0, hy - 19, 34], [9, hy - 16, 30]]);
+  const fm = new THREE.Mesh(new THREE.BoxGeometry(18, 3, 3), new THREE.MeshBasicMaterial({ color: 0x3FB8A8, depthTest: false })); fm.renderOrder = 5; r.model.add(fm); r.fillMark = fm;
+  const shell = new THREE.Group();
+  [[34, [0, 48, 0], [1, tall ? 1.4 : 1.2, .95]], [k === 'dino' ? 28 : 30, [0, hy, 4], [1, .9, 1]]].forEach(a => { const m = new THREE.Mesh(S(a[0]), new THREE.MeshBasicMaterial({ color: 0xF3A27A, wireframe: true, transparent: true, opacity: .28 })); m.position.set(...a[1]); m.scale.set(...a[2]); shell.add(m); });
+  r.model.add(shell); r.shell = shell;
+  applyLook();
+}
+const FILL3D = { belly: [16, 40, 30], back: [0, 36, -41], tail: [0, 24, -38] };
+function applyLook(){
+  if (!R3) return;
+  R3.meshes.forEach(m => { const on = WS.hiParts.has(m.userData.part); m.material.color.setHex(on ? 0xF3A27A : m.userData.part === 'spikes' ? 0xB83C0A : COL[m.userData.part]); m.material.emissive.setHex(on ? 0x3a1405 : 0); m.material.opacity = WS.op; m.material.depthWrite = WS.op > .97; });
+  Object.keys(R3.lines).forEach(k => R3.lines[k].forEach(l => { const on = !WS.seams || WS.seams[k] !== false; l.material.opacity = on ? .95 : .15; l.visible = WS.showSeams !== false; }));
+  R3.fillMark.visible = !!WS.fill; if (WS.fill) R3.fillMark.position.set(...FILL3D[WS.fill]);
+  R3.shell.visible = WS.inflate > 0; if (WS.inflate > 0) { const f = 1 + WS.inflate / 100; R3.shell.scale.set(f, f, f); R3.shell.position.set(0, -70 * (f - 1), 0); }
+  R3.axes.visible = WS.axes; R3.grid.visible = WS.axes;
+  R3.dirty = true;
+}
+
+/* ---------- panel ---------- */
+function wsPaintPat(){ const P = wsPieces(); if (!P) return; $('#wsPat').innerHTML = patSvg(P, wsMarks(), WS.hiPieces); $$('#wsPat .fp').forEach(g => g.addEventListener('click', () => wsSelect(g.dataset.p, PIECE_PART[g.dataset.p]))); }
+function wsLabel(){
+  const P = wsPieces() || {}, pcs = [...WS.hiPieces].filter(k => P[k]);
+  $('#wsSel').innerHTML = pcs.length ? pcs.map(k => '<b>' + k + '</b> ' + P[k].n).join('、') + (WS.hiParts.size ? ' · ' + [...WS.hiParts].map(p => PART_N[p]).join('、') : '') : WS.hint || '点裁片或部位，两边会一起高亮';
+  const part = [...WS.hiParts][0];
+  $('#wsSwap').hidden = !(WS.ctx === 'flow' && part && PARTS.some(x => x.slot === part && x.kinds.includes(WS.kind)));
+}
+function wsHighlight(parts, pieces){
+  WS.hiParts = new Set((parts || []).filter(Boolean));
+  const P = wsPieces() || {};
+  WS.hiPieces = new Set(pieces || Object.keys(P).filter(k => WS.hiParts.has(PIECE_PART[k])));
+  applyLook(); wsPaintPat(); wsLabel();
+}
+const FACE = { tail: 2.7, spikes: -2.3 };
+function wsSelect(piece, part){
+  wsHighlight([part], piece ? [piece] : null);
+  if (R3 && FACE[part] != null) { R3.yaw = FACE[part]; R3.dirty = true; }
+  if (WS.onSelect) WS.onSelect(piece, part);
+}
+function wsSetKind(kind){ WS.kind = kind; if (initThree()) buildModel(); }
+function wsMount(host, ctx){
+  WS.ctx = ctx; host.prepend(wsEl); wsEl.hidden = false;
+  if (initThree()) { if (!R3.model.children.length) buildModel(); sizeThree(); }
+  wsPaintPat(); wsLabel();
+}
+function wsSetView(v){ WS.view = v; $('#wsStage').dataset.view = v; $$('#wsView button').forEach(b => b.setAttribute('aria-selected', b.dataset.v === v)); setTimeout(sizeThree, 30); }
+$$('#wsView button').forEach(b => b.addEventListener('click', () => wsSetView(b.dataset.v)));
+$('#wsOp').addEventListener('input', e => { WS.op = e.target.value / 100; $('#wsOpV').textContent = e.target.value + '%'; paintRange(e.target); applyLook(); });
+paintRange($('#wsOp'));
+$('#wsAxes').addEventListener('click', () => { WS.axes = !WS.axes; $('#wsAxes').setAttribute('aria-pressed', WS.axes); applyLook(); });
+$$('#wsCam button').forEach(b => b.addEventListener('click', () => { if (!R3) return; R3.yaw = +b.dataset.yaw; R3.pitch = 0.12; R3.dirty = true; }));
+$('#wsFold').addEventListener('click', () => { wsEl.classList.toggle('folded'); $('#wsFold').setAttribute('aria-expanded', !wsEl.classList.contains('folded')); setTimeout(sizeThree, 300); });
+
+/* ---------- parts library (shared with the template library) ---------- */
+const PARTS = [
+  { k: 'ear-round', slot: 'ears', cat: '耳朵', n: '圆耳', d: EAR_D.bear, uses: 4, rounds: 3, kinds: ['bear'] },
+  { k: 'ear-point', slot: 'ears', cat: '耳朵', n: '尖耳', d: EAR_D.cat, uses: 3, rounds: 2, kinds: ['cat'] },
+  { k: 'ear-long', slot: 'ears', cat: '耳朵', n: '长耳 · 带衬', d: EAR_D.bunny, uses: 2, rounds: 2, kinds: ['bunny'] },
+  { k: 'tail-dragon', slot: 'tail', cat: '尾巴', n: '龙尾 · 锥形', d: 'M0 60 C30 10 110 0 170 30 C140 44 90 60 40 80 C20 86 4 78 0 60 Z', uses: 3, rounds: 2, kinds: ['dino'], apply: { tail: 'dragon' } },
+  { k: 'tail-thin', slot: 'tail', cat: '尾巴', n: '细长尾 · 可弯', d: 'M0 20 C60 0 140 0 200 20 C140 36 60 36 0 20 Z', uses: 2, rounds: 1, kinds: ['dino', 'cat'], apply: { tail: 'thin' } },
+  { k: 'tail-none', slot: 'tail', cat: '尾巴', n: '不做尾巴', d: 'M0 0 H40 V40 H0 Z', uses: 0, rounds: 0, kinds: ['dino'], apply: { tail: 'none' } },
+  { k: 'spike-5', slot: 'spikes', cat: '背刺', n: '背刺 × 5', d: 'M0 40 L15 0 L30 40 Z M36 40 L51 4 L66 40 Z M72 40 L87 8 L102 40 Z', uses: 3, rounds: 2, kinds: ['dino'], apply: { spikes: 5 } },
+  { k: 'spike-3', slot: 'spikes', cat: '背刺', n: '大背刺 × 3', d: 'M0 50 L20 0 L40 50 Z M50 50 L70 6 L90 50 Z', uses: 1, rounds: 1, kinds: ['dino'], apply: { spikes: 3 } },
+  { k: 'leg-round', slot: 'legs', cat: '腿与脚底', n: '圆柱腿 + 椭圆脚底', d: 'M0 60 C0 20 30 0 60 0 C90 0 110 20 110 60 L110 130 L0 130 Z', uses: 5, rounds: 3, kinds: ['dino', 'bear', 'cat', 'bunny'] }
+];
+function partSvg(d, w){ return '<svg viewBox="-12 -12 ' + (w || 230) + ' 190" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="' + d + '" class="p-cut" style="stroke-width:10"/><path d="' + d + '" class="p-sa" style="stroke-width:8"/><path d="' + d + '" class="p-seam"/></svg>'; }
+function openPart(k){
+  const x = PARTS.find(p => p.k === k);
+  openSheet('<h2 id="sheetTitle">' + x.n + '</h2><div class="partbig">' + partSvg(x.d) + '</div>' +
+    '<div class="rows"><div><span>分类</span>' + x.cat + '</div><div><span>已用于</span>' + x.uses + ' 个模板</div><div><span>打样验证</span>' + x.rounds + ' 轮</div></div>' +
+    '<div class="demonote">在开版流程的 3D 优化或缝线规划里，点选这个部位，再点「替换部件」就能换上它。</div><button type="button" class="btn ghost block" id="pcClose">知道了</button>');
+  $('#pcClose').addEventListener('click', closeSheet);
+}
+$('#wsSwap').addEventListener('click', () => {
+  const part = [...WS.hiParts][0], list = PARTS.filter(x => x.slot === part && x.kinds.includes(WS.kind));
+  openSheet('<h2 id="sheetTitle">替换' + PART_N[part] + '</h2><p style="margin:0;font-size:13px;color:var(--mute)">部件库里打样验证过的纸样，换上后对应裁片同步替换。</p><div class="opt-list">' +
+    list.map(x => '<button type="button" class="opt" data-sw="' + x.k + '"><span class="sw partthumb">' + partSvg(x.d) + '</span><span><b>' + x.n + '</b><small>用于 ' + x.uses + ' 个模板 · 打样 ' + x.rounds + ' 轮</small></span></button>').join('') + '</div>');
+  $$('[data-sw]').forEach(b => b.addEventListener('click', () => {
+    const x = PARTS.find(p => p.k === b.dataset.sw); closeSheet();
+    if (x.apply) Object.assign(WS.variant, x.apply);
+    const P = state.flow.pieces;
+    if (x.slot === 'tail') { if (x.apply.tail === 'none') delete P.T1; else { P.T1 = P.T1 || freshPieces().T1; P.T1.d = x.d; P.T1.n = x.n.split(' ')[0]; } }
+    if (x.slot === 'spikes') { P.S1.d = x.d; P.S1.n = x.n.split(' ')[0]; }
+    buildModel(); wsHighlight([part]);
+    if (curKey() === 'flat') renderFlat();
+    state.qa = 'open';
+    toast('已换成「' + x.n + '」· 对应裁片已替换，需要重新做对缝 QA');
+  }));
+});
+
+/* ---------- flow integration ---------- */
+const WS_STAGES = ['decide', 'opt', 'seam', 'flat', 'qa'];
+const _gotoStage = gotoStage;
+gotoStage = function(i){
+  const key = flowStages()[Math.max(0, Math.min(flowStages().length - 1, i))];
+  const show = WS_STAGES.includes(key);
+  if (show) {
+    if (wsEl.parentElement !== $('#s-flow')) $('#s-flow .flow-hdr').after(wsEl);
+    WS.ctx = 'flow'; WS.hint = null;
+    if (WS.kind !== 'dino') { WS.kind = 'dino'; if (R3) buildModel(); }
+    wsEl.hidden = false; initThree(); if (R3 && !R3.model.children.length) buildModel();
+  } else if (wsEl.parentElement === $('#s-flow')) wsEl.hidden = true;
+  WS.seams = null; WS.fill = null; WS.inflate = 0; WS.showSeams = key !== 'decide';
+  _gotoStage(i);
+  if (show) { measureFlowHdr(); sizeThree(); wsPaintPat(); if (key === 'qa') wsHighlight(['legs'], ['L1', 'B1']); else if (key !== 'decide' && key !== 'opt' && key !== 'seam') wsHighlight([], []); applyLook(); }
+};
+function measureFlowHdr(){ const h = $('#s-flow .flow-hdr'); if (h) $('#s-flow').style.setProperty('--fhH', h.offsetHeight + 'px'); }
+WS.onSelect = (piece, part) => { if (state.tab === 'flow' && curKey() === 'flat' && piece) { state.flow.sel = piece; renderFlat(); } };
+$('#s-flow').addEventListener('scroll', () => { const y = $('#s-flow').scrollTop; const c = wsEl.classList.contains('compact'); if (!c && y > 70) { wsEl.classList.add('compact'); setTimeout(sizeThree, 320); } else if (c && y < 20) { wsEl.classList.remove('compact'); setTimeout(sizeThree, 320); } }, { passive: true });
+
+/* decisions light up the part being decided */
+const _highlight = highlight;
+highlight = function(){ _highlight(); const d = DEC.find(x => x.id === state.ai.active); if (d && state.tab === 'flow') { WS.hint = d.t; wsHighlight([DEC_PART[d.part]]); } };
+RENDER.decide = () => { renderDecisions(); highlight(); };
+
+/* 3D optimisation drives inflation and the part in focus */
+const _paintOpt = paintOptPreview;
+paintOptPreview = function(){ _paintOpt(); const f = state.flow, o = f.opt; WS.inflate = o.showInflate && f.tech === 'unwrap' ? o.inflate + 3 : 0; WS.hint = '预计 ' + optPieces() + ' 片 · 难度 ' + TECH[f.tech][2]; wsHighlight(f.optHl ? [f.optHl === 'chin' ? 'head' : f.optHl] : []); };
+
+/* seam plan drives the dashed lines and the filling opening */
+const _renderSeam = renderSeam;
+RENDER.seam = renderSeam = function(){
+  _renderSeam();
+  const f = state.flow, sync = () => { WS.seams = Object.assign({}, f.seams); WS.fill = f.fill; WS.hint = seamStat(); applyLook(); wsLabel(); };
+  sync();
+  SEAMS.forEach(s => { const el = $('#sm-' + s[0]); if (el) el.addEventListener('change', () => { sync(); wsHighlight([{ back: 'spikes', belly: 'belly', head: 'head', leg: 'legs', tail: 'tail', arm: 'arms', chin: 'head' }[s[0]]]); }); });
+  $$('#st-seam [data-seg="fill"] button').forEach(b => b.addEventListener('click', () => setTimeout(sync)));
+};
+
+/* flat editing: the workspace pattern view is the canvas */
+const _renderFlat = renderFlat;
+RENDER.flat = renderFlat = function(){ _renderFlat(); if (!wsEl.hidden) { WS.hint = null; wsHighlight([PIECE_PART[state.flow.sel]], [state.flow.sel]); } };
+RENDER.opt = renderOpt;
+
+/* ---------- template tutorial: follow-along sewing in the same workspace ---------- */
+const SEW_STEPS = {
+  dino: [['头侧片 × 头中条，对齐刻口缝合', ['H1', 'H2']], ['背刺两两缝好翻面，夹进后中缝', ['S1', 'B1']], ['身体侧片 × 腹片，腹片侧面留填充口', ['B1', 'B2']], ['腿缝好，脚底按对位点缝入', ['L1', 'L2']], ['尾巴缝好，接在后中缝下端', ['T1']], ['手臂缝入，填充，藏针缝收口', ['A1', 'B2']]],
+  bear: [['头侧片 × 头中条，对齐刻口缝合', ['H1', 'H2']], ['圆耳两两缝好翻面，夹进头部', ['C1', 'H1']], ['身体侧片 × 腹片，留填充口', ['B1', 'B2']], ['腿缝好，脚底按对位点缝入', ['L1', 'L2']], ['手臂缝入，填充，藏针缝收口', ['A1', 'B2']]],
+  cat: [['头侧片 × 头中条，对齐刻口缝合', ['H1', 'H2']], ['尖耳翻面时用筷子顶出尖角', ['C1']], ['身体侧片 × 腹片，留填充口', ['B1', 'B2']], ['细尾缝好，填充后接在背后', ['T1']], ['腿、手臂缝入，填充，藏针缝收口', ['L1', 'A1']]],
+  bunny: [['头侧片 × 头中条，对齐刻口缝合', ['H1', 'H2']], ['长耳里夹一层衬布再缝', ['C1']], ['身体侧片 × 腹片，留填充口', ['B1', 'B2']], ['长腿里放支撑棒，脚底缝入', ['L1', 'L2']], ['手臂缝入，填充，藏针缝收口', ['A1', 'B2']]]
+};
+const _openTpl = openTplDetail;
+openTplDetail = function(k){
+  _openTpl(k);
+  if (!TPL[k]) return;
+  WS.tplPieces = piecesFor(k); WS.hint = '点一步，看这一步要缝哪几片';
+  const body = $('#tplBody'), hero = body.querySelector('.tplhero'); if (hero) hero.remove();
+  wsMount(body, 'tpl'); wsSetKind(k); wsHighlight([], []);
+  const steps = SEW_STEPS[k];
+  body.querySelector('.kv').insertAdjacentHTML('afterend', '<section class="card params sewcard"><div class="sec-h"><h2>跟着缝</h2><span>' + steps.length + ' 步</span></div><ol class="sewsteps">' +
+    steps.map((s, i) => '<li><button type="button" data-ss="' + i + '"><span class="k">0' + (i + 1) + '</span><span class="grow">' + s[0] + '</span><span class="pcs">' + s[1].join(' ') + '</span></button></li>').join('') + '</ol></section>');
+  $$('#tplBody [data-ss]').forEach(b => b.addEventListener('click', () => {
+    $$('#tplBody [data-ss]').forEach(x => x.classList.toggle('on', x === b));
+    const s = steps[+b.dataset.ss]; wsHighlight(s[1].map(p => PIECE_PART[p]), s[1]);
+  }));
+};
+const _setTab = setTab;
+setTab = function(tab){ if (tab !== 'tpl' && wsEl.parentElement === $('#tplBody')) { wsEl.hidden = true; } _setTab(tab); if (tab === 'flow' || tab === 'tpl') setTimeout(sizeThree, 60); };
+
+/* ---------- library: templates | parts ---------- */
+state.lib.tab = 'tpl';
+const _renderLib = renderLib;
+renderLib = function(){
+  $$('#libTab button').forEach(b => b.setAttribute('aria-selected', b.dataset.lt3 === state.lib.tab));
+  $('#libTags').hidden = state.lib.tab !== 'tpl';
+  if (state.lib.tab === 'tpl') { _renderLib(); $('#libBody').insertAdjacentHTML('afterbegin', '<div class="demonote">官方模板带「跟着缝」教程，适合第一次做毛绒。</div>'); return; }
+  const q = state.lib.q.trim(), cats = [...new Set(PARTS.map(p => p.cat))];
+  const list = PARTS.filter(p => !q || (p.n + p.cat).includes(q));
+  $('#libBody').innerHTML = '<div class="demonote">部件是打样验证过的单片纸样。开版时点选部位即可替换，也会被 AI 生成拆件时优先调用。</div>' +
+    (list.length ? cats.map(c => { const ps = list.filter(p => p.cat === c); return ps.length ? '<div class="sec-h"><h2>' + c + '</h2><span>' + ps.length + ' 个</span></div><div class="works">' + ps.map(p => '<button type="button" class="work" data-part="' + p.k + '"><span class="img" style="background:#FBF9F5">' + partSvg(p.d) + '</span><span class="inf"><b>' + p.n + '</b><span>用于 ' + p.uses + ' 个模板 · 打样 ' + p.rounds + ' 轮</span></span></button>').join('') + '</div>' : ''; }).join('')
+      : '<section class="card empty"><b>没找到「' + esc(q) + '」</b><p>试试「耳」「尾」「刺」。</p></section>');
+  $$('#libBody [data-part]').forEach(b => b.addEventListener('click', () => openPart(b.dataset.part)));
+};
+$$('#libTab button').forEach(b => b.addEventListener('click', () => { state.lib.tab = b.dataset.lt3; $('#libQ').placeholder = state.lib.tab === 'tpl' ? '搜动物、姿态或风格' : '搜耳朵、尾巴、背刺…'; renderLib(); }));
+
 /* ---------- boot ---------- */
 setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); renderProjects(); renderUpload(); updateGen(); setLevel('proj', false); measureHdr(); $('#s-work').addEventListener('scroll', onWorkScroll, { passive: true }); if (document.fonts) document.fonts.ready.then(measureHdr);
 $$('#route button').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
 const h = (location.hash || '').slice(1); if (ROUTES[h]) go(h); else syncRoute();
-window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state, startFlow, gotoStage, setMode, setTemplate, openLib, openTplDetail, openAccount };
+window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state, startFlow, gotoStage, setMode, setTemplate, openLib, openTplDetail, openAccount, WS, wsHighlight };
 })();
 </script>
 </body>
