@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=720">
+<title>纸样工作台 · 演示舞台</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;900&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#F3EFE8;--ink:#1C1B19;--mute:#5E5A52;--rust:#B83C0A;--night:#2B2A33;--sand:#D8CDBF}
+*{box-sizing:border-box}
+html,body{margin:0;width:720px;height:960px;overflow:hidden;background:var(--paper);font-family:'Noto Sans SC',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.bg{position:absolute;inset:0}
+.cap{position:absolute;left:0;right:0;top:34px;height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.cap .eb{font:500 13px 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--rust);display:flex;align-items:center;gap:10px}
+.cap .eb i{display:inline-block;width:22px;height:0;border-top:1.5px dashed var(--rust)}
+.cap h1{margin:0;font:900 38px/1.2 'Noto Serif SC',serif;letter-spacing:.01em}
+.cap .in{transition:opacity .35s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.cap.out .in{opacity:0;transform:translateY(10px)}
+.phone{position:absolute;left:50%;top:170px;width:390px;height:844px;margin-left:-195px;transform:scale(.905);transform-origin:50% 0}
+.bezel{position:absolute;inset:-12px;border-radius:62px;background:#17161A;box-shadow:0 0 0 1.5px #3a3840 inset,0 50px 90px -40px rgba(60,40,20,.55),0 16px 36px -16px rgba(60,40,20,.35)}
+.screen{position:absolute;inset:0;border-radius:50px;overflow:hidden;background:var(--paper)}
+iframe{border:0;width:390px;height:844px;display:block}
+.island{position:absolute;top:12px;left:50%;width:120px;height:35px;margin-left:-60px;background:#0b0b0d;border-radius:20px;z-index:5}
+.finger{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(28,27,25,.22);border:2px solid rgba(255,255,255,.95);box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:20;opacity:0;transition:opacity .25s,transform .35s cubic-bezier(.3,.7,.2,1),width .15s,height .15s;pointer-events:none}
+.finger.on{opacity:1}
+.finger.down{width:38px;height:38px;margin:-19px 0 0 -19px;background:rgba(184,60,10,.35)}
+.ripple{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:2px solid rgba(184,60,10,.8);z-index:19;animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(3.4);opacity:0}}
+.card{position:absolute;inset:0;z-index:30;background:var(--night);color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;transition:opacity .6s ease;padding:0 60px}
+.card.hide{opacity:0;pointer-events:none}
+.card .eb{font:500 14px 'JetBrains Mono',monospace;letter-spacing:.2em;color:#F3A27A}
+.card h1{margin:0;font:900 54px/1.22 'Noto Serif SC',serif}
+.card p{margin:0;font-size:19px;line-height:1.7;color:var(--sand)}
+.card .row{display:flex;gap:10px;margin-top:6px}
+.card .row span{font-size:15px;padding:7px 14px;border-radius:999px;border:1px solid #4A4854;color:var(--paper)}
+.card svg.seam{position:absolute;left:0;right:0;width:100%;pointer-events:none}
+.card .mark{display:flex;align-items:center;gap:12px;font:900 26px 'Noto Serif SC',serif}
+.card .anim > *{opacity:0;transform:translateY(14px);animation:up .7s cubic-bezier(.2,.8,.2,1) forwards}
+.card .anim > *:nth-child(2){animation-delay:.15s}.card .anim > *:nth-child(3){animation-delay:.3s}.card .anim > *:nth-child(4){animation-delay:.45s}
+@keyframes up{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<svg class="bg" viewBox="0 0 720 960" aria-hidden="true">
+  <g fill="none" stroke="#E2DCD1" stroke-width="1.6" stroke-dasharray="8 7">
+    <path d="M-20 300 C120 250 160 420 90 520 C40 600 60 760 -20 820"/>
+    <path d="M740 240 C600 300 580 460 650 560 C700 640 690 800 740 860"/>
+  </g>
+  <g fill="#E9DCCB"><path d="M24 900 L40 872 L56 900 Z M60 900 L76 866 L92 900 Z M664 110 L680 82 L696 110 Z"/></g>
+</svg>
+
+<div class="cap" id="cap"><div class="in"><div class="eb"><i></i><span id="capEb">PLUSH PATTERN STUDIO</span><i></i></div></div><h1 class="in" id="capT">纸样工作台</h1></div>
+
+<div class="phone" id="phone">
+  <div class="bezel"></div>
+  <div class="screen"><iframe id="app" src="../prototype/index.html?embed" title="纸样工作台原型"></iframe></div>
+  <div class="island"></div>
+</div>
+<div class="finger" id="finger"></div>
+
+<div class="card" id="intro">
+  <svg class="seam" style="top:120px" height="80" viewBox="0 0 720 80" aria-hidden="true"><path d="M0 40 C180 0 360 80 540 40 C620 22 680 30 720 40" fill="none" stroke="#4A4854" stroke-width="1.6" stroke-dasharray="8 7"/></svg>
+  <div class="anim" style="display:flex;flex-direction:column;align-items:center;gap:22px">
+    <div class="eb">CONCEPT → PATTERN → VERIFIED PIECE</div>
+    <h1>从一张草图<br>到一套真正<br>缝得出来的纸样</h1>
+    <p>毛绒纸样工作台 · 手机端交互演示</p>
+    <div class="row"><span>AI 开版</span><span>三视图 QA</span><span>参数化模板</span><span>材料包</span></div>
+  </div>
+  <svg class="seam" style="bottom:90px" height="60" viewBox="0 0 720 60" aria-hidden="true"><g fill="#7A1F2B"><path d="M520 60 L546 14 L572 60 Z M580 60 L606 4 L632 60 Z M640 60 L666 20 L692 60 Z"/></g></svg>
+</div>
+
+<div class="card hide" id="outro">
+  <div class="anim" id="outroAnim" style="display:flex;flex-direction:column;align-items:center;gap:22px">
+    <div class="mark"><svg width="40" height="40" viewBox="0 0 28 28" fill="none" stroke="#F3A27A" stroke-width="1.6"><path d="M5 20 C5 10 9 5 14 5 C19 5 23 10 23 20 Z"/><path d="M8 18 C8 12 10.5 8.5 14 8.5 C17.5 8.5 20 12 20 18" stroke-dasharray="2 2"/><path d="M14 5 L14 23"/></svg>纸样工作台</div>
+    <h1>先验证，<br>再开裁</h1>
+    <p>AI 开版 → 对缝 QA → 打样验证 → 材料包统一开裁<br>每一版纸样都先缝得出来，再卖出去</p>
+    <div class="row"><span>入门 L1</span><span>进阶 L2</span><span>专业 L3</span></div>
+  </div>
+</div>
+
+<script>
+const cap = document.getElementById('cap');
+window.stage = {
+  caption(eb, t){ cap.classList.add('out'); setTimeout(() => { document.getElementById('capEb').textContent = eb; document.getElementById('capT').textContent = t; cap.classList.remove('out'); }, 330); },
+  hideIntro(){ document.getElementById('intro').classList.add('hide'); },
+  showOutro(){ const o = document.getElementById('outro'); o.classList.remove('hide'); const a = document.getElementById('outroAnim'); a.style.animation = 'none'; a.offsetHeight; a.style.animation = ''; },
+  finger(x, y, on, ms){ const f = document.getElementById('finger'); f.style.transitionDuration = '.25s,' + (ms || 350) + 'ms,.15s,.15s'; f.style.transform = 'translate(' + x + 'px,' + y + 'px)'; f.classList.toggle('on', on !== false); },
+  press(down){ document.getElementById('finger').classList.toggle('down', down); },
+  ripple(x, y){ const r = document.createElement('div'); r.className = 'ripple'; r.style.left = x + 'px'; r.style.top = y + 'px'; document.body.appendChild(r); setTimeout(() => r.remove(), 700); }
+};
+</script>
+</body>
+</html>

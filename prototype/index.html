@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>纸样工作台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;900&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F3EFE8; --paper-2:#FBF9F5; --card:#FFFFFF; --line:#E2DCD1; --line-2:#EEE9E0; --line-3:#C9C1B3;
+  --ink:#1C1B19; --ink-2:#3F3C36; --mute:#5E5A52; --mute-2:#8A8479;
+  --rust:#B83C0A; --rust-d:#8F2E07; --blush:#FBE6DA; --peach:#F3A27A;
+  --teal:#0B5753; --teal-2:#0F6E6A; --teal-bg:#DCEFEC;
+  --amber:#8A5A00; --amber-bg:#F3E3B8;
+  --night:#2B2A33; --wine:#7A1F2B; --moss:#4E5B3A; --sand:#D8CDBF; --oat:#E9DCCB;
+  --serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --sans:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  --top:0px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%}
+body{margin:0;height:100%;font-family:var(--sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+h1,h2,h3{text-wrap:balance}
+.mono{font-family:var(--mono)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- shell: desktop shows a device, phone shows the app ---------- */
+.shell{height:100%;display:flex;align-items:center;justify-content:center;gap:56px;padding-inline:16px}
+.intro{width:340px;display:flex;flex-direction:column;gap:18px}
+.intro .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--rust)}
+.intro h1{margin:0;font-family:var(--serif);font-weight:900;font-size:34px;line-height:1.2}
+.intro p{margin:0;font-size:14px;line-height:1.75;color:var(--mute)}
+.route{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.route button{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);text-align:left;font-size:14px;transition:border-color .2s,background .2s}
+.route button:hover{border-color:var(--ink)}
+.route button[aria-current="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.route .k{font-family:var(--mono);font-size:11px;color:var(--mute-2);width:22px}
+.route button[aria-current="true"] .k{color:var(--sand)}
+.intro small{font-size:12px;color:var(--mute);line-height:1.6}
+
+.device{position:relative;width:414px;height:868px;flex:none;border-radius:60px;padding:12px;background:#17161A;box-shadow:0 0 0 1.5px #3a3840 inset,0 40px 80px -30px rgba(40,30,20,.45),0 12px 30px -12px rgba(40,30,20,.3)}
+.device::before{content:"";position:absolute;top:24px;left:50%;width:118px;height:34px;margin-left:-59px;background:#0b0b0d;border-radius:20px;z-index:50}
+.device .app{border-radius:48px}
+.framed{--top:48px}
+
+@media (max-width:759px){
+  .shell{padding:0;display:block}
+  .intro{display:none}
+  .device{width:100%;height:100%;border-radius:0;padding:0;background:none;box-shadow:none}
+  .device::before{display:none}
+  .device .app{border-radius:0}
+  .framed{--top:0px}
+}
+html.embed .shell{padding:0;display:block}
+html.embed .intro{display:none}
+html.embed .device{width:100%;height:100%;border-radius:0;padding:0;background:none;box-shadow:none}
+html.embed .device::before{display:none}
+html.embed .device .app{border-radius:0}
+html.embed .framed{--top:50px}
+
+/* ---------- app ---------- */
+.app{position:relative;height:100%;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;isolation:isolate}
+.screens{position:relative;flex:1;min-height:0}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .28s var(--ease),transform .32s var(--ease),visibility 0s .32s;display:flex;flex-direction:column}
+.screen::-webkit-scrollbar{display:none}
+.screen.on{opacity:1;visibility:visible;transform:none;transition:opacity .28s var(--ease),transform .32s var(--ease),visibility 0s}
+.pad{padding-inline:18px}
+
+.hdr{position:sticky;top:0;z-index:20;padding:calc(var(--top) + 10px) 18px 10px;background:rgba(251,249,245,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand b{font-family:var(--serif);font-weight:900;font-size:17px}
+.token{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-family:var(--mono);font-size:12px}
+.avatar{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--oat);font-size:12px;font-weight:700;display:grid;place-items:center}
+.grow{flex:1}
+.hdr-title{display:flex;flex-direction:column;min-width:0}
+.hdr-title b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-title span{font-size:11px;color:var(--mute)}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex:none}
+
+.tabbar{position:relative;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(251,249,245,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+html.embed .tabbar,.framed .tabbar{padding-bottom:22px}
+.tabbar button{height:50px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--mute);transition:color .2s}
+.tabbar button svg{transition:transform .25s var(--ease)}
+.tabbar button[aria-current="page"]{color:var(--ink);font-weight:500}
+.tabbar button[aria-current="page"] svg{transform:translateY(-1px)}
+.tabbar button[aria-current="page"] .dot{opacity:1}
+.tabbar .dot{width:4px;height:4px;border-radius:50%;background:var(--rust);opacity:0;transition:opacity .2s}
+
+/* common atoms */
+.btn{height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--ink);background:transparent;font-size:14px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,background .2s,color .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.rust{background:var(--rust);border-color:var(--rust);color:#fff}
+.btn.ghost{border-color:var(--line);background:var(--card)}
+.btn.block{width:100%}
+.btn.lg{height:52px;font-size:16px;border-radius:14px}
+.chip{height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-size:13px;white-space:nowrap;flex:none;transition:background .2s,color .2s,border-color .2s}
+.chip[aria-pressed="true"],.chip[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.teal{background:var(--teal-bg);color:var(--teal)}
+.pill.rust{background:var(--blush);color:var(--rust-d)}
+.pill.amber{background:var(--amber-bg);color:var(--amber)}
+.pill.ink{background:var(--ink);color:#fff}
+.pill.sand{background:#E9E3D8;color:var(--ink-2)}
+.lvl-tag{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:6px}
+.lvl-tag.l1{background:var(--teal-bg);color:var(--teal)}
+.lvl-tag.l2{background:var(--blush);color:var(--rust-d)}
+.lvl-tag.l3{background:var(--night);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec-h h2{margin:0;font-size:16px;font-weight:700}
+.sec-h span{font-size:12px;color:var(--mute)}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--rust)}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.hscroll::-webkit-scrollbar{display:none}
+.stack{display:flex;flex-direction:column}
+.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g14{gap:14px}.g16{gap:16px}.g20{gap:20px}.g24{gap:24px}
+.spacer{height:24px;flex:none}
+
+/* ---------- home ---------- */
+.hero{padding:20px 18px 4px;display:flex;flex-direction:column;gap:12px}
+.hero h1{margin:0;font-family:var(--serif);font-weight:900;font-size:29px;line-height:1.22;letter-spacing:-.01em}
+.hero p{margin:0;font-size:14px;line-height:1.7;color:var(--mute)}
+.prompt{padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 24px -18px rgba(60,40,20,.35)}
+.prompt label{font-size:12px;color:var(--mute)}
+.prompt textarea{border:0;resize:none;outline:none;background:transparent;font-size:15px;line-height:1.6;min-height:72px}
+.prompt .row{display:flex;align-items:center;gap:10px}
+.prompt .est{font-size:12px;color:var(--mute)}
+.pipeline{display:grid;grid-template-columns:1fr 14px 1fr 14px 1fr;align-items:center;gap:4px}
+.pipe-tile{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pipe-tile .box{width:100%;aspect-ratio:5/6;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;overflow:hidden}
+.pipe-tile .box.dark{background:var(--night);border-color:var(--night)}
+.pipe-tile .box svg{width:80%;height:80%}
+.pipe-tile span{font-size:11px;color:var(--mute);text-align:center}
+.lvl-card{padding:16px;display:flex;flex-direction:column;gap:10px;transition:transform .15s}
+.lvl-card:active{transform:scale(.985)}
+.lvl-card.feature{border:2px solid var(--ink);padding:15px}
+.lvl-card .top{display:flex;align-items:center;gap:8px}
+.lvl-card h3{margin:0;font-size:17px;font-weight:700}
+.lvl-card p{margin:0;font-size:13px;line-height:1.6;color:var(--mute)}
+.lvl-card ul{margin:0;padding-left:18px;font-size:13px;line-height:1.85;color:var(--ink-2)}
+.lvl-card .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px}
+.lvl-card .foot span{font-size:12px;color:var(--mute)}
+.lvl-card .btn{height:38px;font-size:13px}
+.kit-teaser{display:flex;gap:12px;align-items:center;padding:12px;text-align:left;width:100%}
+.kit-teaser .thumb{width:72px;height:72px;border-radius:12px;background:var(--night);display:grid;place-items:center;flex:none}
+.bar{height:6px;border-radius:3px;background:#E9E3D8;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--rust);transition:width .8s var(--ease)}
+
+/* ---------- workbench ---------- */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border-radius:12px;background:#E9E3D8;gap:2px;position:relative}
+.seg button{position:relative;z-index:1;height:34px;border:0;border-radius:9px;background:transparent;font-size:13px;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:6px;transition:color .2s}
+.seg button[aria-selected="true"]{color:var(--ink);font-weight:700}
+.seg .thumbv{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:calc((100% - 10px)/3);border-radius:9px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.08);transition:transform .3s var(--ease)}
+.seg.mini{grid-template-columns:repeat(3,auto);display:inline-grid}
+.seg.mini button{height:28px;padding:0 12px;font-size:12px}
+.lvl{display:none;flex-direction:column;gap:14px;padding:14px 18px 0;animation:fadeUp .35s var(--ease)}
+.lvl.on{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* L1 */
+.steps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:-18px;padding-inline:18px}
+.steps::-webkit-scrollbar{display:none}
+.steps button{flex:none;height:32px;padding:0 12px 0 6px;border-radius:999px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mute);transition:all .25s}
+.steps .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;background:#E9E3D8;color:var(--mute)}
+.steps button.done{color:var(--ink-2)}
+.steps button.done .n{background:var(--teal);color:#fff}
+.steps button[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:500}
+.steps button[aria-current="step"] .n{background:var(--rust);color:#fff}
+.canvas{position:sticky;top:var(--hdrH,0px);z-index:12;padding:10px;display:flex;flex-direction:column;gap:8px;overflow:hidden;box-shadow:0 14px 22px -20px rgba(40,30,20,.5)}
+.canvas::before{content:"";position:absolute;left:-20px;right:-20px;top:-16px;height:16px;background:var(--paper)}
+.canvas-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute)}
+.canvas-stage{position:relative;height:250px;border-radius:12px;background:#FDFCFA;overflow:hidden}
+.canvas-stage .pat{position:absolute;inset:0;transition:opacity .3s}
+.canvas-stage .pat svg{width:100%;height:100%}
+.pip{position:absolute;right:8px;bottom:8px;width:122px;height:142px;border-radius:12px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 20px -12px rgba(0,0,0,.35);transition:all .45s var(--ease);overflow:hidden}
+.pip .lab{position:absolute;left:8px;top:6px;font-size:10px;color:var(--mute);font-family:var(--mono)}
+.pip svg{width:100%;height:100%}
+.canvas-stage[data-view="pattern"] .pip{opacity:0;transform:scale(.8);pointer-events:none}
+.canvas-stage[data-view="3d"] .pat{opacity:0}
+.canvas-stage[data-view="3d"] .pip{right:0;bottom:0;width:100%;height:100%;border-radius:12px;border-color:transparent;box-shadow:none}
+.p-cut{fill:none;stroke:var(--ink);stroke-width:14;stroke-linejoin:round}
+.p-sa{fill:none;stroke:var(--blush);stroke-width:12;stroke-linejoin:round}
+.p-seam{fill:#fff;stroke:var(--rust);stroke-width:1.6;stroke-dasharray:6 4}
+.p-code{font:700 22px var(--mono);fill:var(--ink)}
+.p-name{font:400 17px var(--sans);fill:var(--mute)}
+.pc path{transition:d .35s var(--ease)}
+.params{padding:14px;display:flex;flex-direction:column;gap:10px}
+.param{display:flex;flex-direction:column;gap:6px}
+.param .l{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
+.param .v{font-family:var(--mono);font-size:12px;color:var(--rust);font-variant-numeric:tabular-nums}
+.grp{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mute-2)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--ink) 0 var(--p,50%),#E2DCD1 var(--p,50%) 100%)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:#E2DCD1}
+input[type=range]::-moz-range-progress{height:4px;border-radius:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--ink);margin-top:-9px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.switch{position:relative;width:44px;height:26px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.switch i{position:absolute;inset:0;border-radius:13px;background:var(--line-3);transition:background .2s;pointer-events:none}
+.switch i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .25s var(--ease)}
+.switch input:checked + i{background:var(--teal-2)}
+.switch input:checked + i::after{transform:translateX(18px)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0}
+.stats div{padding:10px 8px;border-right:1px solid var(--line-2);display:flex;flex-direction:column;gap:3px}
+.stats div:last-child{border-right:0}
+.stats dt{font-size:10.5px;color:var(--mute)}
+.stats dd{margin:0;font-family:var(--mono);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
+.checks{padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.checks h3{margin:0;font-size:13px}
+.ck{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5;transition:color .2s}
+.ck svg{flex:none;margin-top:3px}
+.ck.warn{color:var(--rust-d)}
+.know{background:var(--blush);border:1px solid #F3CDB6;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.know .t{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700}
+.know .t span{font:500 10.5px var(--mono);color:var(--rust-d)}
+.know p{margin:0;font-size:13px;line-height:1.65;color:var(--ink-2)}
+.opt-list{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);text-align:left;width:100%;transition:border-color .2s,box-shadow .2s}
+.opt[aria-checked="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.opt .sw{width:34px;height:34px;border-radius:9px;flex:none;border:1px solid rgba(0,0,0,.06)}
+.opt b{display:block;font-size:14px;font-weight:500}
+.opt small{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.opt .r{margin-left:auto;font:500 12px var(--mono);color:var(--mute)}
+.pages{display:grid;gap:6px}
+.pages i{aspect-ratio:210/297;border-radius:4px;background:#fff;border:1px solid var(--line);position:relative}
+.pages i::after{content:attr(data-n);position:absolute;left:4px;top:3px;font:500 9px var(--mono);color:var(--mute-2)}
+.sew{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.sew li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:13px;line-height:1.5}
+.sew li:last-child{border-bottom:0}
+.sew .k{font:500 12px var(--mono);color:var(--rust);width:20px;flex:none;padding-top:1px}
+.actionbar{position:sticky;bottom:0;z-index:15;margin-top:auto;display:flex;gap:8px;padding:10px 18px 12px;background:linear-gradient(to bottom,rgba(243,239,232,0),var(--paper) 30%)}
+.actionbar .btn{flex:1}
+.actionbar .btn.ghost{flex:none}
+
+/* L2 */
+.tools{display:flex;gap:6px;align-items:center}
+.tools .icon-btn{width:40px;height:40px;transition:background .2s}
+.tools .icon-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.tools .icon-btn[aria-pressed="true"] svg{stroke:#fff}
+.views{position:relative;padding:12px;display:flex;flex-direction:column;gap:10px}
+.view-stage{height:270px;border-radius:12px;background:var(--paper-2);position:relative;overflow:hidden}
+.view-stage figure{position:absolute;inset:0;margin:0;display:grid;place-items:center;opacity:0;transform:translateX(24px);transition:opacity .35s,transform .45s var(--ease)}
+.view-stage figure.on{opacity:1;transform:none}
+.view-stage figure.left{transform:translateX(-24px)}
+.view-stage svg{height:250px;width:auto}
+.view-stage .cap{position:absolute;left:10px;top:8px;font:500 10px var(--mono);letter-spacing:.1em;color:var(--mute-2)}
+.layers{display:flex;gap:6px;flex-wrap:wrap}
+.layers span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 9px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}
+.layers span i{width:8px;height:8px;border-radius:2px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;transition:background .4s,border-color .4s}
+.kpi small{font-size:11px;color:var(--mute)}
+.kpi b{font:500 20px var(--mono);font-variant-numeric:tabular-nums}
+.kpi.flash{background:var(--teal-bg);border-color:#9fd3cc}
+.strain{padding:12px;display:flex;flex-direction:column;gap:8px}
+.legend{display:flex;gap:10px;font-size:11px;color:var(--mute);align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.strain .scroller{overflow-x:auto;scrollbar-width:none;margin-inline:-12px;padding-inline:12px}
+.strain .scroller::-webkit-scrollbar{display:none}
+.qa{width:100%;border-collapse:collapse;font-size:12.5px}
+.qa caption{text-align:left;font-size:12px;color:var(--mute);padding:0 0 6px}
+.qa th{font-weight:500;font-size:11px;color:var(--mute);text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)}
+.qa td{padding:9px 4px;border-bottom:1px solid var(--line-2);font-variant-numeric:tabular-nums}
+.qa td.m{font-family:var(--mono);font-size:12px;text-align:right}
+.qa th.m{text-align:right}
+.qa tr.bad td{background:#FDF1EA}
+.qa tr.bad td:first-child{box-shadow:inset 3px 0 0 var(--rust)}
+.qa tr.fixed td{animation:fixedFlash 1.4s ease}
+@keyframes fixedFlash{0%{background:var(--teal-bg)}100%{background:transparent}}
+.issue{border-radius:14px;padding:14px;background:var(--card);border:1.5px solid var(--rust);display:flex;flex-direction:column;gap:8px;transition:border-color .3s}
+.issue .t{font-size:14px;font-weight:700;color:var(--rust-d);display:flex;align-items:center;gap:6px}
+.issue p{margin:0;font-size:13px;line-height:1.6;color:var(--ink-2)}
+.issue .row{display:flex;gap:8px}
+.issue .row .btn{flex:1;height:40px;font-size:13px}
+.issue.ok{border-color:var(--teal-2)}
+.issue.ok .t{color:var(--teal)}
+.fabric-note{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);gap:8px}
+.fabric-note a{color:var(--rust)}
+
+/* L3 */
+.gen{padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.gen-step{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute);transition:color .3s}
+.gen-step .ic{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-3);display:grid;place-items:center;flex:none;transition:all .3s}
+.gen-step.run{color:var(--ink);font-weight:500}
+.gen-step.run .ic{border-color:var(--rust);border-top-color:transparent;animation:spin .8s linear infinite}
+.gen-step.done{color:var(--ink)}
+.gen-step.done .ic{background:var(--teal);border-color:var(--teal)}
+.gen-step .ic svg{opacity:0}
+.gen-step.done .ic svg{opacity:1}
+.gen-step small{margin-left:auto;font:12px var(--mono);color:var(--mute)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-visual{height:200px;border-radius:12px;background:var(--night);position:relative;overflow:hidden;display:grid;place-items:center}
+.gen-visual .scan{position:absolute;left:0;right:0;height:60px;background:linear-gradient(to bottom,rgba(243,162,122,0),rgba(243,162,122,.28),rgba(243,162,122,0));animation:scan 1.6s ease-in-out infinite}
+@keyframes scan{0%{top:-60px}100%{top:200px}}
+.ai-head h1{margin:0;font-family:var(--serif);font-weight:900;font-size:22px;line-height:1.3}
+.ai-head p{margin:4px 0 0;font-size:13px;color:var(--mute)}
+.route-card{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.rbar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+.rbar i{display:block;height:100%}
+.rlegend{display:grid;grid-template-columns:1fr;gap:4px;font-size:12px}
+.rlegend div{display:flex;align-items:center;gap:8px}
+.rlegend i{width:10px;height:10px;border-radius:3px;flex:none}
+.rlegend b{margin-left:auto;font:500 12px var(--mono)}
+.ai-preview{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:12px;align-items:center}
+.ai-preview .box{height:140px;border-radius:12px;background:var(--night);display:grid;place-items:center}
+.ai-preview .box svg{height:128px;width:auto}
+.ai-preview .box .hl{transition:fill .35s}
+.ai-preview .meta{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mute)}
+.ai-preview .meta b{font-size:14px;color:var(--ink)}
+.progress-line{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
+.progress-line .bar{flex:1}
+.progress-line .bar i{background:var(--teal-2)}
+.dec{padding:12px 14px;display:flex;flex-direction:column;gap:10px;transition:border-color .3s,box-shadow .3s}
+.dec.active{border-color:var(--ink);box-shadow:0 10px 24px -18px rgba(0,0,0,.5)}
+.dec-h{display:flex;align-items:center;gap:8px}
+.dec-h .type{font:500 10px var(--mono);padding:2px 6px;border-radius:5px;background:#E9E3D8;color:var(--ink-2)}
+.dec-h b{font-size:14px;font-weight:700;flex:1;min-width:0}
+.dec-h .st{font-size:11px}
+.dec-sum{font-size:12px;color:var(--mute);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dec-sum button{border:0;background:none;color:var(--rust);font-size:12px;padding:6px 0}
+.dopt{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);text-align:left;width:100%;transition:border-color .2s,background .2s}
+.dopt[aria-checked="true"]{border-color:var(--ink);background:#fff;box-shadow:0 0 0 1px var(--ink) inset}
+.dopt .radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-3);position:relative;transition:border-color .2s}
+.dopt[aria-checked="true"] .radio{border-color:var(--ink)}
+.dopt[aria-checked="true"] .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--ink)}
+.dopt b{font-size:13.5px;font-weight:500;display:flex;gap:6px;align-items:center}
+.dopt small{display:block;font-size:12px;color:var(--mute);margin-top:2px;line-height:1.45}
+.dopt .conf{display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:52px}
+.dopt .conf span{font:500 12px var(--mono)}
+.dopt .conf i{display:block;height:3px;border-radius:2px;background:var(--rust);align-self:stretch;transform-origin:left}
+.dopt .conf em{display:block;height:3px;border-radius:2px;background:#EEE9E0;align-self:stretch;position:relative}
+.dopt .conf em i{position:absolute;left:0;top:0;bottom:0}
+.auto-list{padding:4px 14px}
+.auto-list li{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.auto-list li:last-child{border-bottom:0}
+.auto-list span{color:var(--mute)}
+.auto-list b{font:500 12px var(--mono);color:var(--teal)}
+.consent{font-size:11.5px;line-height:1.6;color:var(--mute)}
+
+/* ---------- kit ---------- */
+.gallery{position:relative;height:330px;border-radius:18px;background:var(--night);overflow:hidden}
+.gallery .g{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .35s}
+.gallery .g.on{opacity:1}
+.gallery .badge{position:absolute;left:12px;top:12px;font-size:11px;padding:3px 10px;border-radius:999px;background:var(--paper);color:var(--ink);z-index:2}
+.dragon-body{transition:fill .45s var(--ease)}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.thumbs button{height:62px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10.5px;color:var(--mute);transition:border-color .2s,box-shadow .2s}
+.thumbs button[aria-selected="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset;color:var(--ink)}
+.kit-title{margin:0;font-family:var(--serif);font-weight:900;font-size:26px;line-height:1.25}
+.maker{display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;text-align:left}
+.maker i{width:30px;height:30px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;font:900 13px var(--serif);font-style:normal}
+.price{display:flex;align-items:baseline;gap:10px}
+.price b{font:500 28px var(--mono);font-variant-numeric:tabular-nums}
+.price span{font-size:12px;color:var(--mute)}
+.cut{padding:14px;display:flex;flex-direction:column;gap:10px}
+.cut .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
+.cut .top strong{font:500 20px var(--mono);font-variant-numeric:tabular-nums}
+.cut .bar{height:8px;border-radius:4px}
+.cut .note{font-size:12px;color:var(--mute)}
+.forms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.forms button{padding:10px 8px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;transition:border-color .2s,box-shadow .2s}
+.forms button b{font-size:13px;font-weight:500}
+.forms button small{font:11px var(--mono);color:var(--mute)}
+.forms button[aria-checked="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.picker{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-radius:16px;background:rgba(243,239,232,.94);backdrop-filter:blur(8px);transition:opacity .3s}
+.gallery[data-g="fabric"] .picker,.gallery[data-g="order"] .picker{opacity:0;pointer-events:none}
+.pk-l{font-size:12px;color:var(--mute)}
+.pk-l b{color:var(--ink);font-weight:500;margin-left:4px}
+.swatches{display:flex;gap:8px}
+.swatches button{width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);transition:box-shadow .2s,transform .2s}
+.swatches button[aria-checked="true"]{box-shadow:0 0 0 2px var(--ink);transform:scale(1.05)}
+.field-l{font-size:13px;font-weight:700}
+.sel{height:42px;border-radius:10px;border:1px solid var(--line);padding:0 10px;background:var(--card);font-size:13px;width:100%}
+.flow{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0}
+.flow li{display:grid;grid-template-columns:28px 1fr;gap:10px;padding-bottom:14px;position:relative;font-size:13px;line-height:1.5}
+.flow li::before{content:"";position:absolute;left:13px;top:24px;bottom:0;width:1.5px;background:var(--line)}
+.flow li:last-child::before{display:none}
+.flow li:last-child{padding-bottom:0}
+.flow .k{width:28px;height:24px;border-radius:7px;background:var(--blush);color:var(--rust-d);font:500 11px var(--mono);display:grid;place-items:center}
+.flow small{display:block;color:var(--mute);font-size:12px}
+.buybar{position:sticky;bottom:0;z-index:15;margin-top:auto;display:flex;gap:8px;padding:10px 18px 12px;background:rgba(251,249,245,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.buybar .btn.rust{flex:1}
+
+/* ---------- creator ---------- */
+.banner{height:calc(120px + var(--top));background:var(--night);position:relative;overflow:hidden;flex:none}
+.banner > svg{position:absolute;left:0;bottom:0;width:100%;height:120px}
+.banner .back{position:absolute;right:14px;top:calc(var(--top) + 8px);display:flex;gap:8px}
+.banner .back .icon-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.prof{position:relative;z-index:1;padding:0 18px;display:flex;flex-direction:column;gap:12px}
+.prof .row1{display:flex;align-items:flex-end;gap:12px;margin-top:-36px}
+.prof .av{width:80px;height:80px;border-radius:50%;background:var(--wine);border:4px solid var(--paper);display:grid;place-items:center;color:#fff;font:900 30px var(--serif);flex:none}
+.prof h1{margin:0;font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px}
+.prof .meta{font-size:12px;color:var(--mute);line-height:1.6}
+.prof .acts{display:flex;gap:8px}
+.prof .acts .btn{flex:1;height:40px;font-size:14px}
+.mine{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.mine .lock{font-size:11px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.mine dl{margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mine dt{font-size:10.5px;color:var(--mute)}
+.mine dd{margin:2px 0 0;font:500 16px var(--mono);font-variant-numeric:tabular-nums}
+.works{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.work{border-radius:14px;overflow:hidden;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;text-align:left;padding:0;animation:fadeUp .35s var(--ease) both}
+.work .img{height:132px;display:grid;place-items:center;position:relative}
+.work .img svg{height:100px;width:auto}
+.work .img .pill{position:absolute;left:8px;top:8px}
+.work .inf{padding:9px 10px 11px;display:flex;flex-direction:column;gap:2px}
+.work .inf b{font-size:13.5px;font-weight:500}
+.work .inf span{font-size:11.5px;color:var(--mute)}
+.work.add{border-style:dashed;border-color:var(--line-3);background:var(--paper-2);align-items:center;justify-content:center;gap:6px;min-height:190px;font-size:13px;color:var(--ink-2)}
+.work.add small{font-size:11px;color:var(--mute)}
+.todo a,.todo button{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border:0;border-bottom:1px solid var(--line-2);background:none;width:100%;font-size:13px;text-align:left;color:var(--ink)}
+.todo button:last-child{border-bottom:0}
+.todo em{font-style:normal;color:var(--rust);font-size:12.5px}
+.launch{background:var(--night);color:var(--paper);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.launch h2{margin:0;font-size:15px}
+.launch p{margin:0;font-size:12.5px;line-height:1.65;color:var(--sand)}
+.launch .btn{background:var(--paper);color:var(--ink);border-color:var(--paper);margin-top:4px}
+
+/* ---------- sheet & toast ---------- */
+.scrim{position:absolute;inset:0;z-index:60;background:rgba(28,27,25,.38);opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.scrim.on{opacity:1;visibility:visible;transition:opacity .3s}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:61;background:var(--paper-2);border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .42s var(--ease);box-shadow:0 -10px 40px -10px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:14px;max-height:80%;overflow-y:auto}
+html.embed .sheet,.framed .sheet{padding-bottom:30px}
+.sheet.on{transform:none}
+.sheet .grab{width:38px;height:5px;border-radius:3px;background:var(--line-3);align-self:center}
+.sheet h2{margin:0;font-size:18px;font-weight:700}
+.sheet .rows{display:flex;flex-direction:column}
+.sheet .rows div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:14px}
+.sheet .rows span{color:var(--mute)}
+.qty{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.qty button{width:36px;height:32px;border:0;background:none;font-size:16px}
+.qty b{width:30px;text-align:center;font:500 14px var(--mono)}
+.done-mark{width:64px;height:64px;border-radius:50%;background:var(--teal);display:grid;place-items:center;align-self:center;animation:pop .5s var(--ease)}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.toast{position:absolute;left:50%;bottom:92px;z-index:70;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:#fff;font-size:13px;padding:10px 16px;border-radius:12px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .25s,transform .35s var(--ease);pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="intro" aria-label="原型说明">
+    <div class="eyebrow">PLUSH PATTERN STUDIO · MOBILE</div>
+    <h1>纸样工作台<br>手机端原型</h1>
+    <p>从草图到可缝制纸样的完整链路：AI 开版、三视图 QA、参数化模板、开版直通材料包与创作者主页。右侧手机里的控件均可操作。</p>
+    <ol class="route" id="route">
+      <li><button type="button" data-go="home"><span class="k">01</span>首页 · 分层入口</button></li>
+      <li><button type="button" data-go="ai"><span class="k">02</span>AI 开版 · 决策确认</button></li>
+      <li><button type="button" data-go="qa"><span class="k">03</span>三视图 · 对缝 QA</button></li>
+      <li><button type="button" data-go="template"><span class="k">04</span>模板开版 · 参数联动</button></li>
+      <li><button type="button" data-go="kit"><span class="k">05</span>开版直通材料包</button></li>
+      <li><button type="button" data-go="creator"><span class="k">06</span>创作者主页</button></li>
+    </ol>
+    <small>价格、创作者数据与销量为演示样例值，用布量、填充量为估算，布料补偿系数待实测校准。</small>
+  </aside>
+
+  <div class="device framed" id="device">
+  <div class="app" id="app">
+    <div class="screens">
+
+      <!-- ================= HOME ================= -->
+      <section class="screen on" id="s-home" aria-label="首页">
+        <header class="hdr">
+          <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="#B83C0A" stroke-width="1.7" aria-hidden="true"><path d="M5 20 C5 10 9 5 14 5 C19 5 23 10 23 20 Z"/><path d="M8 18 C8 12 10.5 8.5 14 8.5 C17.5 8.5 20 12 20 18" stroke-dasharray="2 2"/><path d="M14 5 L14 23"/></svg>
+            <b>纸样工作台</b>
+          </div>
+          <div class="grow"></div>
+          <div class="token"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#B83C0A" stroke-width="1.6" aria-hidden="true"><path d="M7 1 L13 7 L7 13 L1 7 Z"/></svg><span class="num" data-token>1,240</span></div>
+          <button type="button" class="avatar" aria-label="账户">P</button>
+        </header>
+
+        <div class="hero">
+          <div class="eyebrow">CONCEPT → PATTERN → VERIFIED PIECE</div>
+          <h1>从一张草图，到一套<br>真正缝得出来的纸样</h1>
+          <p>参数化模板、三视图导入、AI 全流程三种开版方式。每一版纸样先模拟缝合与填充，再给你看成品。</p>
+        </div>
+
+        <div class="pad stack g16" style="padding-top:8px">
+          <form class="card prompt" id="promptForm">
+            <label for="prompt">描述你的角色，或上传参考</label>
+            <textarea id="prompt" rows="3">坐姿小恐龙，背部一排软刺，成品高度约 25cm，短毛绒，哥特可爱风</textarea>
+            <div class="hscroll" role="group" aria-label="输入方式" id="inputModes">
+              <button type="button" class="chip" aria-pressed="true">文字</button>
+              <button type="button" class="chip" aria-pressed="false">手绘稿</button>
+              <button type="button" class="chip" aria-pressed="false">参考图</button>
+              <button type="button" class="chip" aria-pressed="false">三视图</button>
+              <button type="button" class="chip" aria-pressed="false">OBJ 模型</button>
+            </div>
+            <div class="row">
+              <span class="est">预计消耗 <span class="num">40</span> token</span>
+              <div class="grow"></div>
+              <button type="submit" class="btn rust" id="genBtn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 L9.6 6.4 L14.5 8 L9.6 9.6 L8 14.5 L6.4 9.6 L1.5 8 L6.4 6.4 Z"/></svg>生成纸样</button>
+            </div>
+          </form>
+
+          <div class="pipeline" aria-label="从草图到纸样">
+            <div class="pipe-tile"><div class="box">
+              <svg viewBox="0 0 200 240" fill="none" stroke="#5E5A52" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C168 196 188 206 196 216"/><path d="M70 60 C60 90 52 130 54 170 C56 200 74 222 104 224 C132 226 152 210 156 180"/><path d="M74 214 L70 232 L96 232 M130 214 L134 232 L108 232"/><path d="M78 56 L66 44 L82 42 M74 80 L60 72 L76 66 M68 108 L54 104 L68 94" stroke="#B83C0A"/><circle cx="130" cy="54" r="3" fill="#5E5A52"/></svg>
+            </div><span>草图 / 参考图</span></div>
+            <svg width="14" height="10" viewBox="0 0 28 16" fill="none" stroke="#8A8479" stroke-width="2" aria-hidden="true"><path d="M0 8 H26 M20 2 L26 8 L20 14"/></svg>
+            <div class="pipe-tile"><div class="box dark">
+              <svg viewBox="0 0 200 240" aria-hidden="true"><path d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C156 212 132 228 104 226 C74 224 54 200 54 170 C52 130 60 90 70 60 Z" fill="#D8CDBF"/><path d="M115 14 C112 60 108 120 104 226" fill="none" stroke="#B83C0A" stroke-width="2" stroke-dasharray="6 5"/><path d="M60 110 C90 118 130 116 150 108" fill="none" stroke="#B83C0A" stroke-width="2" stroke-dasharray="6 5"/><path d="M78 56 L64 42 L84 44 Z M72 82 L56 72 L76 68 Z M66 110 L50 104 L66 94 Z" fill="#B83C0A"/><circle cx="132" cy="52" r="4" fill="#2B2A33"/></svg>
+            </div><span>3D 形体 + 缝线</span></div>
+            <svg width="14" height="10" viewBox="0 0 28 16" fill="none" stroke="#8A8479" stroke-width="2" aria-hidden="true"><path d="M0 8 H26 M20 2 L26 8 L20 14"/></svg>
+            <div class="pipe-tile"><div class="box">
+              <svg viewBox="0 0 150 180" aria-hidden="true">
+                <g transform="translate(10,10)"><path d="M5 45 C5 20 25 5 50 6 C70 7 80 20 81 35 L95 39 C100 41 100 50 94 52 L75 55 C70 70 55 79 35 78 C17 77 5 65 5 45 Z" class="p-cut" style="stroke-width:10"/><path d="M5 45 C5 20 25 5 50 6 C70 7 80 20 81 35 L95 39 C100 41 100 50 94 52 L75 55 C70 70 55 79 35 78 C17 77 5 65 5 45 Z" class="p-sa" style="stroke-width:8.5"/><path d="M5 45 C5 20 25 5 50 6 C70 7 80 20 81 35 L95 39 C100 41 100 50 94 52 L75 55 C70 70 55 79 35 78 C17 77 5 65 5 45 Z" class="p-seam" style="stroke-width:1;stroke-dasharray:3 2"/></g>
+                <g transform="translate(112,8)"><path d="M10 0 C17 15 18 45 15 80 C14 95 11 105 10 110 C9 105 6 95 5 80 C2 45 3 15 10 0 Z" class="p-cut" style="stroke-width:10"/><path d="M10 0 C17 15 18 45 15 80 C14 95 11 105 10 110 C9 105 6 95 5 80 C2 45 3 15 10 0 Z" class="p-sa" style="stroke-width:8.5"/><path d="M10 0 C17 15 18 45 15 80 C14 95 11 105 10 110 C9 105 6 95 5 80 C2 45 3 15 10 0 Z" class="p-seam" style="stroke-width:1;stroke-dasharray:3 2"/></g>
+                <g transform="translate(14,104)"><path d="M15 0 C40 -2 60 10 65 35 C68 50 64 60 50 64 L10 66 C3 50 0 35 2 22 C4 10 7 1 15 0 Z" class="p-cut" style="stroke-width:10"/><path d="M15 0 C40 -2 60 10 65 35 C68 50 64 60 50 64 L10 66 C3 50 0 35 2 22 C4 10 7 1 15 0 Z" class="p-sa" style="stroke-width:8.5"/><path d="M15 0 C40 -2 60 10 65 35 C68 50 64 60 50 64 L10 66 C3 50 0 35 2 22 C4 10 7 1 15 0 Z" class="p-seam" style="stroke-width:1;stroke-dasharray:3 2"/></g>
+                <g transform="translate(96,132)"><path d="M0 18 C0 7 12 0 20 0 C28 0 40 7 40 18 C40 29 28 36 20 36 C12 36 0 29 0 18 Z" class="p-cut" style="stroke-width:10"/><path d="M0 18 C0 7 12 0 20 0 C28 0 40 7 40 18 C40 29 28 36 20 36 C12 36 0 29 0 18 Z" class="p-sa" style="stroke-width:8.5"/><path d="M0 18 C0 7 12 0 20 0 C28 0 40 7 40 18 C40 29 28 36 20 36 C12 36 0 29 0 18 Z" class="p-seam" style="stroke-width:1;stroke-dasharray:3 2"/></g>
+              </svg>
+            </div><span>纸样 + QA · 可打印</span></div>
+          </div>
+
+          <div class="sec-h"><h2>选择开版方式</h2><span>按能力分层</span></div>
+
+          <article class="card lvl-card">
+            <div class="top"><span class="lvl-tag l1">L1</span><h3>入门 · 模板开版</h3></div>
+            <p>选动物类型和姿态，拖参数出纸样，边做边学。</p>
+            <ul><li>参数化基础模板，按动物类型 / 姿态</li><li>尺寸 + 布料类型，自动补偿缝份</li><li>每一步配一张制版知识卡</li></ul>
+            <div class="foot"><span>免费 · 部分模板限定</span><button type="button" class="btn" data-go="template">选模板开始</button></div>
+          </article>
+          <article class="card lvl-card feature">
+            <div class="top"><span class="lvl-tag l2">L2</span><h3>进阶 · 导入开版</h3><span class="pill ink" style="margin-left:auto">开版师常用</span></div>
+            <p>导入三视图或 OBJ，在曲面上标缝线，展开后自动校验。</p>
+            <ul><li>曲面上手动标记缝线与对位点</li><li>对缝长度 QA、吃势、应变报告</li><li>SVG / DXF / A4 PDF 导出</li></ul>
+            <div class="foot"><span>订阅解锁</span><button type="button" class="btn dark" data-go="qa">导入参考图</button></div>
+          </article>
+          <article class="card lvl-card">
+            <div class="top"><span class="lvl-tag l3">L3</span><h3>专业 · AI 全流程</h3></div>
+            <p>文字、手绘或参考图直出模型与纸样，低置信决策交给你确认。</p>
+            <ul><li>文字 / 手绘 / 参考图 → 模型 → 自动拆件</li><li>决策层只把拿不准的几项交给你</li><li>发起开版直通材料包</li></ul>
+            <div class="foot"><span>订阅 + token 按量</span><button type="button" class="btn" data-go="ai">体验 AI 开版</button></div>
+          </article>
+
+          <div class="sec-h"><h2>正在拼单开裁</h2><span>达标后统一开裁</span></div>
+          <button type="button" class="card kit-teaser" data-go="kit">
+            <span class="thumb"><svg width="58" height="62" viewBox="0 0 240 260" aria-hidden="true"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/><path d="M112 32 L100 20 L120 26 Z M98 58 L82 50 L102 46 Z M84 92 L68 86 L88 80 Z M74 128 L58 124 L76 116 Z" fill="#D8CDBF"/></svg></span>
+            <span class="stack g8" style="flex:1;min-width:0">
+              <b style="font-size:14px">哥特小龙 · 开版直通材料包</b>
+              <span style="font-size:12px;color:var(--mute)"><span class="num" data-kitcount>32</span> / 50 份 · 剩 12 天</span>
+              <span class="bar"><i data-kitbar style="width:64%"></i></span>
+            </span>
+          </button>
+        </div>
+        <div class="spacer"></div>
+      </section>
+
+      <!-- ================= WORKBENCH ================= -->
+      <section class="screen" id="s-work" aria-label="工作台">
+        <header class="hdr" style="flex-direction:column;align-items:stretch;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="hdr-title grow"><b id="projName">坐姿小熊 · 草稿</b><span id="projMeta">模板：坐姿熊 v2 · 自动保存于 11:42</span></div>
+            <div class="token"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#B83C0A" stroke-width="1.6" aria-hidden="true"><path d="M7 1 L13 7 L7 13 L1 7 Z"/></svg><span class="num" data-token>1,240</span></div>
+          </div>
+          <div class="seg" role="tablist" aria-label="开版方式" id="levelSeg">
+            <span class="thumbv" aria-hidden="true"></span>
+            <button type="button" role="tab" aria-selected="true" data-level="l1">L1 模板</button>
+            <button type="button" role="tab" aria-selected="false" data-level="l2">L2 三视图</button>
+            <button type="button" role="tab" aria-selected="false" data-level="l3">L3 AI</button>
+          </div>
+        </header>
+
+        <!-- L1 -->
+        <div class="lvl on" id="lvl-l1">
+          <nav class="steps" aria-label="开版步骤" id="steps"></nav>
+
+          <div class="card canvas">
+            <div class="canvas-bar">
+              <div class="seg mini" role="tablist" aria-label="视图" id="viewSeg">
+                <button type="button" role="tab" aria-selected="false" data-view="pattern">纸样</button>
+                <button type="button" role="tab" aria-selected="false" data-view="3d">3D</button>
+                <button type="button" role="tab" aria-selected="true" data-view="split">并排</button>
+              </div>
+              <div class="grow"></div>
+              <span id="pageInfo" style="font-variant-numeric:tabular-nums">A4 × 6 页 · 缝份 5 mm</span>
+            </div>
+            <div class="canvas-stage" id="canvasStage" data-view="split">
+              <div class="pat" id="patWrap"></div>
+              <div class="pip" id="pip"><span class="lab">填充后预览</span><div id="bearWrap" style="position:absolute;inset:0"></div></div>
+            </div>
+          </div>
+
+
+          <div id="stepBody"></div>
+
+          <dl class="card stats" id="stats">
+            <div><dt>裁片</dt><dd id="stPieces">18 片</dd></div>
+            <div><dt>用布</dt><dd id="stFabric">≈0.35 m</dd></div>
+            <div><dt>填充棉 · 估算</dt><dd id="stFill">≈120 g</dd></div>
+            <div><dt>难度</dt><dd id="stLevel">★★☆</dd></div>
+          </dl>
+
+          <section class="card checks" aria-label="自动检查">
+            <h3>自动检查</h3>
+            <div id="checks"></div>
+          </section>
+
+          <section class="know" aria-label="知识卡">
+            <div class="t"><span id="knowIdx">知识卡 2/6</span><b id="knowTitle">吃势是什么</b></div>
+            <p id="knowText"></p>
+          </section>
+
+          <div class="actionbar">
+            <button type="button" class="btn ghost" id="prevStep">上一步</button>
+            <button type="button" class="btn dark" id="nextStep">下一步 · 选布料</button>
+          </div>
+        </div>
+
+        <!-- L2 -->
+        <div class="lvl" id="lvl-l2">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="tools" role="toolbar" aria-label="标注工具" id="tools">
+              <button type="button" class="icon-btn" aria-label="选择" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 2 L13 8 L8.5 9 L6.5 14 Z"/></svg></button>
+              <button type="button" class="icon-btn" aria-label="缝线" aria-pressed="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5" stroke-dasharray="2.5 2"><path d="M2 13 C6 3 10 13 14 3"/></svg></button>
+              <button type="button" class="icon-btn" aria-label="对位点" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"/><path d="M8 1 V4 M8 12 V15 M1 8 H4 M12 8 H15"/></svg></button>
+              <button type="button" class="icon-btn" aria-label="测量" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M2 12 L12 2 L14 4 L4 14 Z M5 9 L6.5 10.5 M7.5 6.5 L9 8 M10 4 L11.5 5.5"/></svg></button>
+            </div>
+            <div class="grow"></div>
+            <button type="button" class="btn dark" style="height:40px;font-size:13px" id="exportBtn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><path d="M8 2 V10 M4.5 6.5 L8 10 L11.5 6.5 M2.5 13.5 H13.5"/></svg>导出</button>
+          </div>
+
+          <div class="card views">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="seg mini" role="tablist" aria-label="三视图" id="triSeg">
+                <button type="button" role="tab" aria-selected="false" data-tri="front">正视</button>
+                <button type="button" role="tab" aria-selected="true" data-tri="side">侧视</button>
+                <button type="button" role="tab" aria-selected="false" data-tri="back">背视</button>
+              </div>
+              <div class="grow"></div>
+              <span class="pill rust">缝线 · 编辑中</span>
+            </div>
+            <div class="view-stage" id="triStage">
+              <figure data-tri="front"><span class="cap">FRONT</span>
+                <svg viewBox="0 0 200 260" aria-label="正视图"><g fill="none" stroke="#A39D92" stroke-width="1.6"><ellipse cx="100" cy="72" rx="52" ry="46"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108"/><ellipse cx="70" cy="238" rx="24" ry="13"/><ellipse cx="130" cy="238" rx="24" ry="13"/><path d="M58 140 C40 150 36 172 48 178 M142 140 C160 150 164 172 152 178"/><circle cx="80" cy="66" r="5"/><circle cx="120" cy="66" r="5"/></g><path d="M100 26 V250" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 3"/><path d="M50 112 C72 124 128 124 150 112" fill="none" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 3"/><path d="M44 212 C70 200 130 200 156 212" fill="none" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 3"/><path d="M20 252 H180" stroke="#A16207" stroke-width="1"/><g fill="#FFFFFF" stroke="#B83C0A" stroke-width="1.4"><rect x="96" y="22" width="8" height="8"/><rect x="46" y="108" width="8" height="8"/><rect x="146" y="108" width="8" height="8"/><rect x="96" y="116" width="8" height="8"/><rect x="40" y="208" width="8" height="8"/><rect x="152" y="208" width="8" height="8"/></g><g fill="#0F6E6A"><circle cx="100" cy="72" r="3"/><circle cx="100" cy="200" r="3"/></g></svg>
+              </figure>
+              <figure data-tri="side" class="on"><span class="cap">SIDE</span>
+                <svg viewBox="0 0 240 260" aria-label="侧视图"><g fill="none" stroke="#A39D92" stroke-width="1.6"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100"/><path d="M104 70 C74 108 62 168 72 208 C82 240 140 246 160 222 C176 200 172 140 152 104"/><path d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226"/><ellipse cx="136" cy="240" rx="30" ry="11"/><circle cx="172" cy="52" r="5"/></g><g fill="#FBE6DA" stroke="#B83C0A" stroke-width="1.2"><path d="M112 32 L100 20 L120 26 Z"/><path d="M98 58 L82 50 L102 46 Z"/><path d="M84 92 L68 86 L88 80 Z"/><path d="M74 128 L58 124 L76 116 Z"/><path d="M68 164 L52 162 L70 152 Z"/></g><path d="M112 32 C96 60 80 100 72 150 C68 180 70 200 74 212" fill="none" stroke="#B83C0A" stroke-width="1.8" stroke-dasharray="5 3"/><path d="M150 104 C128 120 116 150 118 180 C120 200 130 214 140 222" fill="none" stroke="#B83C0A" stroke-width="1.8" stroke-dasharray="5 3"/><path id="legOpening" d="M104 176 C112 162 136 160 150 170 C160 180 156 200 140 206 C124 210 106 200 104 176 Z" fill="rgba(184,60,10,.10)" stroke="#B83C0A" stroke-width="1.8"/><path d="M10 252 H230" stroke="#A16207" stroke-width="1"/><g fill="#FFFFFF" stroke="#B83C0A" stroke-width="1.4"><rect x="108" y="28" width="8" height="8"/><rect x="76" y="98" width="8" height="8"/><rect x="68" y="146" width="8" height="8"/><rect x="146" y="100" width="8" height="8"/><rect x="114" y="150" width="8" height="8"/><rect x="136" y="218" width="8" height="8"/></g><g font-size="10" fill="#8F2E07" font-family="JetBrains Mono, monospace" id="legLabel"><text x="160" y="196">腿开口 Δ3.7</text></g></svg>
+              </figure>
+              <figure data-tri="back"><span class="cap">BACK</span>
+                <svg viewBox="0 0 200 260" aria-label="背视图"><g fill="none" stroke="#A39D92" stroke-width="1.6"><ellipse cx="100" cy="72" rx="52" ry="46"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108"/><path d="M92 226 C88 240 96 252 110 254 C104 244 106 234 108 226"/></g><g fill="#FBE6DA" stroke="#B83C0A" stroke-width="1.2"><path d="M100 22 L92 36 L108 36 Z"/><path d="M100 60 L92 74 L108 74 Z"/><path d="M100 104 L92 118 L108 118 Z"/><path d="M100 146 L92 160 L108 160 Z"/><path d="M100 188 L92 202 L108 202 Z"/></g><path d="M88 30 C84 100 84 170 90 230 M112 30 C116 100 116 170 110 230" fill="none" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 3"/><path d="M20 252 H180" stroke="#A16207" stroke-width="1"/><g font-size="10" fill="#8F2E07" font-family="JetBrains Mono, monospace"><text x="118" y="140">后中条</text></g></svg>
+              </figure>
+            </div>
+            <div class="layers">
+              <span><i style="background:#A39D92"></i>参考图 · 锁定</span>
+              <span><i style="background:#B83C0A"></i>缝线 9 条</span>
+              <span><i style="background:#fff;border:1.4px solid #B83C0A"></i>对位点 14</span>
+              <span><i style="background:#A16207"></i>地面基准</span>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi" id="kpiPass"><small>对缝通过</small><b id="kpiPassV">22/24</b></div>
+            <div class="kpi" id="kpiEase"><small>吃势</small><b id="kpiEaseV">1 处</b></div>
+            <div class="kpi"><small>最大应变</small><b>3.8%</b></div>
+          </div>
+
+          <section class="issue" id="issue" aria-live="polite">
+            <div class="t" id="issueT"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 L15 14 H1 Z M8 6 V9.5 M8 11.5 V12"/></svg>腿开口长度差 3.7 mm</div>
+            <p id="issueP">开口跨侧片与腹片两块，交线偏长。可以收小开口曲线，或把差值作为吃势分到侧片一侧。</p>
+            <div class="row" id="issueRow">
+              <button type="button" class="btn dark" id="fixShrink">自动收小开口</button>
+              <button type="button" class="btn ghost" id="fixEase">作为吃势接受</button>
+            </div>
+          </section>
+
+          <section class="card" style="padding:12px 14px" aria-label="对缝长度">
+            <table class="qa">
+              <caption>对缝长度（mm）· 共 24 组，列出关键 6 组</caption>
+              <thead><tr><th>对缝</th><th class="m">A</th><th class="m">B</th><th class="m">Δ</th><th style="text-align:right">状态</th></tr></thead>
+              <tbody id="qaBody"></tbody>
+            </table>
+          </section>
+
+          <section class="card strain" aria-label="展开结果">
+            <div class="sec-h"><h2 style="font-size:14px">展开结果 · 按应变着色</h2><span class="mono" style="font-size:10.5px">ARAP 展开</span></div>
+            <div class="legend"><span><i style="background:#DCEFEC"></i>&lt;2%</span><span><i style="background:#F3E3B8"></i>2–3.5%</span><span><i style="background:#F6C9B3"></i>&gt;3.5%</span><span style="margin-left:auto">左右滑动</span></div>
+            <div class="scroller">
+              <svg width="620" height="166" viewBox="0 0 860 230" aria-label="展开裁片应变图"><g stroke="#1C1B19" stroke-width="1.2"><path transform="translate(10,20) scale(0.8)" d="M10 90 C10 40 50 10 100 12 C140 14 160 40 162 70 L190 78 C200 82 200 100 188 104 L150 110 C140 140 110 158 70 156 C35 154 10 130 10 90 Z" fill="#DCEFEC"/><path transform="translate(180,16) scale(0.8)" d="M10 90 C10 40 50 10 100 12 C140 14 150 40 150 90 C150 140 110 158 70 156 C35 154 10 130 10 90 Z" fill="#F6C9B3"/><path transform="translate(320,10) scale(0.9)" d="M20 0 C34 30 36 90 30 160 C28 190 22 210 20 220 C18 210 12 190 10 160 C4 90 6 30 20 0 Z" fill="#DCEFEC"/><path transform="translate(380,20) scale(0.95)" d="M30 0 C80 -4 120 20 130 70 C140 120 130 170 100 200 L20 205 C6 170 0 120 4 70 C8 30 14 4 30 0 Z" fill="#F3E3B8"/><path transform="translate(530,30) scale(0.85)" d="M60 0 C100 0 120 40 120 90 C120 150 95 190 60 190 C25 190 0 150 0 90 C0 40 20 0 60 0 Z" fill="#DCEFEC"/><path transform="translate(650,40)" d="M0 60 C0 20 30 0 60 0 C90 0 110 20 110 60 L110 130 L0 130 Z" fill="#F3E3B8"/><path transform="translate(780,70)" d="M0 30 C10 5 50 5 60 30 C50 50 10 50 0 30 Z" fill="#DCEFEC"/></g><g font-family="JetBrains Mono, monospace" font-size="14" fill="#1C1B19"><text x="60" y="96">H1 1.4%</text><text x="226" y="92">H2 3.8%</text><text x="290" y="222">H3 0.9%</text><text x="416" y="120">B1 2.6%</text><text x="560" y="122">B2 1.1%</text><text x="672" y="120">L1 2.3%</text><text x="772" y="126">L3 1.2%</text></g></svg>
+            </div>
+          </section>
+
+          <div class="fabric-note"><span>布料：A料水晶超柔 · 毛高 1 mm</span><a href="#" onclick="return false">补偿系数未校准</a></div>
+          <div class="spacer"></div>
+        </div>
+
+        <!-- L3 -->
+        <div class="lvl" id="lvl-l3">
+          <section class="card gen" id="genPanel" hidden aria-live="polite">
+            <div class="gen-visual" aria-hidden="true">
+              <svg width="150" height="180" viewBox="0 0 200 240"><path id="genShape" d="M70 60 C70 28 92 12 115 14 C142 16 160 36 158 62 C176 66 186 80 180 92 C172 104 150 100 142 98 C150 120 158 150 156 180 C156 212 132 228 104 226 C74 224 54 200 54 170 C52 130 60 90 70 60 Z" fill="none" stroke="#D8CDBF" stroke-width="2" stroke-dasharray="6 5"/><path d="M78 56 L64 42 L84 44 Z M72 82 L56 72 L76 68 Z M66 110 L50 104 L66 94 Z" fill="#B83C0A" opacity=".85"/></svg>
+              <div class="scan"></div>
+            </div>
+            <div class="gen-step" data-g="0"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>解析描述与参考<small>25 cm · 短毛绒</small></div>
+            <div class="gen-step" data-g="1"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>生成 3D 形体<small>v1</small></div>
+            <div class="gen-step" data-g="2"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>自动拆件<small>13 片</small></div>
+            <div class="gen-step" data-g="3"><span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg></span>决策置信度路由<small>27 项</small></div>
+          </section>
+
+          <div id="aiBody" class="stack g14">
+            <div class="ai-head">
+              <h1>27 项开版决策，<br>8 项需要你拍板</h1>
+              <p>19 项置信度 ≥ 0.85 已自动处理，可随时展开复核。</p>
+            </div>
+
+            <section class="card route-card" aria-label="决策路由">
+              <div class="rbar" aria-hidden="true"><i style="width:70.4%;background:var(--teal-2)"></i><i style="width:29.6%;background:var(--rust)"></i></div>
+              <div class="rlegend">
+                <div><i style="background:var(--teal-2)"></i>≥ 0.85 自动执行<b>19</b></div>
+                <div><i style="background:var(--rust)"></i>0.55–0.85 给出前两项，由你选<b>8</b></div>
+                <div><i style="background:var(--line-3)"></i>&lt; 0.55 回退模板 / 人工<b>0</b></div>
+              </div>
+            </section>
+
+            <section class="card ai-preview" aria-label="3D 形体">
+              <div class="box">
+                <svg viewBox="0 0 200 256" aria-label="3D 形体，高亮当前决策部位">
+                  <path class="hl" data-part="head" d="M48 72 C48 46 72 26 100 26 C128 26 152 46 152 72 C152 98 128 118 100 118 C72 118 48 98 48 72 Z" fill="#D8CDBF"/>
+                  <path class="hl" data-part="body2" d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#CBBFAE"/>
+                  <ellipse class="hl" data-part="chin" cx="100" cy="104" rx="24" ry="9" fill="#C4B7A4"/>
+                  <ellipse class="hl" data-part="legs" cx="70" cy="232" rx="26" ry="14" fill="#BFB19E"/>
+                  <ellipse class="hl" data-part="legs" cx="130" cy="232" rx="26" ry="14" fill="#BFB19E"/>
+                  <path class="hl" data-part="arms" d="M58 140 C40 150 36 172 48 178 L58 170 Z M142 140 C160 150 164 172 152 178 L142 170 Z" fill="#BFB19E"/>
+                  <path class="hl" data-part="spikes" d="M92 30 L100 12 L108 30 Z" fill="#8A7F72"/>
+                  <circle cx="80" cy="66" r="5" fill="#2B2A33"/><circle cx="120" cy="66" r="5" fill="#2B2A33"/>
+                  <path d="M100 26 V244" stroke="#FBE6DA" stroke-width="1.2" stroke-dasharray="4 3"/>
+                  <path class="hl-line" data-part="base" d="M22 250 H178" stroke="#8A7F72" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="meta">
+                <span>3D 形体 v1 · 高亮当前决策</span>
+                <b id="aiPartName">腿部结构</b>
+                <div class="progress-line"><span class="num" id="aiCount">0/8</span><span class="bar"><i id="aiBar" style="width:0%"></i></span></div>
+                <span>点选即确认，未点选的按推荐项处理</span>
+              </div>
+            </section>
+
+            <div class="hscroll" role="tablist" aria-label="筛选" id="aiFilter">
+              <button type="button" class="chip" role="tab" aria-selected="true" data-f="todo">待确认 8</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-f="auto">已自动 19</button>
+              <button type="button" class="chip" role="tab" aria-selected="false" data-f="all">全部 27</button>
+            </div>
+
+            <div id="decList" class="stack g10"></div>
+            <ul class="card auto-list" id="autoList" hidden style="margin:0;list-style:none"></ul>
+
+            <p class="consent">你的选择会匿名用于改进自动拆件模型，可在设置中关闭。</p>
+            <div class="actionbar" style="margin-inline:-18px">
+              <button type="button" class="btn rust lg block" id="aiConfirm">确认 8 项并生成纸样</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= KIT ================= -->
+      <section class="screen" id="s-kit" aria-label="材料包">
+        <header class="hdr">
+          <div class="hdr-title grow"><b>材料包</b><span>神奇动物系列 / 哥特小龙</span></div>
+          <button type="button" class="icon-btn" aria-label="购物袋"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1C1B19" stroke-width="1.5"><path d="M3 6 H15 L14 16 H4 Z M6 6 C6 3 7.5 2 9 2 C10.5 2 12 3 12 6"/></svg></button>
+        </header>
+        <div class="pad stack g14" style="padding-top:14px">
+          <div class="gallery" id="gallery">
+            <span class="badge" id="galBadge">成品示意 · 实拍图待补</span>
+            <div class="picker" id="picker">
+              <span class="pk-l">布色 <b id="colorName">酒红</b></span>
+              <div class="swatches" role="radiogroup" aria-label="布色" id="swatches">
+                <button type="button" role="radio" aria-checked="true" aria-label="酒红" data-color="wine" style="background:#7A1F2B"></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="墨黑" data-color="ink" style="background:#45434F"></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="苔绿" data-color="moss" style="background:#4E5B3A"></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="奶白" data-color="oat" style="background:#E9DCCB"></button>
+              </div>
+            </div>
+            <div class="g on" data-g="main">
+              <svg width="236" height="256" viewBox="0 0 240 260" aria-label="哥特小龙成品示意" style="margin-top:-40px">
+                <path class="dragon-body" data-c="body" d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/>
+                <path class="dragon-body" data-c="tail" d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226 Z" fill="#6A1A25"/>
+                <path class="dragon-body" data-c="spike" d="M112 32 L100 20 L120 26 Z M98 58 L82 50 L102 46 Z M84 92 L68 86 L88 80 Z M74 128 L58 124 L76 116 Z M68 164 L52 162 L70 152 Z" fill="#D8CDBF"/>
+                <path d="M122 110 C104 120 96 146 106 160 C130 150 140 130 122 110 Z" fill="#000" opacity="0.18"/>
+                <ellipse class="dragon-body" data-c="tail" cx="136" cy="240" rx="30" ry="10" fill="#6A1A25"/>
+                <circle cx="172" cy="52" r="6" fill="#F3EFE8"/><circle cx="173" cy="52" r="3" fill="#2B2A33"/>
+                <path d="M150 180 L158 172 L166 180" fill="none" stroke="#D8CDBF" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="g" data-g="pieces">
+              <svg width="280" height="220" viewBox="0 0 90 70" aria-label="裁片平铺"><g class="dragon-body" data-c="body" fill="#7A1F2B"><path d="M4 30 C4 12 18 4 32 5 C42 6 46 14 46 24 L54 26 C57 27 57 32 54 33 L44 35 C40 46 32 50 20 50 C10 49 4 42 4 30 Z"/><path d="M60 4 C66 14 66 40 64 60 L60 66 L56 60 C54 40 54 14 60 4 Z"/><path d="M70 30 C82 30 86 40 86 50 C86 60 78 66 72 66 L68 30 Z"/></g><g fill="none" stroke="#F3EFE8" stroke-width=".4" stroke-dasharray="1.2 1"><path d="M7 30 C7 15 19 7 32 8 C41 9 43 15 43 24"/><path d="M60 8 C64 18 64 40 62 58"/></g></svg>
+            </div>
+            <div class="g" data-g="fabric">
+              <div style="display:flex;gap:14px;align-items:flex-end">
+                <div class="stack g8" style="align-items:center"><span style="width:62px;height:150px;border-radius:8px;background:#7A1F2B"></span><small style="color:#D8CDBF;font-size:11px">主体 · 酒红</small></div>
+                <div class="stack g8" style="align-items:center"><span style="width:62px;height:120px;border-radius:8px;background:#45434F"></span><small style="color:#D8CDBF;font-size:11px">腹片 · 墨黑</small></div>
+                <div class="stack g8" style="align-items:center"><span style="width:62px;height:90px;border-radius:8px;background:#D8CDBF"></span><small style="color:#D8CDBF;font-size:11px">背刺 · 奶咖</small></div>
+              </div>
+            </div>
+            <div class="g" data-g="order">
+              <ol class="sew" style="color:#F3EFE8;width:250px">
+                <li style="border-color:#45434F"><span class="k">01</span>头前片 × 后片，对齐刻口</li>
+                <li style="border-color:#45434F"><span class="k">02</span>背刺嵌入后中缝</li>
+                <li style="border-color:#45434F"><span class="k">03</span>腿开口缝入，吃势在侧片</li>
+                <li style="border-color:#45434F"><span class="k">04</span>填充 · 藏针缝收口</li>
+              </ol>
+            </div>
+          </div>
+          <div class="thumbs" role="tablist" aria-label="图集" id="galThumbs">
+            <button type="button" role="tab" aria-selected="true" data-g="main"><svg width="26" height="26" viewBox="0 0 240 260" aria-hidden="true"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/></svg>成品</button>
+            <button type="button" role="tab" aria-selected="false" data-g="pieces"><svg width="30" height="24" viewBox="0 0 90 70" fill="#7A1F2B" aria-hidden="true"><path d="M4 30 C4 12 18 4 32 5 C42 6 46 14 46 24 L54 26 C57 27 57 32 54 33 L44 35 C40 46 32 50 20 50 C10 49 4 42 4 30 Z"/><path d="M60 4 C66 14 66 40 64 60 L60 66 L56 60 C54 40 54 14 60 4 Z"/></svg>裁片</button>
+            <button type="button" role="tab" aria-selected="false" data-g="fabric"><span style="display:flex;gap:3px"><i style="width:7px;height:22px;border-radius:2px;background:#7A1F2B"></i><i style="width:7px;height:22px;border-radius:2px;background:#2B2A33"></i><i style="width:7px;height:22px;border-radius:2px;background:#D8CDBF"></i></span>布料</button>
+            <button type="button" role="tab" aria-selected="false" data-g="order"><span class="mono" style="font-size:10px;line-height:1.2;color:var(--ink-2)">01<br>02</span>缝制卡</button>
+          </div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="pill teal">纸样已验证</span><span class="pill sand">打样 2 轮</span><span class="pill sand">难度 进阶</span>
+          </div>
+          <h1 class="kit-title">哥特小龙<br>开版直通材料包</h1>
+          <button type="button" class="maker" data-go="creator"><i>M</i><span style="font-size:14px">MOTH 工作室 · 专业开版师</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#5E5A52" stroke-width="1.5" aria-hidden="true"><path d="M5 3 L9 7 L5 11"/></svg></button>
+          <div class="price"><b id="kitPrice">¥168</b><span id="kitPriceNote">含裁片、布料、配件、缝制卡</span></div>
+
+          <section class="card cut" aria-label="开裁进度">
+            <div class="top"><span><strong id="cutCount">32</strong> / 50 份达标后统一开裁</span><span style="color:var(--mute)">剩 12 天</span></div>
+            <div class="bar"><i id="cutBar" style="width:64%"></i></div>
+            <div class="note">未达标自动全额退款 · 达标后约 15 天发货</div>
+          </section>
+
+          <div class="stack g8">
+            <div class="field-l">购买形式</div>
+            <div class="forms" role="radiogroup" aria-label="购买形式" id="forms">
+              <button type="button" role="radio" aria-checked="true" data-form="kit"><b>材料包</b><small>¥168</small></button>
+              <button type="button" role="radio" aria-checked="false" data-form="pdf"><b>纸样 PDF</b><small>¥38</small></button>
+              <button type="button" role="radio" aria-checked="false" data-form="custom"><b>成品定制</b><small>¥680</small></button>
+            </div>
+          </div>
+
+          <div class="stack g8">
+            <label for="eye" class="field-l">眼睛</label>
+            <select id="eye" class="sel"><option>刺绣眼 · 适合低龄</option><option>安全眼 12 mm</option></select>
+          </div>
+
+          <section class="card" style="padding:14px" aria-label="交付流程">
+            <div class="sec-h" style="margin-bottom:12px"><h2 style="font-size:14px">交付流程</h2><span>平台负责履约</span></div>
+            <ol class="flow">
+              <li><span class="k">01</span><span>预订锁定份额<small>支付后计入开裁进度</small></span></li>
+              <li><span class="k">02</span><span>达标后平台统一裁切、配布<small>按验证后的纸样激光开裁</small></span></li>
+              <li><span class="k">03</span><span>平台质检裁片与配件<small>对位点、缝份逐片核对</small></span></li>
+              <li><span class="k">04</span><span>平台发货 · 创作者分成<small>销售与人气同时换算 token 奖励</small></span></li>
+            </ol>
+          </section>
+        </div>
+        <div class="spacer"></div>
+        <div class="buybar">
+          <button type="button" class="btn ghost">私信定制</button>
+          <button type="button" class="btn rust" id="reserveBtn">预订材料包 · ¥168</button>
+        </div>
+      </section>
+
+      <!-- ================= CREATOR ================= -->
+      <section class="screen" id="s-creator" aria-label="创作者主页">
+        <div class="banner">
+          <svg viewBox="0 0 390 120" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#4A4854" stroke-width="1.2" stroke-dasharray="6 5"><path d="M0 30 C80 10 160 60 240 40 C300 24 350 60 390 44"/><path d="M0 80 C80 60 160 110 240 90 C300 74 350 110 390 94"/></g><g fill="#7A1F2B"><path d="M280 120 L296 92 L312 120 Z M318 120 L334 84 L350 120 Z M356 120 L372 96 L388 120 Z"/></g></svg>
+          <div class="back"><button type="button" class="icon-btn" aria-label="分享"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5"><path d="M8 10 V2 M5 5 L8 2 L11 5 M3 9 V14 H13 V9"/></svg></button></div>
+        </div>
+        <div class="prof">
+          <div class="row1">
+            <div class="av">M</div>
+            <div class="stack g8" style="padding-bottom:4px;min-width:0">
+              <h1>MOTH 工作室 <span class="lvl-tag l3">L3 专业</span></h1>
+            </div>
+          </div>
+          <div class="meta">人偶毛绒 · 神奇动物 · 哥特可爱<br>作品 24 · 关注 <span class="num" id="fans">3,618</span> · 已售 1,092</div>
+          <div class="acts">
+            <button type="button" class="btn dark" id="followBtn" aria-pressed="false">关注</button>
+            <button type="button" class="btn ghost">私信定制</button>
+          </div>
+
+          <section class="card mine" aria-label="本月数据，仅你可见">
+            <div class="lock"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#5E5A52" stroke-width="1.4" aria-hidden="true"><rect x="2" y="5" width="8" height="6" rx="1"/><path d="M4 5 V3.5 C4 2 5 1.5 6 1.5 C7 1.5 8 2 8 3.5 V5"/></svg>本月 · 仅你可见</div>
+            <dl>
+              <div><dt>销售额</dt><dd>¥9.8k</dd></div>
+              <div><dt>token 奖励</dt><dd style="color:var(--rust)">+860</dd></div>
+              <div><dt>纸样下载</dt><dd>214</dd></div>
+              <div><dt>神奇动物榜</dt><dd>#7</dd></div>
+            </dl>
+          </section>
+
+          <div class="hscroll" role="tablist" aria-label="内容类型" id="cTabs"></div>
+          <div class="works" id="works"></div>
+
+          <section class="card todo" style="padding:4px 14px" aria-label="待处理">
+            <button type="button" data-go="kit"><span>哥特小龙 距开裁还差 <span class="num" data-kitleft>18</span> 份</span><em>推广</em></button>
+            <button type="button"><span>2 条定制私信</span><em>回复</em></button>
+            <button type="button"><span>潮流女孩 02 打样反馈</span><em>查看</em></button>
+          </section>
+
+          <section class="launch">
+            <h2>发起材料包</h2>
+            <p>纸样已打样验证即可发起。裁切、配布、质检、发货由平台完成，你只负责设计与推广。</p>
+            <button type="button" class="btn" data-go="kit">选择一套纸样发起</button>
+          </section>
+        </div>
+        <div class="spacer"></div>
+      </section>
+    </div>
+
+    <nav class="tabbar" aria-label="主导航" id="tabbar">
+      <button type="button" data-tab="home" aria-current="page"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 10 L11 3.5 L19 10 V18.5 H13.5 V13 H8.5 V18.5 H3 Z"/></svg>首页<span class="dot"></span></button>
+      <button type="button" data-tab="work"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 16 C4 8 7 4 11 4 C15 4 18 8 18 16 Z"/><path d="M7 14.5 C7 10 8.8 7.2 11 7.2 C13.2 7.2 15 10 15 14.5" stroke-dasharray="2 2"/><path d="M11 4 V19"/></svg>工作台<span class="dot"></span></button>
+      <button type="button" data-tab="kit"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7 L11 3 L19 7 V15 L11 19 L3 15 Z M3 7 L11 11 L19 7 M11 11 V19"/></svg>材料包<span class="dot"></span></button>
+      <button type="button" data-tab="creator"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="8" r="3.6"/><path d="M4 19 C4.8 14.8 7.6 13 11 13 C14.4 13 17.2 14.8 18 19"/></svg>创作者<span class="dot"></span></button>
+    </nav>
+
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+    <div class="toast" id="toast" role="status"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#7FD1C6" stroke-width="2" aria-hidden="true"><path d="M3 8.5 L6.5 12 L13 4.5"/></svg><span id="toastText"></span></div>
+  </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('embed');
+
+const state = {
+  tab: 'home', level: 'l1', step: 2, view: 'split',
+  p: { h: 22, r: 45, e: 38, s: 12, l: 34, sym: true },
+  fabric: 'crystal', joint: 'sewn', sa: 5, template: 'bear',
+  ai: { choice: {}, confirmed: new Set(), open: new Set(['leg','joint','head','ease']), filter: 'todo', active: 'leg' },
+  qa: 'open',
+  kit: { form: 'kit', color: 'wine', count: 32, qty: 1, reserved: false, g: 'main' },
+  cr: { tab: 'all', follow: false }
+};
+
+/* ---------- toast & sheet ---------- */
+let toastT;
+function toast(msg){ $('#toastText').textContent = msg; const t = $('#toast'); t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2400); }
+function openSheet(html){ const s = $('#sheet'); s.innerHTML = '<div class="grab" aria-hidden="true"></div>' + html; $('#scrim').classList.add('on'); requestAnimationFrame(() => s.classList.add('on')); }
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); }
+$('#scrim').addEventListener('click', closeSheet);
+
+/* ---------- navigation ---------- */
+function setTab(tab){
+  state.tab = tab;
+  $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + tab));
+  $$('#tabbar button').forEach(b => { if (b.dataset.tab === tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  syncRoute();
+}
+function measureHdr(){ const h = $('#s-work .hdr'); if (h) $('#s-work').style.setProperty('--hdrH', (h.offsetHeight + 8) + 'px'); }
+window.addEventListener('resize', measureHdr);
+function setLevel(lv, scrollTop){
+  state.level = lv;
+  $$('#levelSeg button').forEach((b, i) => { const on = b.dataset.level === lv; b.setAttribute('aria-selected', on); if (on) $('#levelSeg .thumbv').style.transform = 'translateX(calc(' + i + ' * (100% + 2px)))'; });
+  $$('.lvl').forEach(p => p.classList.toggle('on', p.id === 'lvl-' + lv));
+  const meta = { l1: ['坐姿小熊 · 草稿', '模板：坐姿熊 v2 · 自动保存于 11:42'], l2: ['坐姿恐龙 · 三视图开版', '进阶层 · 成品高度 25 cm · 版本 v3'], l3: ['AI 开版 · 坐姿恐龙', '参考图 1 张 · 文字描述'] }[lv];
+  $('#projName').textContent = meta[0]; $('#projMeta').textContent = meta[1];
+  if (scrollTop !== false) $('#s-work').scrollTo({ top: 0 });
+  syncRoute();
+}
+const ROUTES = { home: ['home'], ai: ['work','l3'], qa: ['work','l2'], template: ['work','l1'], kit: ['kit'], creator: ['creator'] };
+function go(key){
+  const r = ROUTES[key]; if (!r) return;
+  closeSheet();
+  setTab(r[0]); if (r[1]) setLevel(r[1]);
+  const sc = $('#s-' + r[0]); if (sc && !r[1]) sc.scrollTo({ top: 0 });
+}
+function currentRoute(){ if (state.tab !== 'work') return state.tab; return { l1: 'template', l2: 'qa', l3: 'ai' }[state.level]; }
+function syncRoute(){ const k = currentRoute(); $$('#route button').forEach(b => b.setAttribute('aria-current', b.dataset.go === k)); }
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); go(g.dataset.go); } });
+$$('#tabbar button').forEach(b => b.addEventListener('click', () => { setTab(b.dataset.tab); $('#s-' + b.dataset.tab).scrollTo({ top: 0, behavior: 'smooth' }); }));
+$$('#levelSeg button').forEach(b => b.addEventListener('click', () => setLevel(b.dataset.level)));
+
+/* ---------- home ---------- */
+$$('#inputModes .chip').forEach(c => c.addEventListener('click', () => { $$('#inputModes .chip').forEach(x => x.setAttribute('aria-pressed', x === c)); }));
+$('#promptForm').addEventListener('submit', e => { e.preventDefault(); go('ai'); runGeneration(); });
+
+/* ---------- L1: parametric template ---------- */
+const STEPS = ['模板','形状','布料','关节','打印','缝制顺序'];
+const KNOW = {
+  1: ['选模板先看姿态', '坐姿模板的底片是椭圆，填充后能自己坐稳；站姿模板需要在腿里加支撑。先定姿态，再调形状。'],
+  2: ['吃势是什么', '两条对缝长度不相等时，把较长的一边均匀收拢缝进去，让布面鼓起弧度。吻部突出越大，下巴处需要的吃势越多。'],
+  3: ['布纹与毛向', '短毛绒要让毛向统一朝下、朝尾。纸样上的箭头就是毛向，裁剪时箭头对齐布背的毛向记号。'],
+  4: ['关节怎么选', '缝合固定最适合入门；想让四肢能转动，用棉线关节或安全关节，需要在腿和身体上各留一个定位点。'],
+  5: ['为什么要校准方块', '打印时浏览器可能自动缩放。先量第一页的 5 × 5 cm 校准方块，尺寸对了再裁，否则整套纸样都会偏。'],
+  6: ['藏针缝收口', '填充口留在腹片侧面，最后用藏针缝收口：针脚在两侧折边内交替走，拉紧后缝线看不见。']
+};
+function renderSteps(){
+  $('#steps').innerHTML = STEPS.map((n, i) => {
+    const k = i + 1, cls = k < state.step ? 'done' : '';
+    const num = k < state.step ? '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>' : k;
+    return '<button type="button" class="' + cls + '" data-step="' + k + '"' + (k === state.step ? ' aria-current="step"' : '') + '><span class="n">' + num + '</span>' + n + '</button>';
+  }).join('');
+  $$('#steps button').forEach(b => b.addEventListener('click', () => setStep(+b.dataset.step)));
+  const cur = $('#steps [aria-current]'); if (cur) cur.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+}
+function setStep(n){
+  state.step = Math.max(1, Math.min(6, n));
+  renderSteps(); renderStepBody(); renderKnow();
+  $('#prevStep').disabled = state.step === 1;
+  $('#nextStep').textContent = state.step < 6 ? '下一步 · ' + STEPS[state.step] : '完成 · 导出纸样';
+}
+$('#prevStep').addEventListener('click', () => setStep(state.step - 1));
+$('#nextStep').addEventListener('click', () => { if (state.step < 6) { setStep(state.step + 1); } else { toast('纸样已存入「我的纸样」· 18 片'); } });
+function renderKnow(){ const k = KNOW[state.step]; $('#knowIdx').textContent = '知识卡 ' + state.step + '/6'; $('#knowTitle').textContent = k[0]; $('#knowText').textContent = k[1]; }
+
+const SLIDERS = [
+  { g: '整体' },
+  { k: 'h', id: 'p-h', label: '成品高度', min: 10, max: 40, fmt: v => v + ' cm' },
+  { k: 'r', id: 'p-r', label: '头身比', min: 0, max: 100, fmt: v => '1 : ' + (1 + v * 0.0044).toFixed(1) },
+  { g: '部件' },
+  { k: 'e', id: 'p-e', label: '耳朵长度', min: 10, max: 90, fmt: v => v + ' mm' },
+  { k: 's', id: 'p-s', label: '吻部突出', min: 0, max: 40, fmt: v => v + ' mm' },
+  { k: 'l', id: 'p-l', label: '腿部粗细', min: 15, max: 60, fmt: v => v + ' mm' }
+];
+const FABRICS = [
+  { k: 'crystal', n: 'A料水晶超柔短毛绒', d: '毛高 1 mm · 细节清晰 · 推荐入门', c: ['#E3D8CA','#D8CDBF','#C9BBA8'], comp: '+0%', m: 1 },
+  { k: 'long', n: '长毛绒', d: '毛高 8 mm · 手感软 · 缝线细节被遮盖', c: ['#EFE6DA','#E6DBCD','#D9CCBB'], comp: '+2%', m: 1.08 },
+  { k: 'fleece', n: '摇粒绒', d: '弹性大 · 填充后会撑圆', c: ['#D9CFD9','#CEC3CF','#BFB3C1'], comp: '−3%', m: 0.96 },
+  { k: 'linen', n: '棉麻', d: '几乎无弹 · 适合复古风', c: ['#DCCFB3','#D1C3A5','#C3B493'], comp: '0%', m: 1.02 }
+];
+const JOINTS = [
+  { k: 'sewn', n: '缝合固定', d: '四肢直接缝入身体 · 入门首选', r: '★☆☆' },
+  { k: 'thread', n: '棉线关节', d: '可转动 · 需两个定位点', r: '★★☆' },
+  { k: 'disc', n: '安全关节', d: '转动顺滑 · 需加装关节件', r: '★★★' }
+];
+const TEMPLATES = [
+  { k: 'bear', n: '坐姿熊 v2', d: '18 片 · 入门' },
+  { k: 'cat', n: '坐姿猫', d: '16 片 · 入门' },
+  { k: 'bunny', n: '站姿兔', d: '20 片 · 进阶' },
+  { k: 'dino', n: '坐姿恐龙', d: '13 片 · 进阶' }
+];
+
+function optList(list, cur, attr, extra){
+  return '<div class="opt-list" role="radiogroup">' + list.map(o => '<button type="button" class="opt" role="radio" aria-checked="' + (o.k === cur) + '" data-' + attr + '="' + o.k + '">' + (extra ? extra(o) : '') + '<span><b>' + o.n + '</b><small>' + o.d + '</small></span>' + (o.r || o.comp ? '<span class="r">' + (o.comp ? '补偿 ' + o.comp : o.r) + '</span>' : '') + '</button>').join('') + '</div>';
+}
+function renderStepBody(){
+  const b = $('#stepBody'); let h = '';
+  if (state.step === 1) {
+    h = '<section class="card params"><div class="sec-h"><h2>选择模板</h2><span>按动物类型 / 姿态</span></div>' + optList(TEMPLATES, state.template, 'tpl') + '</section>';
+  } else if (state.step === 2) {
+    h = '<section class="card params" aria-label="形状参数"><div class="sec-h"><h2>形状参数</h2><span>纸样与 3D 同步更新</span></div>' +
+      SLIDERS.map(s => s.g ? '<div class="grp">' + s.g + '</div>' :
+        '<div class="param"><div class="l"><label for="' + s.id + '">' + s.label + '</label><span class="v" id="' + s.id + '-v">' + s.fmt(state.p[s.k]) + '</span></div><input id="' + s.id + '" type="range" min="' + s.min + '" max="' + s.max + '" value="' + state.p[s.k] + '" data-k="' + s.k + '"></div>').join('') +
+      '<div class="param" style="flex-direction:row;align-items:center;justify-content:space-between"><label for="p-sym" style="font-size:13px">左右对称</label><span class="switch"><input id="p-sym" type="checkbox"' + (state.p.sym ? ' checked' : '') + '><i></i></span></div></section>';
+  } else if (state.step === 3) {
+    h = '<section class="card params"><div class="sec-h"><h2>布料</h2><span>自动补偿缝份与尺寸</span></div>' + optList(FABRICS, state.fabric, 'fab', o => '<span class="sw" style="background:' + o.c[0] + '"></span>') + '<div style="font-size:12px;color:var(--mute)">补偿系数为经验值，待实测拉伸数据校准。</div></section>';
+  } else if (state.step === 4) {
+    h = '<section class="card params"><div class="sec-h"><h2>关节</h2><span>决定四肢能否转动</span></div>' + optList(JOINTS, state.joint, 'joint') + '</section>';
+  } else if (state.step === 5) {
+    const n = pageCount(), cols = Math.min(4, Math.ceil(Math.sqrt(n * 1.4)));
+    h = '<section class="card params"><div class="sec-h"><h2>A4 拼贴打印</h2><span class="num">' + n + ' 页 · 含校准方块</span></div><div class="pages" style="grid-template-columns:repeat(' + cols + ',1fr)">' +
+      Array.from({ length: n }, (_, i) => '<i data-n="P' + (i + 1) + '"></i>').join('') +
+      '</div><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span>缝份</span><div class="seg mini" role="tablist" aria-label="缝份" id="saSeg" style="grid-template-columns:repeat(2,auto)"><button type="button" role="tab" data-sa="5" aria-selected="' + (state.sa === 5) + '">5 mm</button><button type="button" role="tab" data-sa="7" aria-selected="' + (state.sa === 7) + '">7 mm</button></div></div></section>';
+  } else {
+    h = '<section class="card params"><div class="sec-h"><h2>缝制顺序</h2><span>随纸样一起打印</span></div><ol class="sew">' +
+      ['头侧片 A1 × 头中条 A2，对齐刻口', '耳 C1 两两正面相对缝合，翻面后夹入头部', '身体侧片 B1 × 腹片 B2，留填充口', '腿筒 D1 缝合，脚底 D2 按对位点缝入', '头身连接，四肢按「' + JOINTS.find(j => j.k === state.joint).n + '」固定', '填充至 ' + fillGrams() + ' g 左右，藏针缝收口']
+        .map((t, i) => '<li><span class="k">0' + (i + 1) + '</span>' + t + '</li>').join('') + '</ol></section>';
+  }
+  b.innerHTML = h;
+  $$('#stepBody input[type=range]').forEach(inp => { paintRange(inp); inp.addEventListener('input', () => { state.p[inp.dataset.k] = +inp.value; paintRange(inp); const s = SLIDERS.find(x => x.k === inp.dataset.k); $('#' + inp.id + '-v').textContent = s.fmt(+inp.value); updateModel(); }); });
+  const sym = $('#p-sym'); if (sym) sym.addEventListener('change', () => { state.p.sym = sym.checked; updateModel(); toast(sym.checked ? '已恢复左右对称' : '已拆分左右，可分别调整'); });
+  $$('#stepBody [data-fab]').forEach(o => o.addEventListener('click', () => { state.fabric = o.dataset.fab; renderStepBody(); updateModel(); }));
+  $$('#stepBody [data-joint]').forEach(o => o.addEventListener('click', () => { state.joint = o.dataset.joint; renderStepBody(); updateModel(); }));
+  $$('#stepBody [data-tpl]').forEach(o => o.addEventListener('click', () => { state.template = o.dataset.tpl; renderStepBody(); if (o.dataset.tpl !== 'bear') toast('原型仅开放坐姿熊 v2 的参数'); }));
+  $$('#stepBody [data-sa]').forEach(o => o.addEventListener('click', () => { state.sa = +o.dataset.sa; renderStepBody(); updateModel(); }));
+}
+function paintRange(inp){ const p = (inp.value - inp.min) / (inp.max - inp.min) * 100; inp.style.setProperty('--p', p + '%'); }
+function pageCount(){ return Math.max(2, Math.ceil(6 * Math.pow(state.p.h / 22, 2))); }
+function fabricM(){ return FABRICS.find(f => f.k === state.fabric).m; }
+function fillGrams(){ return Math.round(120 * Math.pow(state.p.h / 22, 3) / 5) * 5; }
+
+function piece(d, tx, ty, code, name, lx, ly){
+  return '<g class="pc" transform="translate(' + tx + ',' + ty + ')"><path d="' + d + '" class="p-cut"/><path d="' + d + '" class="p-sa"/><path d="' + d + '" class="p-seam"/><text x="' + lx + '" y="' + ly + '" class="p-code">' + code + '</text><text x="' + lx + '" y="' + (ly + 22) + '" class="p-name">' + name + '</text></g>';
+}
+function renderPattern(){
+  const p = state.p;
+  const sx = 28 + (p.s - 12) * 1.3;
+  const head = 'M10 90 C10 40 50 10 100 12 C140 14 160 40 162 70 L' + (162 + sx) + ' 78 C' + (172 + sx) + ' 82 ' + (172 + sx) + ' 100 ' + (160 + sx) + ' 104 L150 110 C140 140 110 158 70 156 C35 154 10 130 10 90 Z';
+  const eh = 30 + p.e * 1.05, ew = 64;
+  const ear = 'M0 ' + eh + ' C0 ' + (eh * .45) + ' ' + (ew * .2) + ' 0 ' + (ew / 2) + ' 0 C' + (ew * .8) + ' 0 ' + ew + ' ' + (eh * .45) + ' ' + ew + ' ' + eh + ' Z';
+  const lw = Math.round(70 * p.l / 34);
+  const leg = 'M0 20 C0 8 10 0 22 0 L' + (lw - 22) + ' 0 C' + (lw - 10) + ' 0 ' + lw + ' 8 ' + lw + ' 20 L' + lw + ' 90 C' + lw + ' 105 ' + (lw - 10) + ' 112 ' + (lw - 22) + ' 112 L22 112 C10 112 0 105 0 90 Z';
+  const sw2 = Math.round(80 * p.l / 34);
+  const sole = 'M0 25 C0 10 ' + (sw2 * .22) + ' 0 ' + (sw2 / 2) + ' 0 C' + (sw2 * .78) + ' 0 ' + sw2 + ' 10 ' + sw2 + ' 25 C' + sw2 + ' 40 ' + (sw2 * .78) + ' 50 ' + (sw2 / 2) + ' 50 C' + (sw2 * .22) + ' 50 0 40 0 25 Z';
+  const bs = 0.9 + (p.r - 45) * 0.003;
+  const body = 'M30 0 C80 -4 120 20 130 70 C140 120 130 170 100 200 L20 205 C6 170 0 120 4 70 C8 30 14 4 30 0 Z';
+  const belly = 'M60 0 C100 0 120 40 120 90 C120 150 95 190 60 190 C25 190 0 150 0 90 C0 40 20 0 60 0 Z';
+  const n = pageCount(); let cols = Math.ceil(Math.sqrt(n * 748 / 610)), rows = Math.ceil(n / cols);
+  let grid = '';
+  for (let c = 1; c < cols; c++) grid += 'M' + (748 / cols * c) + ' 0 V610 ';
+  for (let r = 1; r < rows; r++) grid += 'M0 ' + (610 / rows * r) + ' H748 ';
+  let labels = ''; let i = 0;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { if (++i > n) break; labels += '<text x="' + (748 / cols * c + 8) + '" y="' + (610 / rows * r + 20) + '">P' + i + '</text>'; }
+  const mirror = p.sym ? '×2 镜像' : '左 / 右';
+  $('#patWrap').innerHTML = '<svg viewBox="-10 -10 768 630" preserveAspectRatio="xMidYMid meet" aria-label="纸样排版">' +
+    '<g stroke="#D9D2C5" stroke-width="1.5" stroke-dasharray="3 6" fill="none"><path d="' + grid + '"/></g>' +
+    '<g font-family="JetBrains Mono, monospace" font-size="15" fill="#A39D92">' + labels + '</g>' +
+    piece(head, 24, 30, 'A1', '头侧片 ' + mirror, 38, 78) +
+    piece('M20 0 C34 30 36 90 30 160 C28 190 22 210 20 220 C18 210 12 190 10 160 C4 90 6 30 20 0 Z', 262 + Math.max(0, sx - 28), 24, 'A2', '头中条', -6, 250) +
+    '<g transform="translate(' + (352 + Math.max(0, sx - 28)) + ',40) scale(' + bs.toFixed(3) + ')">' + piece(body, 0, 0, 'B1', '身体侧片', 36, 104) + '</g>' +
+    piece(belly, 560, 46, 'B2', '腹片', 34, 96) +
+    piece(ear, 30, 470 - eh, 'C1', '耳 ×4', -4, eh + 28) +
+    piece(leg, 150, 340, 'D1', '腿筒 ×2', -2, 140) +
+    piece(sole, 180 + lw, 370, 'D2', '脚底', 0, 78) +
+    piece('M0 16 C0 6 8 0 18 0 L40 0 C50 0 58 6 58 16 L58 110 C58 122 50 128 40 128 L18 128 C8 128 0 122 0 110 Z', 330 + Math.max(lw, sw2) - 60, 340, 'E1', '手臂 ×4', -6, 156) +
+    '<g transform="translate(560,380)" font-size="15" fill="#3F3C36"><rect x="0" y="0" width="180" height="150" rx="10" fill="#FBF9F5" stroke="#E2DCD1"/><text x="14" y="26" font-weight="700" fill="#1C1B19">图例</text><path d="M14 50 H44" stroke="#1C1B19" stroke-width="2"/><text x="54" y="55">裁剪线</text><path d="M14 78 H44" stroke="#B83C0A" stroke-width="1.6" stroke-dasharray="5 4"/><text x="54" y="83">净线</text><path d="M14 106 H44 M38 101 L44 106 L38 111" stroke="#1C1B19" stroke-width="1.4" fill="none"/><text x="54" y="111">毛向</text><rect x="14" y="124" width="14" height="14" fill="none" stroke="#1C1B19" stroke-width="1.4"/><text x="54" y="136">校准 5cm</text></g>' +
+    '</svg>';
+}
+function renderBear(){
+  const p = state.p, f = FABRICS.find(x => x.k === state.fabric).c;
+  const k = 0.62 + (p.h - 10) / 30 * 0.42;
+  const hr = 46 + (p.r - 45) * 0.14, er = 10 + p.e * 0.26, srx = 13 + p.s * 0.55, sry = 9 + p.s * 0.18, lrx = 12 + p.l * 0.32;
+  const hy = 118 - hr - 4;
+  const asym = p.sym ? 0 : 4;
+  const joint = state.joint === 'sewn' ? '' : '<g fill="none" stroke="#B83C0A" stroke-width="1.6"><circle cx="68" cy="176" r="5"/><circle cx="132" cy="176" r="5"/></g>';
+  const fuzz = state.fabric === 'long' ? ' stroke="' + f[2] + '" stroke-width="3" stroke-dasharray="1 3"' : '';
+  $('#bearWrap').innerHTML = '<svg viewBox="-8 -6 240 262" preserveAspectRatio="xMidYMid meet" aria-label="填充后预览">' +
+    '<g stroke="#C9C1B3" stroke-width="1" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A8479"><path d="M214 242 V' + (242 - 222 * k).toFixed(1) + '" /><path d="M209 242 H219 M209 ' + (242 - 222 * k).toFixed(1) + ' H219"/><text x="190" y="' + (236 - 222 * k).toFixed(1) + '" stroke="none">' + p.h + ' cm</text></g>' +
+    '<ellipse cx="100" cy="244" rx="' + (70 * k) + '" ry="6" fill="#000" opacity=".07"/>' +
+    '<g transform="translate(100 242) scale(' + k.toFixed(3) + ') translate(-100 -242)">' +
+    '<circle cx="' + (100 - hr * .78) + '" cy="' + (hy - hr * .72 + asym) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/><circle cx="' + (100 + hr * .78) + '" cy="' + (hy - hr * .72) + '" r="' + er + '" fill="' + f[2] + '"' + fuzz + '/>' +
+    '<ellipse cx="100" cy="168" rx="62" ry="58" fill="' + f[1] + '"' + fuzz + '/>' +
+    '<ellipse cx="' + (100 - 58) + '" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(20 42 168)"/><ellipse cx="158" cy="168" rx="16" ry="26" fill="' + f[2] + '" transform="rotate(-20 158 168)"/>' +
+    '<circle cx="100" cy="' + hy + '" r="' + hr + '" fill="' + f[0] + '"' + fuzz + '/>' +
+    '<ellipse cx="100" cy="' + (hy + hr * .38) + '" rx="' + srx + '" ry="' + sry + '" fill="' + f[2] + '"/><ellipse cx="100" cy="' + (hy + hr * .3) + '" rx="5" ry="3.5" fill="#2B2A33"/>' +
+    '<ellipse cx="' + (100 - 30) + '" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/><ellipse cx="' + (100 + 30) + '" cy="228" rx="' + lrx + '" ry="' + (lrx * .5) + '" fill="' + f[2] + '"/>' +
+    '<path d="M100 ' + (hy - hr) + ' C104 ' + (hy - hr / 2) + ' 104 ' + (hy + hr / 2) + ' 100 ' + (hy + hr) + '" fill="none" stroke="#B83C0A" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+    '<path d="M44 160 C60 142 140 142 156 160" fill="none" stroke="#B83C0A" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+    '<circle cx="' + (100 - hr * .34) + '" cy="' + (hy - hr * .08) + '" r="4.2" fill="#2B2A33"/><circle cx="' + (100 + hr * .34) + '" cy="' + (hy - hr * .08) + '" r="4.2" fill="#2B2A33"/>' +
+    joint + '</g></svg>';
+}
+function renderChecks(){
+  const p = state.p;
+  const narrow = Math.round(18 * p.h / 22), ease = Math.round(p.s / 3), ear = Math.round((30 + p.e * 1.05) / 70 * 38);
+  const ok = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0F6E6A" stroke-width="2"><path d="M2.5 7.4 L5.6 10.2 L11.5 3.8"/></svg>';
+  const warn = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#B83C0A" stroke-width="1.8"><path d="M8 1.5 L15 14 H1 Z M8 6 V9.5 M8 11.5 V12"/></svg>';
+  const rows = [
+    [true, '对缝长度 ' + (p.sym ? 12 : 14) + ' / ' + (p.sym ? 12 : 14) + ' 组一致'],
+    narrow >= 14 ? [true, '最窄裁片 ' + narrow + ' mm，可翻面'] : [false, '最窄裁片 ' + narrow + ' mm，翻面困难，建议加宽头中条'],
+    ease <= 8 ? [true, '下巴吃势 ' + ease + ' mm，已标注对位点'] : [false, '下巴吃势 ' + ease + ' mm 偏大，建议吻部独立成片'],
+    p.e <= 72 ? [true, '耳朵高度 ' + ear + ' mm，填充后能立住'] : [false, '耳朵高度 ' + ear + ' mm，需加衬或铁丝支撑']
+  ];
+  $('#checks').innerHTML = rows.map(r => '<div class="ck' + (r[0] ? '' : ' warn') + '">' + (r[0] ? ok : warn) + '<span>' + r[1] + '</span></div>').join('');
+  const warns = rows.filter(r => !r[0]).length;
+  $('#stLevel').textContent = warns ? '★★★' : (state.joint === 'sewn' ? '★★☆' : '★★★');
+}
+function updateModel(){
+  const p = state.p;
+  renderPattern(); renderBear(); renderChecks();
+  const pieces = (p.sym ? 18 : 20);
+  $('#stPieces').textContent = pieces + ' 片';
+  $('#stFabric').textContent = '≈' + (0.35 * Math.pow(p.h / 22, 2) * fabricM()).toFixed(2) + ' m';
+  $('#stFill').textContent = '≈' + fillGrams() + ' g';
+  $('#pageInfo').textContent = 'A4 × ' + pageCount() + ' 页 · 缝份 ' + state.sa + ' mm';
+}
+$$('#viewSeg button').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; $$('#viewSeg button').forEach(x => x.setAttribute('aria-selected', x === b)); $('#canvasStage').dataset.view = state.view; }));
+
+/* ---------- L2: three views + QA ---------- */
+const TRI = ['front','side','back'];
+$$('#triSeg button').forEach(b => b.addEventListener('click', () => {
+  const ni = TRI.indexOf(b.dataset.tri);
+  $$('#triSeg button').forEach(x => x.setAttribute('aria-selected', x === b));
+  $$('#triStage figure').forEach(f => { const i = TRI.indexOf(f.dataset.tri); f.classList.toggle('on', i === ni); f.classList.toggle('left', i < ni); });
+}));
+$$('#tools button').forEach(b => b.addEventListener('click', () => $$('#tools button').forEach(x => x.setAttribute('aria-pressed', x === b))));
+const QA = [
+  ['H1↔H2 头前后', 142.3, 142.1, 'pass'],
+  ['H2↔H3 后中条', 188.0, 187.6, 'pass'],
+  ['B1↔B2 侧片/腹片', 210.5, 209.9, 'pass'],
+  ['C 下巴', 92.6, 88.0, 'ease'],
+  ['L1↔B1 腿开口', 118.2, 121.9, 'fail'],
+  ['S 背刺中缝', 96.4, 96.4, 'pass']
+];
+const ST = { pass: '<span class="pill teal">通过</span>', ease: '<span class="pill amber">作吃势</span>', fail: '<span class="pill rust">待处理</span>' };
+function renderQA(fixedIdx){
+  $('#qaBody').innerHTML = QA.map((r, i) => '<tr class="' + (r[3] === 'fail' ? 'bad' : '') + (i === fixedIdx ? ' fixed' : '') + '"><td>' + r[0] + '</td><td class="m">' + r[1].toFixed(1) + '</td><td class="m">' + r[2].toFixed(1) + '</td><td class="m">' + Math.abs(r[1] - r[2]).toFixed(1) + '</td><td style="text-align:right">' + ST[r[3]] + '</td></tr>').join('');
+}
+function flash(el){ el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1400); }
+function resolveIssue(mode){
+  if (state.qa !== 'open') return;
+  state.qa = mode;
+  const row = QA[4];
+  if (mode === 'shrink') { row[1] = 121.6; row[3] = 'pass'; } else { row[3] = 'ease'; $('#kpiEaseV').textContent = '2 处'; flash($('#kpiEase')); }
+  renderQA(4);
+  $('#kpiPassV').textContent = '23/24'; flash($('#kpiPass'));
+  const iss = $('#issue'); iss.classList.add('ok');
+  $('#issueT').innerHTML = '<svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 7.4 L5.6 10.2 L11.5 3.8"/></svg>' + (mode === 'shrink' ? '腿开口已收小，Δ 0.3 mm' : '差值 3.7 mm 已作为吃势');
+  $('#issueP').textContent = mode === 'shrink' ? '开口曲线收小 3.4 mm，侧片与腹片对缝通过。对位点已同步移动。' : '吃势分到侧片一侧，已在腿开口补 2 个对位点，缝制时均匀收拢。';
+  $('#issueRow').innerHTML = '<button type="button" class="btn ghost" id="undoFix">撤销</button><button type="button" class="btn dark" id="goExport">导出纸样</button>';
+  $('#undoFix').addEventListener('click', undoIssue); $('#goExport').addEventListener('click', openExport);
+  $('#legOpening').setAttribute('stroke', '#0F6E6A'); $('#legOpening').setAttribute('fill', 'rgba(15,110,106,.12)');
+  $('#legLabel').innerHTML = '<text x="160" y="196" fill="#0B5753">腿开口 ✓</text>';
+  toast(mode === 'shrink' ? '已收小开口 · 对缝 23/24 通过' : '已接受吃势 · 对位点 +2');
+}
+function undoIssue(){
+  state.qa = 'open'; QA[4][1] = 118.2; QA[4][3] = 'fail';
+  renderQA(); $('#kpiPassV').textContent = '22/24'; $('#kpiEaseV').textContent = '1 处';
+  const iss = $('#issue'); iss.classList.remove('ok');
+  $('#issueT').innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 L15 14 H1 Z M8 6 V9.5 M8 11.5 V12"/></svg>腿开口长度差 3.7 mm';
+  $('#issueP').textContent = '开口跨侧片与腹片两块，交线偏长。可以收小开口曲线，或把差值作为吃势分到侧片一侧。';
+  $('#issueRow').innerHTML = '<button type="button" class="btn dark" id="fixShrink">自动收小开口</button><button type="button" class="btn ghost" id="fixEase">作为吃势接受</button>';
+  bindFix();
+  $('#legOpening').setAttribute('stroke', '#B83C0A'); $('#legOpening').setAttribute('fill', 'rgba(184,60,10,.10)');
+  $('#legLabel').innerHTML = '<text x="160" y="196">腿开口 Δ3.7</text>';
+}
+function bindFix(){ $('#fixShrink').addEventListener('click', () => resolveIssue('shrink')); $('#fixEase').addEventListener('click', () => resolveIssue('ease')); }
+function openExport(){
+  const opts = [['SVG','矢量 · 可在 Illustrator 再编辑'],['DXF','裁床 / CAD · 含刻口与布纹线'],['A4 PDF','拼贴打印 · 6 页 · 含 5 cm 校准方块']];
+  openSheet('<h2 id="sheetTitle">导出纸样</h2><div style="font-size:13px;color:var(--mute);margin-top:-6px">坐姿恐龙 v3 · 13 片 · 缝份 5 mm</div><div class="opt-list">' +
+    opts.map((o, i) => '<button type="button" class="opt" data-ex="' + i + '"><span class="sw" style="display:grid;place-items:center;background:var(--paper);font:500 10px var(--mono)">' + o[0].split(' ')[0] + '</span><span><b>' + o[0] + '</b><small>' + o[1] + '</small></span></button>').join('') + '</div>');
+  $$('#sheet [data-ex]').forEach(b => b.addEventListener('click', () => { const o = opts[+b.dataset.ex]; closeSheet(); setTimeout(() => toast(o[0] + ' 已生成 · 原型不输出真实文件'), 250); }));
+}
+$('#exportBtn').addEventListener('click', openExport);
+
+/* ---------- L3: AI decisions ---------- */
+const DEC = [
+  { id: 'leg', type: 'Choice', t: '腿部结构', part: 'legs', o: [['肋线扫掠', '腿部圆润，一片成型，缝线少', .71], ['分片拼接', '关节轮廓更清楚，多 2 片', .22]] },
+  { id: 'joint', type: 'Choice', t: '腿与身体的连接', part: 'legs', o: [['缝合接口', '在侧片开口，腿直接缝入身体', .64], ['独立闭合 + 手缝', '腿单独填充后手缝固定，更灵活', .28]] },
+  { id: 'head', type: 'Choice', t: '头部拆片', part: 'head', o: [['4 片', '前一对 + 后一对 + 后中条收背刺', .58], ['6 片', '吻部独立成片，造型更准，缝制更难', .31]] },
+  { id: 'ease', type: 'YesNo', t: '下巴对缝差 4.6 mm 作为吃势？', part: 'chin', o: [['接受，作为吃势', '吻部下方更饱满，自动加对位点', .62], ['调整曲线至等长', '下巴更平，缝制更容易', .38]] },
+  { id: 'arm', type: 'Choice', t: '手臂结构', part: 'arms', o: [['肋线扫掠', '与腿部同一做法，缝线少', .69], ['两片对缝', '手臂弯度更明显', .24]] },
+  { id: 'spike', type: 'Choice', t: '背刺缝入方式', part: 'spikes', o: [['嵌入后中缝', '刺根藏在缝份里，外观干净', .66], ['独立贴缝', '可拆换，缝迹外露', .27]] },
+  { id: 'base', type: 'Choice', t: '对齐基准', part: 'base', o: [['地面基准线', '坐姿稳定，底片按地面展开', .60], ['头顶基准', '适合挂件类，坐姿需额外校正', .31]] },
+  { id: 'fabric', type: 'Choice', t: '布料', part: 'body2', o: [['水晶超柔短毛绒', '毛高 1 mm，细节清晰', .57], ['长毛绒', '手感更软，缝线细节被遮盖', .29]] }
+];
+const AUTO = [['缝份宽度', '5 mm', .97], ['布纹方向', '头顶 → 尾', .95], ['眼睛位置', '对位点 × 2', .93], ['身体拆片', '侧片 × 2 + 腹片', .91], ['脚底形状', '椭圆', .89], ['尾巴', '独立成片', .88]];
+function confBar(v){ return '<span class="conf"><span>' + v.toFixed(2) + '</span><em><i style="width:' + (v * 100) + '%"></i></em></span>'; }
+function renderDecisions(){
+  const f = state.ai.filter;
+  $('#decList').hidden = f === 'auto';
+  $('#autoList').hidden = f === 'todo';
+  $('#decList').innerHTML = DEC.map(d => {
+    const sel = state.ai.choice[d.id] ?? 0, done = state.ai.confirmed.has(d.id), open = state.ai.open.has(d.id);
+    const st = done ? '<span class="pill teal st">已确认</span>' : '<span class="pill amber st">待确认</span>';
+    let inner = '<div class="dec-h"><span class="type">' + d.type + '</span><b>' + d.t + '</b>' + st + '</div>';
+    if (open) inner += '<div class="stack g8" role="radiogroup" aria-label="' + d.t + '">' + d.o.map((o, i) => '<button type="button" class="dopt" role="radio" aria-checked="' + (sel === i) + '" data-d="' + d.id + '" data-i="' + i + '"><span class="radio"></span><span><b>' + o[0] + (i === 0 ? ' <span class="pill rust" style="font-size:10px;padding:1px 6px">推荐</span>' : '') + '</b><small>' + o[1] + '</small></span>' + confBar(o[2]) + '</button>').join('') + '</div>';
+    else inner += '<div class="dec-sum"><span class="num">' + d.o[sel][0] + ' ' + d.o[sel][2].toFixed(2) + ' · ' + d.o[1 - sel][0] + ' ' + d.o[1 - sel][2].toFixed(2) + '</span><button type="button" data-open="' + d.id + '">展开</button></div>';
+    return '<section class="card dec' + (state.ai.active === d.id ? ' active' : '') + '" data-card="' + d.id + '">' + inner + '</section>';
+  }).join('');
+  $('#autoList').innerHTML = AUTO.map(a => '<li><span>' + a[0] + '</span><span style="color:var(--ink)">' + a[1] + '</span><b>' + a[2].toFixed(2) + '</b></li>').join('') + '<li><span>其余 13 项</span><span></span><b>≥0.85</b></li>';
+  $$('#decList .dopt').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.d; state.ai.choice[id] = +b.dataset.i; state.ai.confirmed.add(id); state.ai.active = id; renderDecisions(); highlight();
+  }));
+  $$('#decList [data-open]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); state.ai.open.add(b.dataset.open); state.ai.active = b.dataset.open; renderDecisions(); highlight(); }));
+  $$('#decList .dec').forEach(c => c.addEventListener('click', () => { if (state.ai.active !== c.dataset.card) { state.ai.active = c.dataset.card; $$('#decList .dec').forEach(x => x.classList.toggle('active', x === c)); highlight(); } }));
+  const n = state.ai.confirmed.size;
+  $('#aiCount').textContent = n + '/8'; $('#aiBar').style.width = (n / 8 * 100) + '%';
+}
+function highlight(){
+  const d = DEC.find(x => x.id === state.ai.active);
+  $('#aiPartName').textContent = d.t;
+  $$('.ai-preview .hl').forEach(el => { const base = el.dataset.base || (el.dataset.base = el.getAttribute('fill')); el.setAttribute('fill', el.dataset.part === d.part ? '#F3A27A' : base); });
+  const bl = $('.ai-preview [data-part="base"]'); bl.setAttribute('stroke', d.part === 'base' ? '#F3A27A' : '#8A7F72'); bl.setAttribute('stroke-width', d.part === 'base' ? 4 : 2);
+}
+$$('#aiFilter .chip').forEach(c => c.addEventListener('click', () => { state.ai.filter = c.dataset.f; $$('#aiFilter .chip').forEach(x => x.setAttribute('aria-selected', x === c)); renderDecisions(); }));
+$('#aiConfirm').addEventListener('click', () => {
+  const b = $('#aiConfirm'); if (b.disabled) return;
+  b.disabled = true; b.innerHTML = '<span style="width:16px;height:16px;border-radius:50%;border:2px solid #fff;border-top-color:transparent;animation:spin .8s linear infinite"></span>正在展开纸样…';
+  setTimeout(() => {
+    b.disabled = false; b.textContent = '确认 8 项并生成纸样';
+    setToken(1240 - 40);
+    setLevel('l2'); toast('已生成 13 片纸样 · 进入对缝 QA');
+  }, 1300);
+});
+function setToken(v){ $$('[data-token]').forEach(t => t.textContent = v.toLocaleString('en-US')); }
+let genTimers = [];
+function runGeneration(){
+  genTimers.forEach(clearTimeout); genTimers = [];
+  const panel = $('#genPanel'), body = $('#aiBody');
+  panel.hidden = false; body.hidden = true;
+  state.ai.confirmed = new Set(); state.ai.choice = {}; state.ai.active = 'leg'; state.ai.filter = 'todo';
+  $$('#aiFilter .chip').forEach(x => x.setAttribute('aria-selected', x.dataset.f === 'todo'));
+  const steps = $$('#genPanel .gen-step'); steps.forEach(s => s.className = 'gen-step');
+  const shape = $('#genShape'); shape.setAttribute('fill', 'none');
+  const T = [0, 650, 1650, 2500, 3200];
+  steps.forEach((s, i) => {
+    genTimers.push(setTimeout(() => { s.classList.add('run'); }, T[i]));
+    genTimers.push(setTimeout(() => { s.classList.remove('run'); s.classList.add('done'); if (i === 1) { shape.setAttribute('fill', '#D8CDBF'); shape.setAttribute('stroke', '#B83C0A'); } }, T[i + 1]));
+  });
+  genTimers.push(setTimeout(() => { panel.hidden = true; body.hidden = false; renderDecisions(); highlight(); shape.setAttribute('stroke', '#D8CDBF'); }, T[4] + 450));
+}
+
+/* ---------- kit ---------- */
+const COLORS = { wine: ['酒红', '#7A1F2B', '#6A1A25', '#D8CDBF'], ink: ['墨黑', '#45434F', '#393842', '#B83C0A'], moss: ['苔绿', '#4E5B3A', '#414C30', '#D8CDBF'], oat: ['奶白', '#E9DCCB', '#D8C8B3', '#7A1F2B'] };
+const FORMS = { kit: ['¥168', '含裁片、布料、配件、缝制卡', '预订材料包'], pdf: ['¥38', '可打印纸样 · 立即下载', '购买纸样 PDF'], custom: ['¥680', '创作者一对一缝制 · 剩 3 个名额', '申请成品定制'] };
+function paintKit(){
+  const c = COLORS[state.kit.color];
+  $$('#gallery .dragon-body').forEach(el => el.setAttribute('fill', el.dataset.c === 'body' ? c[1] : el.dataset.c === 'tail' ? c[2] : c[3]));
+  $('#colorName').textContent = c[0];
+  const f = FORMS[state.kit.form];
+  $('#kitPrice').textContent = f[0]; $('#kitPriceNote').textContent = f[1];
+  if (!state.kit.reserved || state.kit.form !== 'kit') $('#reserveBtn').textContent = f[2] + ' · ' + f[0];
+}
+function paintCount(){
+  const n = state.kit.count, pct = Math.min(100, n / 50 * 100) + '%';
+  $('#cutCount').textContent = n; $('#cutBar').style.width = pct;
+  $$('[data-kitcount]').forEach(e => e.textContent = n); $$('[data-kitbar]').forEach(e => e.style.width = pct);
+  $$('[data-kitleft]').forEach(e => e.textContent = Math.max(0, 50 - n));
+}
+$$('#swatches button').forEach(b => b.addEventListener('click', () => { state.kit.color = b.dataset.color; $$('#swatches button').forEach(x => x.setAttribute('aria-checked', x === b)); paintKit(); }));
+$$('#forms button').forEach(b => b.addEventListener('click', () => { state.kit.form = b.dataset.form; $$('#forms button').forEach(x => x.setAttribute('aria-checked', x === b)); paintKit(); }));
+function showGal(g){ state.kit.g = g; $('#gallery').dataset.g = g; $$('#galThumbs button').forEach(x => x.setAttribute('aria-selected', x.dataset.g === g)); $$('#gallery .g').forEach(x => x.classList.toggle('on', x.dataset.g === g)); $('#galBadge').textContent = { main: '成品示意 · 实拍图待补', pieces: '裁片平铺 · 13 片', fabric: '布料小样 · 3 色', order: '缝制顺序卡' }[g]; }
+$$('#galThumbs button').forEach(b => b.addEventListener('click', () => showGal(b.dataset.g)));
+$('#reserveBtn').addEventListener('click', () => {
+  if (state.kit.form !== 'kit') { toast(state.kit.form === 'pdf' ? '纸样 PDF 已加入购物袋' : '已向 MOTH 工作室发送定制申请'); return; }
+  if (state.kit.reserved) { toast('已预订 ' + state.kit.qty + ' 份 · 达标后通知你'); return; }
+  state.kit.qty = 1; renderReserve();
+});
+function renderReserve(){
+  const c = COLORS[state.kit.color], q = state.kit.qty;
+  openSheet('<h2 id="sheetTitle">确认预订</h2><div class="rows"><div><span>商品</span>哥特小龙 · 材料包</div><div><span>布色</span>' + c[0] + '</div><div><span>眼睛</span>' + $('#eye').value.split(' ')[0] + '</div><div style="align-items:center"><span>数量</span><span class="qty"><button type="button" id="qMinus" aria-label="减少">−</button><b>' + q + '</b><button type="button" id="qPlus" aria-label="增加">+</button></span></div><div><span>应付</span><b class="num" style="font-size:18px">¥' + (168 * q) + '</b></div></div><div style="font-size:12px;color:var(--mute);line-height:1.6">当前 ' + state.kit.count + ' / 50 份。12 天内未达标，自动全额退款。</div><button type="button" class="btn rust lg block" id="confirmReserve">确认预订</button>');
+  $('#qMinus').addEventListener('click', () => { state.kit.qty = Math.max(1, q - 1); renderReserveKeep(); });
+  $('#qPlus').addEventListener('click', () => { state.kit.qty = Math.min(5, q + 1); renderReserveKeep(); });
+  $('#confirmReserve').addEventListener('click', confirmReserve);
+}
+function renderReserveKeep(){ const s = $('#sheet'); s.classList.add('on'); renderReserve(); }
+function confirmReserve(){
+  const q = state.kit.qty;
+  $('#sheet').innerHTML = '<div class="grab" aria-hidden="true"></div><div class="done-mark"><svg width="30" height="30" viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2"><path d="M2.5 7.4 L5.6 10.2 L11.5 3.8"/></svg></div><h2 id="sheetTitle" style="text-align:center">已锁定 ' + q + ' 份</h2><p style="margin:0;text-align:center;font-size:13px;color:var(--mute);line-height:1.6">达标后平台统一开裁，发货前通知你。<br>开裁进度 ' + (state.kit.count + q) + ' / 50</p><button type="button" class="btn dark lg block" id="doneReserve">好的</button>';
+  $('#doneReserve').addEventListener('click', closeSheet);
+  state.kit.reserved = true;
+  setTimeout(() => { let n = state.kit.count, target = n + q; const tick = () => { if (n < target) { n++; state.kit.count = n; paintCount(); setTimeout(tick, 140); } }; tick(); }, 350);
+  $('#reserveBtn').textContent = '已预订 ' + q + ' 份 · 查看订单';
+}
+
+/* ---------- creator ---------- */
+const WORKS = [
+  { c: 'kit', b: ['rust', '材料包 · 预订中'], bg: '#2B2A33', t: '哥特小龙', m: 'KITCOUNT / 50 份 · ¥168', go: 'kit', svg: '<svg viewBox="0 0 240 260"><path d="M112 32 C140 18 190 28 202 58 C208 80 192 96 162 96 C150 100 132 104 120 100 L152 104 C172 140 176 200 160 222 C140 246 82 240 72 208 C66 186 68 150 80 120 C84 104 92 88 104 70 Z" fill="#7A1F2B"/><path d="M74 200 C52 210 32 226 14 240 C32 246 62 236 82 226 Z" fill="#6A1A25"/><path d="M112 32 L100 20 L120 26 Z M98 58 L82 50 L102 46 Z M84 92 L68 86 L88 80 Z M74 128 L58 124 L76 116 Z" fill="#D8CDBF"/></svg>' },
+  { c: 'pattern', b: ['ink', '纸样 PDF'], bg: '#E9DCCB', t: '坐姿小恐龙', m: '13 片 · 进阶 · ¥38', go: 'qa', svg: '<svg viewBox="0 0 200 250"><ellipse cx="100" cy="72" rx="52" ry="46" fill="#4E5B3A"/><path d="M58 108 C40 150 38 200 60 228 C80 246 120 246 140 228 C162 200 160 150 142 108 Z" fill="#4E5B3A"/><path d="M92 30 L100 14 L108 30 Z" fill="#2B2A33"/><circle cx="80" cy="66" r="5" fill="#E9DCCB"/><circle cx="120" cy="66" r="5" fill="#E9DCCB"/></svg>' },
+  { c: 'design', b: ['sand', '设计稿'], bg: '#7A1F2B', t: '蝙蝠翼小猫', m: '三视图 · 开放开版合作', svg: '<svg viewBox="0 0 220 200"><path d="M40 60 L10 10 L70 40 Z M180 60 L210 10 L150 40 Z" fill="#2B2A33"/><circle cx="110" cy="80" r="56" fill="#2B2A33"/><ellipse cx="110" cy="160" rx="50" ry="36" fill="#2B2A33"/><circle cx="88" cy="76" r="8" fill="#D8CDBF"/><circle cx="132" cy="76" r="8" fill="#D8CDBF"/></svg>' },
+  { c: 'cloth', b: ['ink', '娃衣纸样'], bg: '#D8CDBF', t: '格纹背心 · 20cm 体', m: '适配坐姿系列 · ¥18', svg: '<svg viewBox="0 0 200 200"><path d="M60 30 L100 50 L140 30 L180 60 L160 90 L148 80 L148 180 L52 180 L52 80 L40 90 L20 60 Z" fill="#2B2A33"/><path d="M52 110 H148 M52 140 H148 M84 80 V180 M116 80 V180" stroke="#7A1F2B" stroke-width="4"/></svg>' },
+  { c: 'acc', b: ['sand', '配件'], bg: '#4E5B3A', t: '铆钉项圈', m: '成品配件 · ¥26', svg: '<svg viewBox="0 0 200 120"><ellipse cx="100" cy="60" rx="80" ry="36" fill="none" stroke="#2B2A33" stroke-width="16"/><g fill="#D8CDBF"><path d="M30 44 L22 30 L40 38 Z M70 28 L68 12 L82 26 Z M130 28 L132 12 L118 26 Z M170 44 L178 30 L160 38 Z"/></g></svg>' },
+  { c: 'done', b: ['teal', '成品定制'], bg: '#F3EFE8', t: '哥特独角兽', m: '一对一下单 · 剩 3 个名额', svg: '<svg viewBox="0 0 200 240"><path d="M100 4 L92 50 L108 50 Z" fill="#B83C0A"/><circle cx="100" cy="84" r="46" fill="#E9DCCB" stroke="#2B2A33" stroke-width="3"/><path d="M60 124 C44 160 46 206 66 224 C84 238 116 238 134 224 C154 206 156 160 140 124 Z" fill="#E9DCCB" stroke="#2B2A33" stroke-width="3"/><circle cx="84" cy="80" r="5" fill="#2B2A33"/><circle cx="116" cy="80" r="5" fill="#2B2A33"/></svg>' },
+  { c: 'pattern', b: ['sand', '纸样 PDF'], bg: '#2B2A33', t: '潮流女孩 01', m: '人偶 · 含娃衣 · ¥45', svg: '<svg viewBox="0 0 160 240"><circle cx="80" cy="60" r="40" fill="#E9DCCB"/><path d="M36 40 C40 0 120 0 124 40 C130 70 120 90 120 90 L40 90 C40 90 30 70 36 40 Z" fill="#7A1F2B"/><path d="M40 110 L120 110 L136 200 L24 200 Z" fill="#E9DCCB"/><path d="M24 200 L136 200 L130 230 L30 230 Z" fill="#4E5B3A"/></svg>' }
+];
+const CTABS = [['all','全部'],['design','设计'],['pattern','纸样'],['cloth','娃衣'],['acc','配件'],['done','成品'],['kit','材料包']];
+function renderCreator(){
+  $('#cTabs').innerHTML = CTABS.map(t => '<button type="button" class="chip" role="tab" aria-selected="' + (state.cr.tab === t[0]) + '" data-ct="' + t[0] + '">' + t[1] + '</button>').join('');
+  $$('#cTabs .chip').forEach(c => c.addEventListener('click', () => { state.cr.tab = c.dataset.ct; renderCreator(); }));
+  const list = WORKS.filter(w => state.cr.tab === 'all' || w.c === state.cr.tab);
+  $('#works').innerHTML = list.map((w, i) => '<button type="button" class="work"' + (w.go ? ' data-go="' + w.go + '"' : '') + ' style="animation-delay:' + (i * 40) + 'ms"><span class="img" style="background:' + w.bg + '">' + w.svg + '<span class="pill ' + w.b[0] + '">' + w.b[1] + '</span></span><span class="inf"><b>' + w.t + '</b><span>' + w.m.replace('KITCOUNT', state.kit.count) + '</span></span></button>').join('') +
+    '<button type="button" class="work add"><svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="#5E5A52" stroke-width="1.6" aria-hidden="true"><path d="M14 4 V24 M4 14 H24"/></svg>从工作台发布<small>纸样、设计稿或发起材料包</small></button>';
+}
+$('#followBtn').addEventListener('click', () => {
+  const b = $('#followBtn'); state.cr.follow = !state.cr.follow; b.setAttribute('aria-pressed', state.cr.follow);
+  b.textContent = state.cr.follow ? '已关注' : '关注'; b.classList.toggle('dark', !state.cr.follow); b.classList.toggle('ghost', state.cr.follow);
+  $('#fans').textContent = (state.cr.follow ? 3619 : 3618).toLocaleString('en-US');
+  if (state.cr.follow) toast('已关注 MOTH 工作室 · 上新会通知你');
+});
+
+/* ---------- boot ---------- */
+setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); setLevel('l1', false); measureHdr(); if (document.fonts) document.fonts.ready.then(measureHdr);
+$$('#route button').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+const h = (location.hash || '').slice(1); if (ROUTES[h]) go(h); else syncRoute();
+window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state };
+})();
+</script>
+</body>
+</html>
