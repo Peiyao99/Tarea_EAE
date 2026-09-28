@@ -179,10 +179,21 @@ html.embed .tabbar,.framed .tabbar{padding-bottom:22px}
 .canvas{position:sticky;top:var(--hdrH,0px);z-index:12;padding:10px;display:flex;flex-direction:column;gap:8px;overflow:hidden;box-shadow:0 14px 22px -20px rgba(40,30,20,.5)}
 .canvas::before{content:"";position:absolute;left:-20px;right:-20px;top:-16px;height:16px;background:var(--paper)}
 .canvas-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute)}
-.canvas-stage{position:relative;height:250px;border-radius:12px;background:#FDFCFA;overflow:hidden}
+.canvas-stage{position:relative;height:clamp(160px,32vh,250px);border-radius:12px;background:#FDFCFA;overflow:hidden;transition:height .3s var(--ease)}
+/* once the params scroll under it, the pinned preview shrinks so the controls keep most of the screen */
+.canvas.compact{padding:8px;gap:6px}
+.canvas.compact .canvas-stage{height:clamp(110px,17vh,150px)}
+.canvas.compact .canvas-stage[data-view="split"] .pip{width:84px;height:98px;right:6px;bottom:6px}
+.canvas.compact .pip .lab{display:none}
+#s-work.scrolled .hdr > div:first-child{display:none!important}
+/* keep enough scroll range that collapsing the header and preview never snaps the page back up */
+#lvl-l1{min-height:calc(100% + 180px)}
+.screen > *,.lvl > *{flex-shrink:0}
+/* on very short viewports the preview scrolls away with the page instead of pinning */
+@media (max-height:600px){.canvas{position:relative;top:auto}}
 .canvas-stage .pat{position:absolute;inset:0;transition:opacity .3s}
 .canvas-stage .pat svg{width:100%;height:100%}
-.pip{position:absolute;right:8px;bottom:8px;width:122px;height:142px;border-radius:12px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 20px -12px rgba(0,0,0,.35);transition:all .45s var(--ease);overflow:hidden}
+.pip{position:absolute;right:8px;bottom:8px;width:min(122px,32%);height:min(142px,56%);border-radius:12px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 20px -12px rgba(0,0,0,.35);transition:all .45s var(--ease);overflow:hidden}
 .pip .lab{position:absolute;left:8px;top:6px;font-size:10px;color:var(--mute);font-family:var(--mono)}
 .pip svg{width:100%;height:100%}
 .canvas-stage[data-view="pattern"] .pip{opacity:0;transform:scale(.8);pointer-events:none}
@@ -959,8 +970,21 @@ function setTab(tab){
   $$('#tabbar button').forEach(b => { if (b.dataset.tab === tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   syncRoute();
 }
+let compact = false;
+function onWorkScroll(){
+  const c = $('.canvas'); if (!c) return;
+  const y = $('#s-work').scrollTop;
+  const next = compact ? y > 20 : y > 60;
+  if (next !== compact) {
+    compact = next;
+    c.classList.toggle('compact', compact && state.level === 'l1');
+    $('#s-work').classList.toggle('scrolled', compact);
+    measureHdr();
+  }
+}
 function measureHdr(){ const h = $('#s-work .hdr'); if (h) $('#s-work').style.setProperty('--hdrH', (h.offsetHeight + 8) + 'px'); }
 window.addEventListener('resize', measureHdr);
+
 function setLevel(lv, scrollTop){
   state.level = lv;
   $$('#levelSeg button').forEach((b, i) => { const on = b.dataset.level === lv; b.setAttribute('aria-selected', on); if (on) $('#levelSeg .thumbv').style.transform = 'translateX(calc(' + i + ' * (100% + 2px)))'; });
@@ -1362,7 +1386,7 @@ $('#followBtn').addEventListener('click', () => {
 });
 
 /* ---------- boot ---------- */
-setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); setLevel('l1', false); measureHdr(); if (document.fonts) document.fonts.ready.then(measureHdr);
+setStep(2); updateModel(); renderQA(); bindFix(); renderDecisions(); highlight(); paintKit(); paintCount(); renderCreator(); setLevel('l1', false); measureHdr(); $('#s-work').addEventListener('scroll', onWorkScroll, { passive: true }); if (document.fonts) document.fonts.ready.then(measureHdr);
 $$('#route button').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
 const h = (location.hash || '').slice(1); if (ROUTES[h]) go(h); else syncRoute();
 window.PP = { go, setLevel, setTab, runGeneration, setStep, showGal, state };
