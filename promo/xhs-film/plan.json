@@ -1,0 +1,131 @@
+{
+  "demo": true,
+  "product": "纸样工作台 v3 · 方向静帧",
+  "style": "hybrid",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration": 6,
+  "repo": "/home/user/Tarea_EAE/prototype-v3",
+  "audioRequired": true,
+  "sfxRequired": true,
+  "typography": {
+    "mode": "bilingual",
+    "zhFont": "Noto Sans SC",
+    "enFont": "Instrument Serif",
+    "zhStyle": "sans-serif"
+  },
+  "audio": {
+    "ducking": {
+      "enabled": true
+    },
+    "music": {
+      "file": "assets/music.wav",
+      "gain": 0.65
+    },
+    "cues": []
+  },
+  "shots": [
+    {
+      "id": "a1",
+      "start": 0,
+      "end": 1,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "a1",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    },
+    {
+      "id": "a2",
+      "start": 1,
+      "end": 2,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "a2",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    },
+    {
+      "id": "b1",
+      "start": 2,
+      "end": 3,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "b1",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    },
+    {
+      "id": "b2",
+      "start": 3,
+      "end": 4,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "b2",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    },
+    {
+      "id": "c1",
+      "start": 4,
+      "end": 5,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "c1",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    },
+    {
+      "id": "c2",
+      "start": 5,
+      "end": 6,
+      "type": "direction",
+      "headlineEn": "",
+      "headline": "c2",
+      "description": "方向静帧",
+      "descriptionAt": 0,
+      "claim": false,
+      "source": [],
+      "plainExplanation": "方向静帧",
+      "actions": [],
+      "component": null
+    }
+  ],
+  "scope": {
+    "versions": "prototype-v3 @ a8d0db4",
+    "platforms": [
+      "mobile-web"
+    ],
+    "journeys": [
+      "hobby",
+      "creator",
+      "buyer"
+    ]
+  }
+}

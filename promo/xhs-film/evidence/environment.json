@@ -1,0 +1,74 @@
+{
+  "ready": true,
+  "cached": false,
+  "engine": "browser",
+  "missing": [],
+  "warnings": [],
+  "fingerprint": "a41c9e40c58fce3feaaf72f88968be228b540be3384771945bd979e0afb10f3b",
+  "details": {
+    "schema": 2,
+    "engine": "browser",
+    "platform": "Linux-6.18.44-fc-v49-x86_64-with-glibc2.39",
+    "versions": {
+      "python": {
+        "path": "/usr/local/bin/python3",
+        "version": "3.11.15"
+      },
+      "node": {
+        "path": "/opt/node22/bin/node",
+        "version": "v22.22.2"
+      },
+      "npm": {
+        "path": "/opt/node22/bin/npm",
+        "version": "10.9.7"
+      },
+      "ffmpeg": {
+        "path": "/usr/bin/ffmpeg",
+        "version": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers"
+      },
+      "ffprobe": {
+        "path": "/usr/bin/ffprobe",
+        "version": "ffprobe version 6.1.1-3ubuntu5 Copyright (c) 2007-2023 the FFmpeg developers"
+      }
+    },
+    "packages": {
+      "playwright": {
+        "version": "1.56.1",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/playwright/package.json"
+      },
+      "esbuild": {
+        "version": "0.27.3",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/esbuild/package.json"
+      },
+      "react": {
+        "version": "19.2.3",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/react/package.json"
+      },
+      "react-dom": {
+        "version": "19.2.3",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/react-dom/package.json"
+      },
+      "gsap": {
+        "version": "3.15.0",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/gsap/package.json"
+      },
+      "three": {
+        "version": "0.186.1",
+        "path": "/home/user/Tarea_EAE/promo/xhs-film/node_modules/three/package.json"
+      }
+    },
+    "manifests": {
+      "package.json": "a93b8bd79a0044dbf1c046879b756e28086e46fef6db8da3554fdc32691acee5",
+      "package-lock.json": "92569c184ae556263ef1e0979f5ae9ce3e4145ebe34daa113d682850840e1a75"
+    },
+    "browserEnv": {
+      "PLAYWRIGHT_BROWSERS_PATH": "/opt/pw-browsers",
+      "HYPERFRAMES_CHROME_PATH": null
+    }
+  },
+  "browser": {
+    "launched": true,
+    "playwrightVersion": "1.56.1"
+  },
+  "next": "Continue; do not load onboarding."
+}

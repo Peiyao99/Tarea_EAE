@@ -167,3 +167,7 @@ prototype-v3/.parcel-cache/
 promo/v3/out/pv-*
 promo/v3/out/*.wav
 promo/v3/out/*.mp4
+promo/xhs-film/node_modules/
+promo/xhs-film/dist/
+promo/xhs-film/.build/
+promo/xhs-film/renders/

@@ -1,0 +1,77 @@
+/* Frame design system (DIRECTION.md §5) + the mechanics every film needs. 1080×1920, 9:16. */
+:root { --paper:#F8F5F0; --card:#FDFCFA; --ink:#1E1D1A; --ink2:#5E5A52; --rust:#B83C0A; --rust-d:#8F2E07; --seam:#F3A27A; --stage:#2B2A33; --mat:#DCE6DD;
+  --zh:'Noto Sans SC',sans-serif; --en:'Instrument Serif',Georgia,serif; }
+* { box-sizing:border-box; }
+html,body { margin:0; background:#000; height:auto; overflow:hidden; }
+#film { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--paper); color:var(--ink); font-family:var(--zh); }
+#film *, #film *::before, #film *::after { transition:none !important; animation-duration:0s !important; animation-delay:0s !important; }
+.shot { position:absolute; inset:0; overflow:hidden; opacity:0; visibility:hidden; }
+.split { display:inline-block; white-space:pre-wrap; } .split .u { display:inline-block; }
+.film-cursor { position:absolute; left:0; top:0; z-index:80; pointer-events:none; opacity:0; }
+.film-cursor svg { position:relative; z-index:2; display:block; transform-origin:6px 3px; filter:drop-shadow(0 2px 4px rgba(0,0,0,.35)); }
+.film-ripple { position:absolute; left:-12px; top:-15px; width:40px; height:40px; border-radius:50%; background:rgba(127,127,127,.25); border:1.5px solid rgba(127,127,127,.6); opacity:0; }
+
+/* live product screens */
+.live-app { position:relative; display:flex; flex-direction:column; overflow:hidden; background:hsl(var(--background)); color:hsl(var(--foreground)); font-family:var(--zh); transform-origin:0 0; }
+.live-main { flex:1; min-height:0; overflow-y:auto; position:relative; }
+.live-main::-webkit-scrollbar { display:none; }
+
+/* titles: English serif + Chinese sans, separate spans */
+.en { display:block; font-family:var(--en); font-style:italic; font-weight:400; letter-spacing:-.01em; line-height:1; }
+.zh { display:block; font-family:var(--zh); font-weight:900; letter-spacing:-.01em; line-height:1.28; }
+
+/* ---------- A · cutting table ---------- */
+.dA { position:absolute; inset:0; background:#E4ECE3; }
+.dA-mat { position:absolute; inset:0; background-image:linear-gradient(#C9D6C8 1.5px,transparent 1.5px),linear-gradient(90deg,#C9D6C8 1.5px,transparent 1.5px),linear-gradient(#B7C7B6 2px,transparent 2px),linear-gradient(90deg,#B7C7B6 2px,transparent 2px); background-size:36px 36px,36px 36px,180px 180px,180px 180px; }
+.dA-pieces { position:absolute; left:-120px; top:640px; width:1320px; height:870px; transform:rotate(-8deg); filter:drop-shadow(0 18px 24px rgba(40,50,40,.18)); }
+.dA-pieces svg > rect { fill:transparent; }
+.dA-stitch { position:absolute; inset:0; } .dA-stitch path { fill:none; stroke:var(--rust); stroke-width:7; stroke-dasharray:22 14; stroke-linecap:round; }
+.dA-title { position:absolute; left:84px; top:230px; right:84px; }
+.dA-title .en { font-size:132px; color:var(--rust); }
+.dA-title .zh { font-size:92px; margin-top:24px; }
+.dA-tag { position:absolute; left:84px; bottom:300px; padding:14px 28px; background:var(--paper); border:3px dashed var(--ink); font-weight:700; font-size:36px; transform:rotate(-3deg); }
+.dA-phone { position:absolute; left:126px; top:540px; width:828px; height:1280px; border-radius:56px; overflow:hidden; transform:rotate(3deg); box-shadow:0 30px 60px rgba(40,50,40,.28),0 0 0 14px var(--card); }
+.dA-phone .live-app { transform:scale(2.123); }
+.dA-note { position:absolute; left:84px; top:170px; right:84px; background:var(--card); padding:36px 44px; border-radius:6px; box-shadow:0 12px 28px rgba(40,50,40,.18); transform:rotate(-2deg); border-left:14px solid var(--rust); }
+.dA-note .en { font-size:84px; color:var(--rust); } .dA-note .zh { font-size:60px; margin-top:14px; }
+.dA-snip { position:absolute; right:60px; top:470px; width:170px; transform:rotate(18deg); } .dA-snip * { fill:none; stroke:var(--ink); stroke-width:7; stroke-linecap:round; }
+
+/* ---------- B · 3D ↔ pattern stage ---------- */
+.dB { position:absolute; inset:0; background:var(--paper); }
+.dB-top { position:absolute; left:0; right:0; top:0; height:1000px; background:var(--stage); }
+.dB-top .dB-viewer { top:430px !important; height:570px; }
+.dB-viewer { position:absolute !important; inset:0; }
+.dB-bottom { position:absolute; left:40px; right:40px; top:1060px; height:640px; background:var(--card); border-radius:36px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,.12); }
+.dB-link { position:absolute; left:0; right:0; top:944px; height:150px; display:flex; flex-direction:column; align-items:center; z-index:3; }
+.dB-link i { width:4px; flex:1; background:repeating-linear-gradient(var(--seam) 0 14px,transparent 14px 24px); }
+.dB-link b { padding:10px 26px; border-radius:40px; background:var(--rust); color:#fff; font:700 38px ui-monospace,monospace; }
+.dB-title { position:absolute; left:72px; right:72px; top:150px; color:#F3EFE8; z-index:4; }
+.dB-title .en { font-size:120px; color:var(--seam); } .dB-title .zh { font-size:70px; margin-top:18px; }
+.dB-dark { background:#151419; }
+.dB-glow { position:absolute; left:-200px; right:-200px; top:520px; height:1000px; background:radial-gradient(closest-side,rgba(184,60,10,.55),transparent); }
+.dB-macro { position:absolute; left:92px; top:480px; width:897px; height:1180px; overflow:hidden; border-radius:48px; box-shadow:0 0 0 10px #2a2830,0 40px 80px rgba(0,0,0,.5); }
+.dB-macro .live-app { transform:scale(2.3); transform-origin:0 0; margin-top:-276px; }
+.dB-title.low { top:150px; }
+.dB-title.low .en { font-size:100px; }
+
+/* ---------- C · a dinosaur's journey ---------- */
+.dC { position:absolute; inset:0; background:var(--paper); background-image:radial-gradient(rgba(94,90,82,.13) 2px,transparent 2.5px); background-size:34px 34px; }
+.dC-path { position:absolute; inset:0; } .dC-path path { fill:none; stroke:var(--rust); stroke-width:6; stroke-dasharray:18 14; }
+.dC-stop { position:absolute; display:flex; align-items:center; gap:18px; font-weight:900; font-size:52px; background:var(--card); padding:12px 30px 12px 14px; border-radius:60px; box-shadow:0 10px 24px rgba(0,0,0,.1); }
+.dC-stop em { font-style:normal; font:700 30px ui-monospace,monospace; color:#fff; background:var(--rust); border-radius:40px; padding:8px 16px; }
+.dC-stop.s1 { left:86px; top:170px; } .dC-stop.s2 { left:86px; top:1080px; } .dC-stop.s3 { left:86px; top:170px; }
+.dC-card { position:absolute; left:120px; top:300px; width:420px; height:330px; border-radius:28px; overflow:hidden; box-shadow:0 16px 32px rgba(0,0,0,.18); transform:rotate(-4deg); background:#2B2A33; }
+.dC-phone { position:absolute; left:400px; top:1000px; width:624px; height:820px; border-radius:48px; overflow:hidden; box-shadow:0 26px 50px rgba(0,0,0,.25),0 0 0 12px var(--card); transform:rotate(2deg); }
+.dC-phone .live-app { transform:scale(1.6); }
+.dC-phone.right { left:260px; top:320px; width:760px; height:1180px; transform:rotate(-2deg); }
+.dC-phone.right .live-app { transform:scale(1.95); }
+.dC-title { position:absolute; left:84px; right:84px; top:680px; }
+.dC-title .en { font-size:110px; color:var(--rust); } .dC-title .zh { font-size:54px; margin-top:14px; }
+.dC-title.bottom { top:1540px; } .dC-title.bottom .zh { max-width:none; font-size:56px; }
+.dC-stamp { position:absolute; left:70px; top:1130px; width:300px; height:300px; border-radius:50%; border:8px double var(--rust); color:var(--rust); display:grid; place-items:center; text-align:center; font-weight:900; font-size:46px; line-height:1.3; transform:rotate(-14deg); background:rgba(248,245,240,.85); }
+
+/* the prototype sizes its workspace in vh; inside the film those resolve against 1920px, so pin
+   them to what a 844px-tall phone would give (46vh / 26vh) */
+.live-app .h-\[46vh\] { height:388px; } .live-app .h-\[26vh\] { height:219px; }
+.live-app .min-h-\[280px\] { min-height:280px; }
+.dC-title .en, .dC-title .zh { display:table; background:var(--paper); padding:0 12px; margin-left:-12px; }
